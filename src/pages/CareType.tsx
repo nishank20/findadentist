@@ -31,11 +31,7 @@ export default function CareType() {
   const location = searchParams.get("location") || "";
 
   const handleSelect = (typeId: string) => {
-    if (typeId === "problem") {
-      navigate(`/issue-type?location=${location}&type=${typeId}`);
-    } else {
-      navigate(`/results?location=${location}&type=${typeId}`);
-    }
+    navigate(`/issue-type?location=${location}&type=${typeId}`);
   };
 
   return (
