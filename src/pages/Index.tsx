@@ -5,19 +5,19 @@ import { MessageSquare, Shield, Calculator } from "lucide-react";
 
 const features = [
   {
-    icon: MessageSquare,
-    title: "Ask a Question",
-    description: "Submit a dental question and a dentist will respond",
-  },
-  {
     icon: Shield,
     title: "Check Your Insurance",
-    description: "We'll run an insurance check to see what coverage you may have",
+    description: "We'll run an insurance check to verify your eligibility and analyze your benefits",
   },
   {
     icon: Calculator,
     title: "Cost Calculator",
     description: "Enter a treatment you might need and we'll show you average costs in your area",
+  },
+  {
+    icon: MessageSquare,
+    title: "Ask a Question",
+    description: "Submit a dental question and a dentist will respond",
   },
 ];
 
