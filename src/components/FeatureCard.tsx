@@ -8,13 +8,18 @@ interface FeatureCardProps {
 }
 
 export const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => {
+  const iconColor = title === "Ask a Question" ? "text-secondary" : "text-primary";
+  const bgColor = title === "Ask a Question" ? "bg-secondary" : "bg-primary";
+  
   return (
-    <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] border-border/50 bg-gradient-to-br from-card to-card/50 cursor-pointer group">
-      <div className="mb-4 w-12 h-12 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl flex items-center justify-center group-hover:from-primary/20 group-hover:to-secondary/20 transition-all">
-        <Icon className="w-6 h-6 text-primary" />
+    <Card className="p-6 hover:shadow-md transition-all duration-300 border-border/30 bg-card cursor-pointer group flex items-start gap-4">
+      <div className={`flex-shrink-0 w-12 h-12 ${bgColor} rounded-full flex items-center justify-center`}>
+        <Icon className="w-6 h-6 text-white" />
       </div>
-      <h3 className="font-semibold text-lg mb-2 text-foreground">{title}</h3>
-      <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
+      <div className="flex-1 min-w-0">
+        <h3 className={`font-semibold text-lg mb-1 ${iconColor}`}>{title}</h3>
+        <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
+      </div>
     </Card>
   );
 };

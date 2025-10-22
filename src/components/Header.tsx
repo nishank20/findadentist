@@ -8,40 +8,41 @@ export const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-              <Search className="w-5 h-5 text-primary-foreground" />
+            <div className="w-8 h-8 bg-gradient-to-br from-secondary to-secondary/80 rounded-lg flex items-center justify-center">
+              <Search className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-secondary">
               dental.com
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-8">
             <Link 
               to="/find" 
-              className="text-foreground hover:text-primary transition-colors font-medium"
+              className="text-secondary hover:text-secondary/80 transition-colors font-medium"
             >
               Find a Dentist
             </Link>
             <Link 
               to="/account" 
-              className="text-foreground hover:text-primary transition-colors font-medium flex items-center gap-2"
+              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
             >
-              <User className="w-4 h-4" />
               My Account
             </Link>
             <Link 
               to="/support" 
-              className="text-foreground hover:text-primary transition-colors font-medium flex items-center gap-2"
+              className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-2"
             >
               <HelpCircle className="w-4 h-4" />
               Support
             </Link>
-            <Button variant="ghost" size="sm" className="gap-2">
-              <Phone className="w-4 h-4" />
-              Talk to a Dentist Now
+            <Button variant="hero" size="sm" className="gap-2">
+              Talk to a Dentist Now — 24/7
             </Button>
-            <Button size="sm">Sign In</Button>
+            <Button variant="outline" size="sm" className="gap-2 border-secondary text-secondary hover:bg-secondary/10">
+              <User className="w-4 h-4" />
+              Sign In
+            </Button>
           </nav>
 
           <Button size="sm" className="md:hidden">Menu</Button>
