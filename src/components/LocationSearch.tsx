@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MapPin, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,12 +11,6 @@ export const LocationSearch = () => {
     if (location.trim()) {
       navigate(`/care-type?location=${encodeURIComponent(location)}`);
     }
-  };
-
-  const handleUseLocation = () => {
-    // In a real app, this would use geolocation API
-    setLocation("Current Location");
-    navigate("/care-type?location=current");
   };
 
   return (
@@ -34,22 +27,6 @@ export const LocationSearch = () => {
             className="pl-12 h-14 text-base rounded-full border-border bg-card shadow-sm"
           />
         </div>
-        <Button 
-          variant="outline" 
-          size="lg" 
-          onClick={handleUseLocation}
-          className="gap-2 whitespace-nowrap h-14 rounded-full border-secondary text-secondary hover:bg-secondary/10 px-6"
-        >
-          <MapPin className="w-4 h-4" />
-          Use My Location
-        </Button>
-        <Button 
-          variant="outline" 
-          size="lg"
-          className="gap-2 whitespace-nowrap h-14 rounded-full border-primary text-primary hover:bg-primary/10 px-6"
-        >
-          Filter by Insurance
-        </Button>
       </div>
     </div>
   );
