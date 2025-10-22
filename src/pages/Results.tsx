@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useSearchParams } from "react-router-dom";
 import { MapPin, Star, Search, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
+import { BookingDialog } from "@/components/BookingDialog";
 
 const mockDentists = [
   {
@@ -47,6 +48,8 @@ export default function Results() {
   const [searchParams] = useSearchParams();
   const location = searchParams.get("location") || "your area";
   const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [selectedDentist, setSelectedDentist] = useState<string>("");
 
   const toggleReviews = (dentistId: number) => {
     setExpandedReviews((prev) =>
@@ -54,6 +57,11 @@ export default function Results() {
         ? prev.filter((id) => id !== dentistId)
         : [...prev, dentistId]
     );
+  };
+
+  const handleBookAppointment = (dentistName: string) => {
+    setSelectedDentist(dentistName);
+    setBookingOpen(true);
   };
 
   return (
@@ -173,7 +181,11 @@ export default function Results() {
 
                   {/* Book Button */}
                   <div className="flex-shrink-0 md:self-start">
-                    <Button variant="hero" className="w-full md:w-auto px-8">
+                    <Button 
+                      variant="hero" 
+                      className="w-full md:w-auto px-8"
+                      onClick={() => handleBookAppointment(dentist.name)}
+                    >
                       Book Appointment
                     </Button>
                   </div>
@@ -191,6 +203,12 @@ export default function Results() {
           </div>
         </div>
       </main>
+
+      <BookingDialog
+        open={bookingOpen}
+        onOpenChange={setBookingOpen}
+        dentistName={selectedDentist}
+      />
     </div>
   );
 }
