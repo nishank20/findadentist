@@ -1,15 +1,40 @@
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const insuranceOptions = [
+  "- no insurance -",
+  "Delta Dental",
+  "Aetna",
+  "Cigna",
+  "UnitedHealthcare",
+  "MetLife",
+  "Humana",
+];
 
 export const LocationSearch = () => {
   const [location, setLocation] = useState("");
+  const [insurance, setInsurance] = useState<string>("- no insurance -");
   const navigate = useNavigate();
 
   const handleSearch = () => {
     if (location.trim()) {
-      navigate(`/care-type?location=${encodeURIComponent(location)}`);
+      const params = new URLSearchParams({
+        location: location,
+      });
+      if (insurance !== "- no insurance -") {
+        params.append("insurance", insurance);
+      }
+      navigate(`/care-type?${params.toString()}`);
     }
   };
 
@@ -26,6 +51,21 @@ export const LocationSearch = () => {
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="pl-12 h-14 text-base rounded-full border-border bg-card shadow-sm"
           />
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <Select value={insurance} onValueChange={setInsurance}>
+            <SelectTrigger className="h-14 w-[220px] rounded-full border-primary text-primary">
+              <SelectValue placeholder="Dental Insurance Carrier" />
+            </SelectTrigger>
+            <SelectContent className="bg-card z-50">
+              {insuranceOptions.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span className="text-xs text-muted-foreground">Optional</span>
         </div>
       </div>
     </div>
