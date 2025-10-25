@@ -19,12 +19,12 @@ export const Header = () => {
             >
               Find a Dentist
             </Link>
-            <Link 
-              to="/account" 
+            <a 
+              href="https://member.dental.com/login" 
               className="text-muted-foreground hover:text-foreground transition-colors font-medium"
             >
               My Account
-            </Link>
+            </a>
             <Link 
               to="/support" 
               className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-2"
@@ -32,12 +32,16 @@ export const Header = () => {
               <HelpCircle className="w-4 h-4" />
               Support
             </Link>
-            <Button variant="hero" size="sm" className="gap-2">
-              Talk to a Dentist Now — 24/7
+            <Button variant="hero" size="sm" className="gap-2" asChild>
+              <a href="https://member.dental.com/login">
+                Talk to a Dentist Now — 24/7
+              </a>
             </Button>
-            <Button variant="outline" size="sm" className="gap-2 border-secondary text-secondary hover:bg-secondary/10">
-              <User className="w-4 h-4" />
-              Sign In
+            <Button variant="outline" size="sm" className="gap-2 border-secondary text-secondary hover:bg-secondary/10" asChild>
+              <a href="https://member.dental.com/login">
+                <User className="w-4 h-4" />
+                Sign In
+              </a>
             </Button>
           </nav>
 
