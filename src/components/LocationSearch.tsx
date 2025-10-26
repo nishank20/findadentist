@@ -54,12 +54,12 @@ export const LocationSearch = () => {
         </div>
         <div className="flex flex-col items-center gap-1">
           <Select value={insurance} onValueChange={setInsurance}>
-            <SelectTrigger className="h-10 w-[180px] rounded-full border-primary text-primary text-sm">
+            <SelectTrigger className="h-10 w-[180px] rounded-full border-primary text-primary text-sm bg-background">
               <SelectValue placeholder="Insurance Carrier" />
             </SelectTrigger>
-            <SelectContent className="bg-card z-50">
+            <SelectContent className="bg-background border border-border shadow-lg z-[100]">
               {insuranceOptions.map((option) => (
-                <SelectItem key={option} value={option}>
+                <SelectItem key={option} value={option} className="cursor-pointer">
                   {option}
                 </SelectItem>
               ))}
