@@ -34,7 +34,7 @@ export const LocationSearch = () => {
       if (insurance !== "- no insurance -") {
         params.append("insurance", insurance);
       }
-      navigate(`/care-type?${params.toString()}`);
+      navigate(`/questionnaire?${params.toString()}`);
     }
   };
 
