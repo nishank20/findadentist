@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useSearchParams } from "react-router-dom";
-import { MapPin, Star, Search, SlidersHorizontal } from "lucide-react";
+import { MapPin, Star, Search, SlidersHorizontal, ScanLine } from "lucide-react";
 import { useState } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
 
@@ -80,22 +80,34 @@ export default function Results() {
               easily and get the care you deserve.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input
-                  placeholder="Search by city, ZIP code, or use my location"
-                  className="pl-10 h-12"
-                  defaultValue={location}
-                />
+            <div className="flex flex-col gap-4 max-w-3xl mx-auto">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <Input
+                    placeholder="Search by city, ZIP code, or use my location"
+                    className="pl-10 h-12"
+                    defaultValue={location}
+                  />
+                </div>
+                <Button variant="outline" className="h-12 px-6">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Use My Location
+                </Button>
+                <Button variant="outline" className="h-12 px-4">
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  Show All
+                </Button>
               </div>
-              <Button variant="outline" className="h-12 px-6">
-                <MapPin className="w-4 h-4 mr-2" />
-                Use My Location
-              </Button>
-              <Button variant="outline" className="h-12 px-4">
-                <SlidersHorizontal className="w-4 h-4 mr-2" />
-                Show All
+              
+              {/* SmartScan Button */}
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="w-full sm:w-auto mx-auto px-10 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all animate-fade-in"
+              >
+                <ScanLine className="w-6 h-6 mr-3" />
+                SmartScan - Find Best Match
               </Button>
             </div>
           </div>
