@@ -112,31 +112,7 @@ export default function Questionnaire() {
                 Immediate Online Emergency Visit
               </Button>
             </div>
-
-            {/* Skip Button */}
-            {step === "care" && (
-              <div className="flex justify-end">
-                <Button 
-                  variant="outline" 
-                  onClick={handleSkip}
-                  className="text-sm"
-                >
-                  Skip to search results
-                </Button>
-              </div>
-            )}
           </div>
-
-          {/* Mobile Skip Button */}
-          {step === "care" && (
-            <Button 
-              variant="outline" 
-              onClick={handleSkip}
-              className="w-full sm:hidden mb-6"
-            >
-              Skip to search results
-            </Button>
-          )}
 
           {/* Care Type Cards */}
           {step === "care" && (
