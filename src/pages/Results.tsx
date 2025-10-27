@@ -103,10 +103,9 @@ export default function Results() {
               {/* SmartScan Button */}
               <Button 
                 variant="hero" 
-                size="lg" 
-                className="w-full sm:w-auto mx-auto px-10 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all animate-fade-in"
+                className="w-full sm:w-auto mx-auto h-14 px-10 text-base font-semibold shadow-lg hover:shadow-xl transition-all animate-fade-in rounded-full"
               >
-                <ScanLine className="w-6 h-6 mr-3" />
+                <ScanLine className="w-5 h-5 mr-2" />
                 SmartScan - Find Best Match
               </Button>
             </div>
