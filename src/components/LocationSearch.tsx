@@ -64,7 +64,7 @@ export const LocationSearch = () => {
         </div>
         <div className="flex flex-col items-center gap-1">
           <Select value={insurance} onValueChange={setInsurance}>
-            <SelectTrigger className="h-10 w-[180px] rounded-full border-primary text-primary text-sm bg-background">
+            <SelectTrigger className="h-14 w-[180px] rounded-full border-primary text-primary text-base bg-background">
               <SelectValue placeholder="Insurance Carrier" />
             </SelectTrigger>
             <SelectContent className="bg-background border border-border shadow-lg z-[100]">
