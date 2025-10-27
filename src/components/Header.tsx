@@ -20,7 +20,7 @@ export const Header = () => {
               Find a Dentist
             </Link>
             <a 
-              href="https://member.dental.com/login" 
+              href="https://member.dental.com/sign-up" 
               className="text-muted-foreground hover:text-foreground transition-colors font-medium"
             >
               My Account
@@ -33,7 +33,7 @@ export const Header = () => {
               Support
             </Link>
             <Button variant="hero" size="sm" className="gap-2" asChild>
-              <a href="https://member.dental.com/login">
+              <a href="https://member.dental.com/sign-up">
                 Talk to a Dentist Now — 24/7
               </a>
             </Button>
