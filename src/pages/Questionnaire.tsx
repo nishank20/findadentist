@@ -98,41 +98,33 @@ export default function Questionnaire() {
         <div className="max-w-5xl mx-auto">
           {/* Header Section */}
           <div className="mb-8 animate-fade-in">
-            {/* Emergency Button - Top Right */}
-            <div className="flex justify-end mb-6">
-              <Button 
-                className="relative bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white shadow-2xl hover:shadow-red-500/50 px-6 py-6 text-base font-bold rounded-full animate-pulse hover:animate-none transition-all duration-300 hover:scale-105"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  <svg className="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                  </svg>
-                  Immediate Online Emergency Visit
-                </span>
-                {/* Pulsing ring effect */}
-                <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-20"></span>
-              </Button>
-            </div>
-
-            {/* Title and Skip Section */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-6">
               <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                 {step === "care" 
                   ? "What Type of Care are You Looking For?"
                   : "What Type of Specialist are You Looking For?"}
               </h1>
-              <div className="flex gap-3">
-                {step === "care" && (
-                  <Button 
-                    variant="outline" 
-                    onClick={handleSkip}
-                    className="hidden sm:flex"
-                  >
-                    Skip to search results
-                  </Button>
-                )}
-              </div>
+              
+              {/* Emergency Button */}
+              <Button 
+                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white shadow-lg px-6 py-3 text-sm font-semibold rounded-full transition-all duration-300"
+              >
+                Immediate Online Emergency Visit
+              </Button>
             </div>
+
+            {/* Skip Button */}
+            {step === "care" && (
+              <div className="flex justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={handleSkip}
+                  className="text-sm"
+                >
+                  Skip to search results
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Skip Button */}
