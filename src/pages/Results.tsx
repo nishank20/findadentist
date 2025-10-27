@@ -188,7 +188,7 @@ export default function Results() {
                       className="w-full md:w-auto px-8"
                       onClick={() => handleBookAppointment(dentist.name)}
                     >
-                      Book Appointment
+                      Request Appointment
                     </Button>
                   </div>
                 </div>
