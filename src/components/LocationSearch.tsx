@@ -55,10 +55,11 @@ export const LocationSearch = () => {
           </div>
           <Button 
             onClick={handleSearch}
-            className="h-14 px-8 rounded-full"
+            size="icon"
+            className="h-14 w-14 rounded-full flex-shrink-0"
             disabled={!location.trim()}
           >
-            Search
+            <Search className="w-5 h-5" />
           </Button>
         </div>
         <div className="flex flex-col items-center gap-1">
