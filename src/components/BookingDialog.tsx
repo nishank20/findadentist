@@ -93,8 +93,8 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
 
     // Handle booking logic here
     toast({
-      title: "Appointment Booked!",
-      description: `Your appointment with ${dentistName} has been scheduled.`,
+      title: "Request Received!",
+      description: "We received your request. We will get back to you shortly.",
     });
     
     // Reset form
@@ -324,7 +324,7 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
               onClick={handleBooking}
               className="px-8"
             >
-              Book Appointment
+              Request Appointment
             </Button>
           )}
         </div>
