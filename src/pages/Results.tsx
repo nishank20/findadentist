@@ -96,7 +96,7 @@ export default function Results() {
                 </Button>
                 <Button variant="outline" className="h-12 px-4">
                   <SlidersHorizontal className="w-4 h-4 mr-2" />
-                  Show All
+                  Filters
                 </Button>
               </div>
             </div>
