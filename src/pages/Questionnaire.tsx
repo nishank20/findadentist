@@ -132,23 +132,42 @@ export default function Questionnaire() {
 
           {/* Care Type Cards */}
           {step === "care" && (
-            <div className="space-y-4 animate-fade-in">
-              {careTypes.map((care) => (
+            <div className="space-y-5">
+              {careTypes.map((care, index) => (
                 <div
                   key={care.id}
                   onClick={() => handleCareSelection(care.id)}
                   className={cn(
-                    "p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300",
-                    "hover:shadow-lg hover:scale-[1.01] hover:border-primary/50",
-                    "border-border bg-card"
+                    "group relative p-8 rounded-3xl border-2 cursor-pointer transition-all duration-500",
+                    "hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1",
+                    "bg-gradient-to-br from-card via-card to-primary/5",
+                    "border-border hover:border-primary",
+                    "animate-fade-in overflow-hidden"
                   )}
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <h3 className="text-xl font-bold text-foreground mb-2">
-                    {care.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {care.description}
-                  </p>
+                  {/* Animated background gradient on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
+                  
+                  {/* Content */}
+                  <div className="relative z-10">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                        {care.title}
+                      </h3>
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-base text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                      {care.description}
+                    </p>
+                  </div>
+
+                  {/* Shine effect on hover */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               ))}
             </div>
@@ -156,23 +175,42 @@ export default function Questionnaire() {
 
           {/* Specialist Type Cards */}
           {step === "specialist" && (
-            <div className="space-y-4 animate-fade-in">
-              {specialistTypes.map((specialist) => (
+            <div className="space-y-5">
+              {specialistTypes.map((specialist, index) => (
                 <div
                   key={specialist.id}
                   onClick={() => handleSpecialistSelection(specialist.id)}
                   className={cn(
-                    "p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300",
-                    "hover:shadow-lg hover:scale-[1.01] hover:border-primary/50",
-                    "border-border bg-card"
+                    "group relative p-8 rounded-3xl border-2 cursor-pointer transition-all duration-500",
+                    "hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1",
+                    "bg-gradient-to-br from-card via-card to-secondary/5",
+                    "border-border hover:border-primary",
+                    "animate-fade-in overflow-hidden"
                   )}
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <h3 className="text-xl font-bold text-foreground mb-2">
-                    {specialist.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {specialist.description}
-                  </p>
+                  {/* Animated background gradient on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/0 via-primary/0 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
+                  
+                  {/* Content */}
+                  <div className="relative z-10">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                        {specialist.title}
+                      </h3>
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-base text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                      {specialist.description}
+                    </p>
+                  </div>
+
+                  {/* Shine effect on hover */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
               ))}
 
