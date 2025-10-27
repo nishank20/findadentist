@@ -4,9 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useSearchParams } from "react-router-dom";
-import { MapPin, Star, Search, SlidersHorizontal, ScanLine } from "lucide-react";
+import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck } from "lucide-react";
 import { useState } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const mockDentists = [
   {
@@ -19,6 +25,7 @@ const mockDentists = [
     address: "123 Main Street, Suite 200, Downtown Medical Center, Cityville, CA 90210",
     insurance: ["Delta Dental", "Aetna", "Cigna"],
     image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop",
+    networkProvider: true,
   },
   {
     id: 2,
@@ -30,6 +37,7 @@ const mockDentists = [
     address: "456 Oak Avenue, Plaza Building, Floor 3, Westside, CA 90211",
     insurance: ["UnitedHealthcare", "Delta Dental", "Humana"],
     image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop",
+    networkProvider: false,
   },
   {
     id: 3,
@@ -41,6 +49,43 @@ const mockDentists = [
     address: "789 Elm Street, Heritage Medical Complex, Suite 150, Eastside, CA 90212",
     insurance: ["Aetna", "MetLife", "Cigna"],
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop",
+    networkProvider: true,
+  },
+  {
+    id: 4,
+    name: "Dr. James Wilson, DDS",
+    specialty: "Pediatric Dentist",
+    rating: 4.7,
+    reviews: 98,
+    distance: "2.9 miles away",
+    address: "321 Pine Street, Medical Plaza, Suite 400, Northside, CA 90213",
+    insurance: ["Delta Dental", "UnitedHealthcare", "Cigna"],
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop",
+    networkProvider: false,
+  },
+  {
+    id: 5,
+    name: "Dr. Lisa Chen, DMD",
+    specialty: "Periodontist",
+    rating: 4.9,
+    reviews: 142,
+    distance: "3.5 miles away",
+    address: "567 Maple Drive, Healthcare Center, Floor 2, Southside, CA 90214",
+    insurance: ["Aetna", "MetLife", "Humana"],
+    image: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?w=400&h=400&fit=crop",
+    networkProvider: true,
+  },
+  {
+    id: 6,
+    name: "Dr. Robert Martinez, DDS",
+    specialty: "Oral Surgeon",
+    rating: 4.8,
+    reviews: 134,
+    distance: "4.2 miles away",
+    address: "890 Cedar Lane, Surgical Center, Suite 100, Westside, CA 90215",
+    insurance: ["Delta Dental", "UnitedHealthcare", "Aetna"],
+    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop",
+    networkProvider: false,
   },
 ];
 
@@ -131,9 +176,25 @@ export default function Results() {
                   {/* Content */}
                   <div className="flex-1 space-y-3">
                     <div>
-                      <h3 className="text-xl font-bold text-foreground mb-1">
-                        {dentist.name}
-                      </h3>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-xl font-bold text-foreground">
+                          {dentist.name}
+                        </h3>
+                        {dentist.networkProvider && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <BadgeCheck className="w-6 h-6 text-primary fill-primary/20" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-sm">
+                                  This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </div>
                       <p className="text-muted-foreground">{dentist.specialty}</p>
                     </div>
 
