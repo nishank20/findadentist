@@ -110,8 +110,9 @@ export default function Results() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <TooltipProvider>
+      <div className="min-h-screen bg-background">
+        <Header />
       
       {/* Search Hero Section */}
       <section className="bg-gradient-to-b from-primary/5 to-background border-b">
@@ -181,18 +182,16 @@ export default function Results() {
                           {dentist.name}
                         </h3>
                         {dentist.networkProvider && (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <BadgeCheck className="w-6 h-6 text-primary fill-primary/20" />
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-xs">
-                                <p className="text-sm">
-                                  This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <BadgeCheck className="w-6 h-6 text-primary fill-primary/20" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p className="text-sm">
+                                This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
                         )}
                       </div>
                       <p className="text-muted-foreground">{dentist.specialty}</p>
@@ -273,5 +272,6 @@ export default function Results() {
         dentistName={selectedDentist}
       />
     </div>
+    </TooltipProvider>
   );
 }
