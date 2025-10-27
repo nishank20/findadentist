@@ -96,6 +96,13 @@ export default function Results() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<string>("");
 
+  // Sort dentists to show network providers first
+  const sortedDentists = [...mockDentists].sort((a, b) => {
+    if (a.networkProvider && !b.networkProvider) return -1;
+    if (!a.networkProvider && b.networkProvider) return 1;
+    return 0;
+  });
+
   const toggleReviews = (dentistId: number) => {
     setExpandedReviews((prev) =>
       prev.includes(dentistId)
@@ -162,7 +169,7 @@ export default function Results() {
           </div>
 
           <div className="space-y-6">
-            {mockDentists.map((dentist) => (
+            {sortedDentists.map((dentist) => (
               <Card key={dentist.id} className="p-6 border-border/50 hover:shadow-lg transition-all">
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Profile Image */}
