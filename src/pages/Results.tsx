@@ -99,15 +99,6 @@ export default function Results() {
                   Show All
                 </Button>
               </div>
-              
-              {/* SmartScan Button */}
-              <Button 
-                variant="hero" 
-                className="w-full sm:w-auto mx-auto h-14 px-10 text-base font-semibold shadow-lg hover:shadow-xl transition-all animate-fade-in rounded-full"
-              >
-                <ScanLine className="w-5 h-5 mr-2" />
-                SmartScan - Find Best Match
-              </Button>
             </div>
           </div>
         </div>
