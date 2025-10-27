@@ -3,8 +3,21 @@ import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarIcon, Clock, Shield } from "lucide-react";
-import { format } from "date-fns";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { CalendarIcon, Clock, Shield, User } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+const userInfoSchema = z.object({
+  firstName: z.string().trim().min(1, "First name is required").max(100),
+  lastName: z.string().trim().min(1, "Last name is required").max(100),
+  mobile: z.string().trim().max(20),
+  email: z.string().trim().max(255),
+}).refine((data) => data.mobile || data.email, {
+  message: "Either mobile number or email is required",
+  path: ["mobile"],
+});
 
 interface BookingDialogProps {
   open: boolean;
@@ -33,102 +46,287 @@ const insuranceOptions = [
 ];
 
 export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialogProps) {
+  const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<string>();
   const [selectedInsurance, setSelectedInsurance] = useState<string>("- no insurance -");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { toast } = useToast();
 
-  const handleBooking = () => {
-    if (selectedDate && selectedTime) {
-      // Handle booking logic here
-      console.log("Booking:", { date: selectedDate, time: selectedTime, insurance: selectedInsurance });
-      onOpenChange(false);
+  const handleNext = () => {
+    if (step === 1) {
+      setStep(2);
+    } else if (step === 2 && selectedDate && selectedTime) {
+      setStep(3);
     }
   };
 
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
+  const handleBooking = () => {
+    // Validate user info
+    const result = userInfoSchema.safeParse({
+      firstName,
+      lastName,
+      mobile,
+      email,
+    });
+
+    if (!result.success) {
+      const newErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          newErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(newErrors);
+      return;
+    }
+
+    // Handle booking logic here
+    toast({
+      title: "Appointment Booked!",
+      description: `Your appointment with ${dentistName} has been scheduled.`,
+    });
+    
+    // Reset form
+    setStep(1);
+    setSelectedDate(undefined);
+    setSelectedTime(undefined);
+    setFirstName("");
+    setLastName("");
+    setMobile("");
+    setEmail("");
+    setErrors({});
+    onOpenChange(false);
+  };
+
+  const resetAndClose = () => {
+    setStep(1);
+    setErrors({});
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={resetAndClose}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">
-            Choose your appointment time with {dentistName}
+            {step === 1 && "Select Insurance"}
+            {step === 2 && `Choose your appointment time with ${dentistName}`}
+            {step === 3 && "Enter Your Information"}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 py-6">
-          {/* Insurance Selection */}
-          <div>
-            <div className="flex items-center gap-2 mb-4 text-lg font-medium">
-              <Shield className="w-5 h-5 text-primary" />
-              <span>Insurance</span>
-            </div>
-            <Select value={selectedInsurance} onValueChange={setSelectedInsurance}>
-              <SelectTrigger className="h-12 text-base">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-card">
-                {insuranceOptions.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Date Selection */}
+          {/* Step 1: Insurance Selection */}
+          {step === 1 && (
             <div>
               <div className="flex items-center gap-2 mb-4 text-lg font-medium">
-                <CalendarIcon className="w-5 h-5 text-primary" />
-                <span>Select Date</span>
+                <Shield className="w-5 h-5 text-primary" />
+                <span>Insurance</span>
               </div>
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                className="rounded-lg border bg-card pointer-events-auto"
-                disabled={(date) => date < new Date()}
-              />
+              <Select value={selectedInsurance} onValueChange={setSelectedInsurance}>
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-card">
+                  {insuranceOptions.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-muted-foreground mt-2">
+                Selected: {selectedInsurance}
+              </p>
             </div>
+          )}
 
-            {/* Time Selection */}
-            <div>
-              <div className="flex items-center gap-2 mb-4 text-lg font-medium">
-                <Clock className="w-5 h-5 text-primary" />
-                <span>Select Time</span>
+          {/* Step 2: Date and Time Selection */}
+          {step === 2 && (
+            <>
+              <div className="mb-4 p-3 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium">Insurance:</span> {selectedInsurance}
+                </p>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                {timeSlots.map((time) => (
-                  <Button
-                    key={time}
-                    variant={selectedTime === time ? "default" : "outline"}
-                    className="h-14 text-base"
-                    onClick={() => setSelectedTime(time)}
-                  >
-                    {time}
-                  </Button>
-                ))}
+
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Date Selection */}
+                <div>
+                  <div className="flex items-center gap-2 mb-4 text-lg font-medium">
+                    <CalendarIcon className="w-5 h-5 text-primary" />
+                    <span>Select Date</span>
+                  </div>
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    className="rounded-lg border bg-card pointer-events-auto"
+                    disabled={(date) => date < new Date()}
+                  />
+                </div>
+
+                {/* Time Selection */}
+                <div>
+                  <div className="flex items-center gap-2 mb-4 text-lg font-medium">
+                    <Clock className="w-5 h-5 text-primary" />
+                    <span>Select Time</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {timeSlots.map((time) => (
+                      <Button
+                        key={time}
+                        variant={selectedTime === time ? "default" : "outline"}
+                        className="h-14 text-base"
+                        onClick={() => setSelectedTime(time)}
+                      >
+                        {time}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Step 3: Personal Information */}
+          {step === 3 && (
+            <div className="space-y-6">
+              <div className="mb-4 p-3 bg-muted rounded-lg space-y-1">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium">Insurance:</span> {selectedInsurance}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium">Date & Time:</span>{" "}
+                  {selectedDate && selectedTime ? `${selectedDate.toLocaleDateString()} at ${selectedTime}` : ""}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 mb-4 text-lg font-medium">
+                <User className="w-5 h-5 text-primary" />
+                <span>Your Information</span>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">
+                    First Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="firstName"
+                    value={firstName}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                      setErrors((prev) => ({ ...prev, firstName: "" }));
+                    }}
+                    placeholder="Enter first name"
+                    className={errors.firstName ? "border-destructive" : ""}
+                  />
+                  {errors.firstName && (
+                    <p className="text-sm text-destructive">{errors.firstName}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">
+                    Last Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="lastName"
+                    value={lastName}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                      setErrors((prev) => ({ ...prev, lastName: "" }));
+                    }}
+                    placeholder="Enter last name"
+                    className={errors.lastName ? "border-destructive" : ""}
+                  />
+                  {errors.lastName && (
+                    <p className="text-sm text-destructive">{errors.lastName}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="mobile">
+                  Mobile Number <span className="text-muted-foreground text-sm">(required if no email)</span>
+                </Label>
+                <Input
+                  id="mobile"
+                  type="tel"
+                  value={mobile}
+                  onChange={(e) => {
+                    setMobile(e.target.value);
+                    setErrors((prev) => ({ ...prev, mobile: "" }));
+                  }}
+                  placeholder="Enter mobile number"
+                  className={errors.mobile ? "border-destructive" : ""}
+                />
+                {errors.mobile && (
+                  <p className="text-sm text-destructive">{errors.mobile}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">
+                  Email <span className="text-muted-foreground text-sm">(required if no mobile)</span>
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrors((prev) => ({ ...prev, email: "" }));
+                  }}
+                  placeholder="Enter email address"
+                  className={errors.email ? "border-destructive" : ""}
+                />
+                {errors.email && (
+                  <p className="text-sm text-destructive">{errors.email}</p>
+                )}
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-4 border-t">
+        <div className="flex justify-between gap-3 pt-4 border-t">
           <Button
             variant="outline"
-            onClick={() => onOpenChange(false)}
+            onClick={step === 1 ? resetAndClose : handleBack}
             className="px-8"
           >
-            Cancel
+            {step === 1 ? "Cancel" : "Back"}
           </Button>
-          <Button
-            onClick={handleBooking}
-            disabled={!selectedDate || !selectedTime}
-            className="px-8"
-          >
-            Book Appointment
-          </Button>
+          
+          {step < 3 ? (
+            <Button
+              onClick={handleNext}
+              disabled={step === 2 && (!selectedDate || !selectedTime)}
+              className="px-8"
+            >
+              Next
+            </Button>
+          ) : (
+            <Button
+              onClick={handleBooking}
+              className="px-8"
+            >
+              Book Appointment
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>
