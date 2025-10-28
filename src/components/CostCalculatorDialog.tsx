@@ -202,6 +202,14 @@ export const CostCalculatorDialog = ({
                 </Card>
               );
             })}
+            
+            <div className="mt-6 p-4 bg-secondary/20 rounded-lg border border-secondary/30">
+              <h4 className="font-semibold text-secondary mb-2">2nd Opinion</h4>
+              <p className="text-sm text-muted-foreground">
+                If you are interested in getting a 2nd Opinion from a licensed dentist{" "}
+                <a href="#" className="text-secondary hover:underline font-medium">click here</a>
+              </p>
+            </div>
           </div>
         )}
       </DialogContent>
