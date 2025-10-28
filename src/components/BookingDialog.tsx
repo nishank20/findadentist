@@ -93,8 +93,8 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
 
     // Handle booking logic here
     toast({
-      title: "Request Received!",
-      description: "We received your request. We will get back to you shortly.",
+      title: "Request Submitted Successfully",
+      description: "Your request has been successfully submitted. The dental office will review your request and reach out to confirm your appointment details. If you do not hear from the office within a reasonable time, please contact them directly at [Office Phone Number] or [Office Email] for assistance.",
     });
     
     // Reset form
