@@ -12,8 +12,11 @@ import { z } from "zod";
 const userInfoSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(100),
   lastName: z.string().trim().min(1, "Last name is required").max(100),
-  mobile: z.string().trim().max(20).optional(),
   email: z.string().trim().min(1, "Email is required").email("Invalid email address").max(255),
+  dateOfBirth: z.date({
+    required_error: "Date of birth is required",
+  }),
+  mobile: z.string().trim().max(20).optional(),
 });
 
 interface BookingDialogProps {
@@ -49,8 +52,9 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
   const [selectedInsurance, setSelectedInsurance] = useState<string>("- no insurance -");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState<Date>();
+  const [mobile, setMobile] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
@@ -73,8 +77,9 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
     const result = userInfoSchema.safeParse({
       firstName,
       lastName,
-      mobile,
       email,
+      dateOfBirth,
+      mobile,
     });
 
     if (!result.success) {
@@ -100,8 +105,9 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
     setSelectedTime(undefined);
     setFirstName("");
     setLastName("");
-    setMobile("");
     setEmail("");
+    setDateOfBirth(undefined);
+    setMobile("");
     setErrors({});
     onOpenChange(false);
   };
@@ -256,26 +262,6 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="mobile">
-                  Mobile Number
-                </Label>
-                <Input
-                  id="mobile"
-                  type="tel"
-                  value={mobile}
-                  onChange={(e) => {
-                    setMobile(e.target.value);
-                    setErrors((prev) => ({ ...prev, mobile: "" }));
-                  }}
-                  placeholder="Enter mobile number"
-                  className={errors.mobile ? "border-destructive" : ""}
-                />
-                {errors.mobile && (
-                  <p className="text-sm text-destructive">{errors.mobile}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="email">
                   Email <span className="text-destructive">*</span>
                 </Label>
@@ -292,6 +278,47 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
                 />
                 {errors.email && (
                   <p className="text-sm text-destructive">{errors.email}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="dateOfBirth">
+                  Date of Birth <span className="text-destructive">*</span>
+                </Label>
+                <div>
+                  <Calendar
+                    mode="single"
+                    selected={dateOfBirth}
+                    onSelect={(date) => {
+                      setDateOfBirth(date);
+                      setErrors((prev) => ({ ...prev, dateOfBirth: "" }));
+                    }}
+                    disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                    className="rounded-lg border bg-card pointer-events-auto"
+                  />
+                  {errors.dateOfBirth && (
+                    <p className="text-sm text-destructive">{errors.dateOfBirth}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="mobile">
+                  Mobile Number
+                </Label>
+                <Input
+                  id="mobile"
+                  type="tel"
+                  value={mobile}
+                  onChange={(e) => {
+                    setMobile(e.target.value);
+                    setErrors((prev) => ({ ...prev, mobile: "" }));
+                  }}
+                  placeholder="Enter mobile number"
+                  className={errors.mobile ? "border-destructive" : ""}
+                />
+                {errors.mobile && (
+                  <p className="text-sm text-destructive">{errors.mobile}</p>
                 )}
               </div>
             </div>
