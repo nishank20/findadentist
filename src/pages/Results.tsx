@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useSearchParams } from "react-router-dom";
-import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, Loader2, Navigation } from "lucide-react";
-import { useState, useEffect } from "react";
+import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck } from "lucide-react";
+import { useState } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
 import {
   Tooltip,
@@ -13,7 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useToast } from "@/hooks/use-toast";
 
 const mockDentists = [
   {
@@ -90,132 +89,17 @@ const mockDentists = [
   },
 ];
 
-type Dentist = {
-  id: number;
-  name: string;
-  specialty: string;
-  rating: number;
-  reviews: number;
-  distance: string;
-  address: string;
-  insurance: string[];
-  image: string;
-  networkProvider: boolean;
-  calculatedDistance?: number;
-  distanceText?: string;
-};
-
 export default function Results() {
   const [searchParams] = useSearchParams();
   const location = searchParams.get("location") || "your area";
   const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<string>("");
-  const [userLocation, setUserLocation] = useState<GeolocationCoordinates | null>(null);
-  const [loadingLocation, setLoadingLocation] = useState(false);
-  const [dentistsWithDistance, setDentistsWithDistance] = useState<Dentist[]>(mockDentists);
-  const [googleMapsApiKey, setGoogleMapsApiKey] = useState("");
-  const [showApiInput, setShowApiInput] = useState(true);
-  const { toast } = useToast();
 
-  // Get user's current location
-  const getUserLocation = () => {
-    setLoadingLocation(true);
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation(position.coords);
-          setLoadingLocation(false);
-          toast({
-            title: "Location Found",
-            description: "Calculating distances to dentists...",
-          });
-        },
-        (error) => {
-          setLoadingLocation(false);
-          toast({
-            title: "Location Error",
-            description: "Could not get your location. Please allow location access.",
-            variant: "destructive",
-          });
-          console.error("Geolocation error:", error);
-        }
-      );
-    } else {
-      setLoadingLocation(false);
-      toast({
-        title: "Not Supported",
-        description: "Geolocation is not supported by your browser.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Calculate distances using Google Maps Distance Matrix API
-  const calculateDistances = async () => {
-    if (!userLocation || !googleMapsApiKey) return;
-
-    const origin = `${userLocation.latitude},${userLocation.longitude}`;
-    const destinations = mockDentists.map(d => encodeURIComponent(d.address)).join('|');
-
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destinations}&units=imperial&key=${googleMapsApiKey}`,
-        { mode: 'cors' }
-      );
-
-      if (!response.ok) {
-        throw new Error('Distance calculation failed');
-      }
-
-      const data = await response.json();
-
-      if (data.status === 'OK') {
-        const updatedDentists = mockDentists.map((dentist, index) => {
-          const element = data.rows[0]?.elements[index];
-          if (element?.status === 'OK') {
-            return {
-              ...dentist,
-              calculatedDistance: element.distance.value, // in meters
-              distanceText: element.distance.text,
-            };
-          }
-          return dentist;
-        });
-
-        setDentistsWithDistance(updatedDentists);
-        toast({
-          title: "Distances Calculated",
-          description: "Showing real distances from your location.",
-        });
-      }
-    } catch (error) {
-      console.error("Error calculating distances:", error);
-      toast({
-        title: "Calculation Error",
-        description: "Could not calculate distances. Please check your API key.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Recalculate when location or API key changes
-  useEffect(() => {
-    if (userLocation && googleMapsApiKey) {
-      calculateDistances();
-    }
-  }, [userLocation, googleMapsApiKey]);
-
-  // Sort dentists by distance and network status
-  const sortedDentists = [...dentistsWithDistance].sort((a, b) => {
-    // First prioritize network providers
+  // Sort dentists to show network providers first
+  const sortedDentists = [...mockDentists].sort((a, b) => {
     if (a.networkProvider && !b.networkProvider) return -1;
     if (!a.networkProvider && b.networkProvider) return 1;
-    
-    // Then sort by calculated distance if available
-    if (a.calculatedDistance && b.calculatedDistance) {
-      return a.calculatedDistance - b.calculatedDistance;
-    }
     return 0;
   });
 
@@ -239,56 +123,6 @@ export default function Results() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
-          {/* Google Maps API Key Input */}
-          {showApiInput && (
-            <Card className="p-4 mb-6 border-primary/20 bg-primary/5">
-              <div className="flex flex-col gap-3">
-                <div className="flex items-start gap-2">
-                  <MapPin className="w-5 h-5 text-primary mt-1" />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1">
-                      Enable Distance Calculation
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Enter your Google Maps API key to calculate real distances from your location.
-                      Get your key at <a href="https://console.cloud.google.com/google/maps-apis" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Cloud Console</a>
-                    </p>
-                    <div className="flex gap-2">
-                      <Input
-                        type="text"
-                        placeholder="Enter Google Maps API Key"
-                        value={googleMapsApiKey}
-                        onChange={(e) => setGoogleMapsApiKey(e.target.value)}
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={() => {
-                          if (googleMapsApiKey) {
-                            getUserLocation();
-                            setShowApiInput(false);
-                          }
-                        }}
-                        disabled={!googleMapsApiKey || loadingLocation}
-                      >
-                        {loadingLocation ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Loading...
-                          </>
-                        ) : (
-                          <>
-                            <Navigation className="w-4 h-4 mr-2" />
-                            Get Location
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          )}
-
           <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h2 className="text-3xl font-bold mb-2 text-foreground">
@@ -296,28 +130,15 @@ export default function Results() {
               </h2>
               <p className="text-muted-foreground">
                 Showing {mockDentists.length} results
-                {userLocation && " • Sorted by distance"}
               </p>
             </div>
-            <div className="flex gap-2">
-              {!showApiInput && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowApiInput(true)}
-                >
-                  <MapPin className="w-4 h-4 mr-2" />
-                  Update Location
-                </Button>
-              )}
-              <Button 
-                variant="outline"
-                onClick={() => window.location.href = '/dentist-enrollment'}
-                className="whitespace-nowrap"
-              >
-                I am a dentist - Sign me in
-              </Button>
-            </div>
+            <Button 
+              variant="outline"
+              onClick={() => window.location.href = '/dentist-enrollment'}
+              className="whitespace-nowrap"
+            >
+              I am a dentist - Sign me in
+            </Button>
           </div>
 
           <div className="space-y-6">
@@ -368,14 +189,7 @@ export default function Results() {
                       </div>
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <MapPin className="w-4 h-4" />
-                        <span>
-                          {dentist.distanceText || dentist.distance}
-                          {dentist.distanceText && (
-                            <span className="ml-1 text-primary text-xs">
-                              (calculated)
-                            </span>
-                          )}
-                        </span>
+                        <span>{dentist.distance}</span>
                       </div>
                     </div>
 
