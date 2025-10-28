@@ -12,11 +12,8 @@ import { z } from "zod";
 const userInfoSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(100),
   lastName: z.string().trim().min(1, "Last name is required").max(100),
-  mobile: z.string().trim().max(20),
-  email: z.string().trim().max(255),
-}).refine((data) => data.mobile || data.email, {
-  message: "Either mobile number or email is required",
-  path: ["mobile"],
+  mobile: z.string().trim().max(20).optional(),
+  email: z.string().trim().min(1, "Email is required").email("Invalid email address").max(255),
 });
 
 interface BookingDialogProps {
@@ -260,7 +257,7 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
 
               <div className="space-y-2">
                 <Label htmlFor="mobile">
-                  Mobile Number <span className="text-muted-foreground text-sm">(required if no email)</span>
+                  Mobile Number
                 </Label>
                 <Input
                   id="mobile"
@@ -280,7 +277,7 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
 
               <div className="space-y-2">
                 <Label htmlFor="email">
-                  Email <span className="text-muted-foreground text-sm">(required if no mobile)</span>
+                  Email <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="email"
