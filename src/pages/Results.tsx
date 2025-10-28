@@ -120,42 +120,6 @@ export default function Results() {
     <TooltipProvider>
       <div className="min-h-screen bg-background">
         <Header />
-      
-      {/* Search Hero Section */}
-      <section className="bg-gradient-to-b from-primary/5 to-background border-b">
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-              Find Your Perfect Dentist
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Connect with trusted dental professionals in your area. Book appointments
-              easily and get the care you deserve.
-            </p>
-            
-            <div className="flex flex-col gap-4 max-w-3xl mx-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                  <Input
-                    placeholder="Search by city, ZIP code, or use my location"
-                    className="pl-10 h-12"
-                    defaultValue={location}
-                  />
-                </div>
-                <Button variant="outline" className="h-12 px-6">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  Use My Location
-                </Button>
-                <Button variant="outline" className="h-12 px-4">
-                  <SlidersHorizontal className="w-4 h-4 mr-2" />
-                  Filters
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
