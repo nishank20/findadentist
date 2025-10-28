@@ -8,6 +8,7 @@ import CareType from "./pages/CareType";
 import IssueType from "./pages/IssueType";
 import Results from "./pages/Results";
 import Questionnaire from "./pages/Questionnaire";
+import DentistEnrollment from "./pages/DentistEnrollment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/issue-type" element={<IssueType />} />
           <Route path="/questionnaire" element={<Questionnaire />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/dentist-enrollment" element={<DentistEnrollment />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

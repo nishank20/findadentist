@@ -134,7 +134,7 @@ export default function Results() {
             </div>
             <Button 
               variant="outline"
-              onClick={() => window.location.href = 'https://member.dental.com/sign-up'}
+              onClick={() => window.location.href = '/dentist-enrollment'}
               className="whitespace-nowrap"
             >
               I am a dentist - Sign me in
