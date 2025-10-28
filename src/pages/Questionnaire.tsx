@@ -98,20 +98,11 @@ export default function Questionnaire() {
         <div className="max-w-5xl mx-auto">
           {/* Header Section */}
           <div className="mb-8 animate-fade-in">
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-                {step === "care" 
-                  ? "What Type of Care are You Looking For?"
-                  : "What Type of Specialist are You Looking For?"}
-              </h1>
-              
-              {/* Emergency Button */}
-              <Button 
-                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white shadow-lg px-6 py-3 text-sm font-semibold rounded-full transition-all duration-300"
-              >
-                Immediate Online Emergency Visit
-              </Button>
-            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              {step === "care" 
+                ? "What Type of Care are You Looking For?"
+                : "What Type of Specialist are You Looking For?"}
+            </h1>
           </div>
 
           {/* Care Type Cards */}
