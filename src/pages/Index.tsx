@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { FeatureCard } from "@/components/FeatureCard";
 import { LocationSearch } from "@/components/LocationSearch";
 import { CostCalculatorDialog } from "@/components/CostCalculatorDialog";
+import { InsuranceCheckDialog } from "@/components/InsuranceCheckDialog";
 import { MessageSquare, Shield, Calculator } from "lucide-react";
 
 const features = [
@@ -25,6 +26,7 @@ const features = [
 
 export default function Index() {
   const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
+  const [insuranceCheckOpen, setInsuranceCheckOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,6 +34,10 @@ export default function Index() {
       <CostCalculatorDialog 
         open={costCalculatorOpen} 
         onOpenChange={setCostCalculatorOpen}
+      />
+      <InsuranceCheckDialog 
+        open={insuranceCheckOpen} 
+        onOpenChange={setInsuranceCheckOpen}
       />
       
       {/* Hero Section */}
@@ -59,7 +65,13 @@ export default function Index() {
                   icon={feature.icon}
                   title={feature.title}
                   description={feature.description}
-                  onClick={feature.title === "Cost Calculator" ? () => setCostCalculatorOpen(true) : undefined}
+                  onClick={
+                    feature.title === "Cost Calculator" 
+                      ? () => setCostCalculatorOpen(true) 
+                      : feature.title === "Check Your Insurance"
+                      ? () => setInsuranceCheckOpen(true)
+                      : undefined
+                  }
                 />
               ))}
             </div>
