@@ -13,12 +13,16 @@ export const Header = () => {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link 
-              to="/" 
-              className="text-secondary hover:text-secondary/80 transition-colors font-medium"
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              className="rounded-full"
+              asChild
             >
-              Find a Dentist
-            </Link>
+              <a href="https://member.dental.com/sign-up">
+                Immediate Online Emergency Visit
+              </a>
+            </Button>
             <a 
               href="https://member.dental.com/sign-up" 
               className="text-muted-foreground hover:text-foreground transition-colors font-medium"
