@@ -3,9 +3,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { useSearchParams } from "react-router-dom";
-import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck } from "lucide-react";
-import { useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
 import {
   Tooltip,
@@ -91,7 +91,12 @@ const mockDentists = [
 
 export default function Results() {
   const [searchParams] = useSearchParams();
-  const location = searchParams.get("location") || "your area";
+  const navigate = useNavigate();
+  const [showFilters, setShowFilters] = useState(false);
+  const [location, setLocation] = useState(searchParams.get("location") || "");
+  const careType = searchParams.get("careType") || "";
+  const specialist = searchParams.get("specialist") || "";
+  const issueType = searchParams.get("issueType") || "";
   const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<string>("");
@@ -116,6 +121,73 @@ export default function Results() {
     setBookingOpen(true);
   };
 
+  const handleUpdateSearch = () => {
+    const params = new URLSearchParams(searchParams);
+    if (location) params.set("location", location);
+    navigate(`/results?${params.toString()}`);
+    setShowFilters(false);
+  };
+
+  const handleStartNewSearch = () => {
+    navigate("/");
+  };
+
+  const locationSuggestions = [
+    { city: "New York", state: "NY", zip: "10001" },
+    { city: "Los Angeles", state: "CA", zip: "90001" },
+    { city: "Chicago", state: "IL", zip: "60601" },
+    { city: "Houston", state: "TX", zip: "77001" },
+    { city: "Phoenix", state: "AZ", zip: "85001" },
+    { city: "Philadelphia", state: "PA", zip: "19101" },
+    { city: "San Antonio", state: "TX", zip: "78201" },
+    { city: "San Diego", state: "CA", zip: "92101" },
+    { city: "Dallas", state: "TX", zip: "75201" },
+    { city: "San Jose", state: "CA", zip: "95101" },
+  ];
+
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+  const [filteredLocationSuggestions, setFilteredLocationSuggestions] = useState(locationSuggestions);
+  const locationInputRef = useRef<HTMLInputElement>(null);
+  const locationDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target as Node) &&
+        locationInputRef.current &&
+        !locationInputRef.current.contains(event.target as Node)
+      ) {
+        setShowLocationSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLocationInputChange = (value: string) => {
+    setLocation(value);
+    if (value.trim()) {
+      const filtered = locationSuggestions.filter(
+        (loc) =>
+          loc.city.toLowerCase().includes(value.toLowerCase()) ||
+          loc.state.toLowerCase().includes(value.toLowerCase()) ||
+          loc.zip.includes(value)
+      );
+      setFilteredLocationSuggestions(filtered);
+      setShowLocationSuggestions(true);
+    } else {
+      setFilteredLocationSuggestions(locationSuggestions);
+      setShowLocationSuggestions(false);
+    }
+  };
+
+  const handleSelectLocationSuggestion = (suggestion: typeof locationSuggestions[0]) => {
+    setLocation(`${suggestion.city}, ${suggestion.state} ${suggestion.zip}`);
+    setShowLocationSuggestions(false);
+  };
+
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background">
@@ -123,6 +195,103 @@ export default function Results() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
+          {/* Search Criteria Summary */}
+          <Card className="mb-6 p-6 border-border/50">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-foreground">Your Search</h3>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  {showFilters ? "Hide Filters" : "Refine Search"}
+                </Button>
+              </div>
+
+              {/* Current Search Parameters */}
+              <div className="flex flex-wrap gap-3">
+                {location && (
+                  <Badge variant="secondary" className="text-sm py-2 px-3">
+                    <MapPin className="w-3 h-3 mr-1" />
+                    {location}
+                  </Badge>
+                )}
+                {careType && (
+                  <Badge variant="secondary" className="text-sm py-2 px-3">
+                    Care: {careType.charAt(0).toUpperCase() + careType.slice(1)}
+                  </Badge>
+                )}
+                {specialist && (
+                  <Badge variant="secondary" className="text-sm py-2 px-3">
+                    Specialist: {specialist.charAt(0).toUpperCase() + specialist.slice(1)}
+                  </Badge>
+                )}
+                {issueType && (
+                  <Badge variant="secondary" className="text-sm py-2 px-3">
+                    Issue: {issueType.charAt(0).toUpperCase() + issueType.slice(1)}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Filter Section */}
+              {showFilters && (
+                <div className="pt-4 border-t border-border space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Location</label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                      <Input
+                        ref={locationInputRef}
+                        type="text"
+                        placeholder="Enter city, state, or ZIP code"
+                        value={location}
+                        onChange={(e) => handleLocationInputChange(e.target.value)}
+                        onFocus={() => setShowLocationSuggestions(true)}
+                        className="pl-10"
+                      />
+                      {showLocationSuggestions && filteredLocationSuggestions.length > 0 && (
+                        <div
+                          ref={locationDropdownRef}
+                          className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg z-[100] max-h-48 overflow-y-auto"
+                        >
+                          {filteredLocationSuggestions.map((suggestion, index) => (
+                            <button
+                              key={index}
+                              onClick={() => handleSelectLocationSuggestion(suggestion)}
+                              className="w-full px-4 py-2 text-left hover:bg-accent transition-colors flex items-center gap-2 border-b border-border last:border-b-0"
+                            >
+                              <MapPin className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                              <div className="flex-1">
+                                <span className="font-medium text-foreground">
+                                  {suggestion.city}, {suggestion.state}
+                                </span>
+                                <span className="text-sm text-muted-foreground ml-2">
+                                  {suggestion.zip}
+                                </span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button onClick={handleUpdateSearch} className="flex-1">
+                      <Search className="w-4 h-4 mr-2" />
+                      Update Search
+                    </Button>
+                    <Button variant="outline" onClick={handleStartNewSearch}>
+                      Start New Search
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+
           <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h2 className="text-3xl font-bold mb-2 text-foreground">
