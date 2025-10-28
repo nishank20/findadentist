@@ -34,7 +34,7 @@ export const Header = () => {
               className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-2"
             >
               <HelpCircle className="w-4 h-4" />
-              Support
+              Contact us
             </Link>
             <Button variant="hero" size="sm" className="gap-2" asChild>
               <a href="https://member.dental.com/sign-up">
