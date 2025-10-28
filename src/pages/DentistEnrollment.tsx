@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
 import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const enrollmentSchema = z.object({
   practiceName: z.string().trim().min(1, "Practice name is required").max(200),
@@ -151,12 +156,13 @@ export default function DentistEnrollment() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <main className="container max-w-3xl mx-auto px-4 py-12">
-          <Card className="p-8 text-center">
-            <h1 className="text-3xl font-bold mb-4">Thank You!</h1>
-            <div className="space-y-4 text-muted-foreground">
+          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+            <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Thank You!
+            </h1>
+            <div className="space-y-4 text-gray-600">
               <p>
                 We'll review your submission and notify you once your listing is live.
               </p>
@@ -166,147 +172,179 @@ export default function DentistEnrollment() {
               </p>
               <Button
                 onClick={() => navigate("/")}
-                className="mt-6"
+                className="mt-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full px-12 py-6 text-lg"
               >
                 Return to Home
               </Button>
               <div className="mt-4">
-                <a href="#" className="text-primary hover:underline">
+                <a href="#" className="text-blue-600 hover:underline">
                   Click here to learn more about Dental.com Office
                 </a>
               </div>
             </div>
-          </Card>
+          </div>
         </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container max-w-4xl mx-auto px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <main className="container max-w-5xl mx-auto px-4 py-8">
+        {/* Progress Bar */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Dental.com Dentist Match – Enrollment Form</h1>
-          <p className="text-muted-foreground">
-            Complete this form to list your practice and connect with patients
-          </p>
+          <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-full w-1/3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full" />
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Required Information Section */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Required Information</h2>
-            <p className="text-sm text-muted-foreground mb-6">
-              These fields ensure the office can be accurately listed and contacted.
+        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Enrolling your practice is quick and easy
+            </h1>
+            <p className="text-gray-600 mt-4 max-w-3xl mx-auto">
+              Complete this form to list your practice and connect with patients seeking dental care.
+              All fields marked with an asterisk (*) are required.
             </p>
+          </div>
 
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Required Information Section */}
             <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="practiceName">
-                  Practice Name <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="practiceName"
-                  value={practiceName}
-                  onChange={(e) => {
-                    setPracticeName(e.target.value);
-                    setErrors((prev) => ({ ...prev, practiceName: "" }));
-                  }}
-                  placeholder="Enter practice name"
-                  className={errors.practiceName ? "border-destructive" : ""}
-                />
-                {errors.practiceName && (
-                  <p className="text-sm text-destructive">{errors.practiceName}</p>
-                )}
-              </div>
+              <p className="text-sm text-blue-600 mb-6">* All fields are required</p>
 
-              <div className="space-y-2">
-                <Label htmlFor="dentistName">
-                  Primary Dentist Name <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="dentistName"
-                  value={dentistName}
-                  onChange={(e) => {
-                    setDentistName(e.target.value);
-                    setErrors((prev) => ({ ...prev, dentistName: "" }));
-                  }}
-                  placeholder="Enter dentist name"
-                  className={errors.dentistName ? "border-destructive" : ""}
-                />
-                {errors.dentistName && (
-                  <p className="text-sm text-destructive">{errors.dentistName}</p>
-                )}
-              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="practiceName" className="text-gray-700 font-medium">
+                    Practice Name*
+                  </Label>
+                  <Input
+                    id="practiceName"
+                    value={practiceName}
+                    onChange={(e) => {
+                      setPracticeName(e.target.value);
+                      setErrors((prev) => ({ ...prev, practiceName: "" }));
+                    }}
+                    placeholder="Practice name"
+                    className={errors.practiceName ? "border-red-500" : "border-gray-300"}
+                  />
+                  {errors.practiceName && (
+                    <p className="text-sm text-red-500">{errors.practiceName}</p>
+                  )}
+                </div>
 
-              <div className="space-y-4">
-                <Label>
-                  Practice Address <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  placeholder="Street Address"
-                  value={street}
-                  onChange={(e) => {
-                    setStreet(e.target.value);
-                    setErrors((prev) => ({ ...prev, street: "" }));
-                  }}
-                  className={errors.street ? "border-destructive" : ""}
-                />
-                {errors.street && (
-                  <p className="text-sm text-destructive">{errors.street}</p>
-                )}
-                
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <Input
-                      placeholder="City"
-                      value={city}
-                      onChange={(e) => {
-                        setCity(e.target.value);
-                        setErrors((prev) => ({ ...prev, city: "" }));
-                      }}
-                      className={errors.city ? "border-destructive" : ""}
-                    />
-                    {errors.city && (
-                      <p className="text-sm text-destructive">{errors.city}</p>
-                    )}
-                  </div>
-                  <div>
-                    <Input
-                      placeholder="State"
-                      value={state}
-                      onChange={(e) => {
-                        setState(e.target.value);
-                        setErrors((prev) => ({ ...prev, state: "" }));
-                      }}
-                      className={errors.state ? "border-destructive" : ""}
-                    />
-                    {errors.state && (
-                      <p className="text-sm text-destructive">{errors.state}</p>
-                    )}
-                  </div>
-                  <div>
-                    <Input
-                      placeholder="ZIP Code"
-                      value={zip}
-                      onChange={(e) => {
-                        setZip(e.target.value);
-                        setErrors((prev) => ({ ...prev, zip: "" }));
-                      }}
-                      className={errors.zip ? "border-destructive" : ""}
-                    />
-                    {errors.zip && (
-                      <p className="text-sm text-destructive">{errors.zip}</p>
-                    )}
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dentistName" className="text-gray-700 font-medium">
+                    Primary Dentist Name*
+                  </Label>
+                  <Input
+                    id="dentistName"
+                    value={dentistName}
+                    onChange={(e) => {
+                      setDentistName(e.target.value);
+                      setErrors((prev) => ({ ...prev, dentistName: "" }));
+                    }}
+                    placeholder="Dentist name"
+                    className={errors.dentistName ? "border-red-500" : "border-gray-300"}
+                  />
+                  {errors.dentistName && (
+                    <p className="text-sm text-red-500">{errors.dentistName}</p>
+                  )}
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="phone">
-                    Phone Number <span className="text-destructive">*</span>
+                  <Label htmlFor="street" className="text-gray-700 font-medium">
+                    Street Address*
+                  </Label>
+                  <Input
+                    id="street"
+                    placeholder="Street Address"
+                    value={street}
+                    onChange={(e) => {
+                      setStreet(e.target.value);
+                      setErrors((prev) => ({ ...prev, street: "" }));
+                    }}
+                    className={errors.street ? "border-red-500" : "border-gray-300"}
+                  />
+                  {errors.street && (
+                    <p className="text-sm text-red-500">{errors.street}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="city" className="text-gray-700 font-medium">
+                    City*
+                  </Label>
+                  <Input
+                    id="city"
+                    placeholder="City"
+                    value={city}
+                    onChange={(e) => {
+                      setCity(e.target.value);
+                      setErrors((prev) => ({ ...prev, city: "" }));
+                    }}
+                    className={errors.city ? "border-red-500" : "border-gray-300"}
+                  />
+                  {errors.city && (
+                    <p className="text-sm text-red-500">{errors.city}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="state" className="text-gray-700 font-medium">
+                    State*
+                  </Label>
+                  <Select value={state} onValueChange={(value) => {
+                    setState(value);
+                    setErrors((prev) => ({ ...prev, state: "" }));
+                  }}>
+                    <SelectTrigger className={errors.state ? "border-red-500" : "border-gray-300"}>
+                      <SelectValue placeholder="Select a state" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="AL">Alabama</SelectItem>
+                      <SelectItem value="AK">Alaska</SelectItem>
+                      <SelectItem value="AZ">Arizona</SelectItem>
+                      <SelectItem value="CA">California</SelectItem>
+                      <SelectItem value="FL">Florida</SelectItem>
+                      <SelectItem value="NY">New York</SelectItem>
+                      <SelectItem value="TX">Texas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.state && (
+                    <p className="text-sm text-red-500">{errors.state}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="zip" className="text-gray-700 font-medium">
+                    ZIP Code*
+                  </Label>
+                  <Input
+                    id="zip"
+                    placeholder="ZIP Code"
+                    value={zip}
+                    onChange={(e) => {
+                      setZip(e.target.value);
+                      setErrors((prev) => ({ ...prev, zip: "" }));
+                    }}
+                    className={errors.zip ? "border-red-500" : "border-gray-300"}
+                  />
+                  {errors.zip && (
+                    <p className="text-sm text-red-500">{errors.zip}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-gray-700 font-medium">
+                    Phone Number (XXX)-XXX-XXXX*
                   </Label>
                   <Input
                     id="phone"
@@ -316,17 +354,17 @@ export default function DentistEnrollment() {
                       setPhone(e.target.value);
                       setErrors((prev) => ({ ...prev, phone: "" }));
                     }}
-                    placeholder="Enter phone number"
-                    className={errors.phone ? "border-destructive" : ""}
+                    placeholder="(XXX)-XXX-XXXX"
+                    className={errors.phone ? "border-red-500" : "border-gray-300"}
                   />
                   {errors.phone && (
-                    <p className="text-sm text-destructive">{errors.phone}</p>
+                    <p className="text-sm text-red-500">{errors.phone}</p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">
-                    Email Address <span className="text-destructive">*</span>
+                  <Label htmlFor="email" className="text-gray-700 font-medium">
+                    Email*
                   </Label>
                   <Input
                     id="email"
@@ -336,51 +374,53 @@ export default function DentistEnrollment() {
                       setEmail(e.target.value);
                       setErrors((prev) => ({ ...prev, email: "" }));
                     }}
-                    placeholder="Enter email address"
-                    className={errors.email ? "border-destructive" : ""}
+                    placeholder="Email"
+                    className={errors.email ? "border-red-500" : "border-gray-300"}
                   />
                   {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email}</p>
+                    <p className="text-sm text-red-500">{errors.email}</p>
                   )}
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="website">Website or Booking Link</Label>
-                <Input
-                  id="website"
-                  type="url"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  placeholder="https://yourpractice.com"
-                />
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="website" className="text-gray-700 font-medium">
+                    Website or Booking Link
+                  </Label>
+                  <Input
+                    id="website"
+                    type="url"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    placeholder="https://yourpractice.com"
+                    className="border-gray-300"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="npi" className="text-gray-700 font-medium">
+                    NPI Number*
+                  </Label>
+                  <Input
+                    id="npi"
+                    value={npi}
+                    onChange={(e) => {
+                      setNpi(e.target.value);
+                      setErrors((prev) => ({ ...prev, npi: "" }));
+                    }}
+                    placeholder="NPI Number"
+                    className={errors.npi ? "border-red-500" : "border-gray-300"}
+                  />
+                  {errors.npi && (
+                    <p className="text-sm text-red-500">{errors.npi}</p>
+                  )}
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="npi">
-                  NPI Number <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="npi"
-                  value={npi}
-                  onChange={(e) => {
-                    setNpi(e.target.value);
-                    setErrors((prev) => ({ ...prev, npi: "" }));
-                  }}
-                  placeholder="Enter NPI number"
-                  className={errors.npi ? "border-destructive" : ""}
-                />
-                {errors.npi && (
-                  <p className="text-sm text-destructive">{errors.npi}</p>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <Label>
-                  Practice Type <span className="text-destructive">*</span>
-                  <span className="text-muted-foreground text-sm font-normal ml-2">
-                    (check all that apply)
-                  </span>
+              <div className="space-y-4 border-t pt-6">
+                <Label className="text-gray-700 font-medium text-lg">
+                  Practice Type* <span className="text-gray-500 text-sm font-normal">(check all that apply to your practice)</span>
                 </Label>
                 
                 <div className="space-y-3">
@@ -572,44 +612,44 @@ export default function DentistEnrollment() {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label>
-                  Accepting New Patients? <span className="text-destructive">*</span>
+              <div className="space-y-3 border-t pt-6">
+                <Label className="text-gray-700 font-medium">
+                  Accepting New Patients?*
                 </Label>
                 <RadioGroup value={acceptingNewPatients} onValueChange={(value: "yes" | "no") => {
                   setAcceptingNewPatients(value);
                   setErrors((prev) => ({ ...prev, acceptingNewPatients: "" }));
-                }}>
+                }} className="flex gap-8">
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="yes" id="accepting-yes" />
-                    <Label htmlFor="accepting-yes" className="font-normal cursor-pointer">
+                    <RadioGroupItem value="yes" id="accepting-yes" className="border-2" />
+                    <Label htmlFor="accepting-yes" className="font-normal cursor-pointer text-gray-700">
                       Yes
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="no" id="accepting-no" />
-                    <Label htmlFor="accepting-no" className="font-normal cursor-pointer">
+                    <RadioGroupItem value="no" id="accepting-no" className="border-2" />
+                    <Label htmlFor="accepting-no" className="font-normal cursor-pointer text-gray-700">
                       No
                     </Label>
                   </div>
                 </RadioGroup>
                 {errors.acceptingNewPatients && (
-                  <p className="text-sm text-destructive">{errors.acceptingNewPatients}</p>
+                  <p className="text-sm text-red-500">{errors.acceptingNewPatients}</p>
                 )}
               </div>
 
-              <div className="space-y-3">
-                <Label>Insurance Accepted</Label>
+              <div className="space-y-3 border-t pt-6">
+                <Label className="text-gray-700 font-medium">Insurance Accepted</Label>
                 <RadioGroup value={insuranceType} onValueChange={(value: "none" | "contracted") => setInsuranceType(value)}>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="none" id="insurance-none" />
-                    <Label htmlFor="insurance-none" className="font-normal cursor-pointer">
+                    <RadioGroupItem value="none" id="insurance-none" className="border-2" />
+                    <Label htmlFor="insurance-none" className="font-normal cursor-pointer text-gray-700">
                       We do not accept insurance, but we will help patients bill for it
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="contracted" id="insurance-contracted" />
-                    <Label htmlFor="insurance-contracted" className="font-normal cursor-pointer">
+                    <RadioGroupItem value="contracted" id="insurance-contracted" className="border-2" />
+                    <Label htmlFor="insurance-contracted" className="font-normal cursor-pointer text-gray-700">
                       List contracted insurance plans
                     </Label>
                   </div>
@@ -621,131 +661,148 @@ export default function DentistEnrollment() {
                     value={insurancePlans}
                     onChange={(e) => setInsurancePlans(e.target.value)}
                     rows={4}
-                    className="mt-2"
+                    className="mt-2 border-gray-300"
                   />
                 )}
               </div>
-            </div>
-          </Card>
 
-          {/* Optional Enhancements Section */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Optional Enhancements</h2>
-            <p className="text-sm text-muted-foreground mb-6">
-              These fields help surface the practice to more relevant patients.
-            </p>
-
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="languages">Languages Spoken</Label>
-                <Input
-                  id="languages"
-                  value={languages}
-                  onChange={(e) => setLanguages(e.target.value)}
-                  placeholder="e.g., English, Spanish, French"
-                />
               </div>
 
-              <div className="space-y-3">
-                <Label>Photos of Office or Team</Label>
-                <p className="text-sm text-muted-foreground">Upload up to 3 photos</p>
-                
+              {/* Optional Enhancements Section */}
+              <div className="space-y-6 border-t pt-8">
+                <div>
+                  <h2 className="text-xl font-semibold mb-2 text-gray-800">Optional Enhancements</h2>
+                  <p className="text-sm text-gray-600">
+                    These fields help surface the practice to more relevant patients.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="languages" className="text-gray-700 font-medium">
+                    Languages Spoken
+                  </Label>
+                  <Input
+                    id="languages"
+                    value={languages}
+                    onChange={(e) => setLanguages(e.target.value)}
+                    placeholder="e.g., English, Spanish, French"
+                    className="border-gray-300"
+                  />
+                </div>
+
                 <div className="space-y-3">
-                  {photos.map((photo, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                      <span className="text-sm truncate flex-1">{photo.name}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removePhoto(index)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ))}
+                  <Label className="text-gray-700 font-medium">Photos of Office or Team</Label>
+                  <p className="text-sm text-gray-600">Upload up to 3 photos</p>
                   
-                  {photos.length < 3 && (
-                    <div>
+                  <div className="space-y-3">
+                    {photos.map((photo, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <span className="text-sm truncate flex-1 text-gray-700">{photo.name}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removePhoto(index)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                    
+                    {photos.length < 3 && (
+                      <div>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoUpload}
+                          className="hidden"
+                          id="photo-upload"
+                          multiple
+                        />
+                        <Label
+                          htmlFor="photo-upload"
+                          className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                        >
+                          <Upload className="w-5 h-5 text-gray-600" />
+                          <span className="text-gray-700">Click to upload photos</span>
+                        </Label>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <Label className="text-gray-700 font-medium">Contact for Follow-Up</Label>
+                  
+                  <div className="flex items-center space-x-2 mb-4">
+                    <Checkbox
+                      id="doNotContact"
+                      checked={doNotContact}
+                      onCheckedChange={(checked) => {
+                        setDoNotContact(checked as boolean);
+                        if (checked) {
+                          setContactName("");
+                          setContactRole("");
+                          setContactTime("");
+                        }
+                      }}
+                    />
+                    <Label htmlFor="doNotContact" className="font-normal cursor-pointer text-gray-700">
+                      Do not contact me
+                    </Label>
+                  </div>
+
+                  {!doNotContact && (
+                    <div className="grid md:grid-cols-3 gap-4">
                       <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handlePhotoUpload}
-                        className="hidden"
-                        id="photo-upload"
-                        multiple
+                        placeholder="Name"
+                        value={contactName}
+                        onChange={(e) => setContactName(e.target.value)}
+                        className="border-gray-300"
                       />
-                      <Label
-                        htmlFor="photo-upload"
-                        className="flex items-center justify-center gap-2 p-4 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                      >
-                        <Upload className="w-5 h-5" />
-                        <span>Click to upload photos</span>
-                      </Label>
+                      <Input
+                        placeholder="Role"
+                        value={contactRole}
+                        onChange={(e) => setContactRole(e.target.value)}
+                        className="border-gray-300"
+                      />
+                      <Input
+                        placeholder="Best time to reach"
+                        value={contactTime}
+                        onChange={(e) => setContactTime(e.target.value)}
+                        className="border-gray-300"
+                      />
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <Label>Contact for Follow-Up</Label>
-                
-                <div className="flex items-center space-x-2 mb-4">
-                  <Checkbox
-                    id="doNotContact"
-                    checked={doNotContact}
-                    onCheckedChange={(checked) => {
-                      setDoNotContact(checked as boolean);
-                      if (checked) {
-                        setContactName("");
-                        setContactRole("");
-                        setContactTime("");
-                      }
-                    }}
-                  />
-                  <Label htmlFor="doNotContact" className="font-normal cursor-pointer">
-                    Do not contact me
-                  </Label>
-                </div>
-
-                {!doNotContact && (
-                  <div className="space-y-4">
-                    <Input
-                      placeholder="Name"
-                      value={contactName}
-                      onChange={(e) => setContactName(e.target.value)}
-                    />
-                    <Input
-                      placeholder="Role"
-                      value={contactRole}
-                      onChange={(e) => setContactRole(e.target.value)}
-                    />
-                    <Input
-                      placeholder="Best time to reach"
-                      value={contactTime}
-                      onChange={(e) => setContactTime(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
+            {/* Submit Button */}
+            <div className="flex justify-center pt-8">
+              <Button 
+                type="submit" 
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full px-16 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+              >
+                Next
+              </Button>
             </div>
-          </Card>
 
-          {/* Submit Button */}
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate(-1)}
-              className="px-8"
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="px-8">
-              Submit Enrollment
-            </Button>
-          </div>
-        </form>
+            <div className="text-center text-sm text-gray-600 pt-6">
+              Read more about our{" "}
+              <a href="#" className="text-blue-600 hover:underline">
+                Terms and Conditions
+              </a>
+              ,{" "}
+              <a href="#" className="text-blue-600 hover:underline">
+                Privacy Practices
+              </a>
+              , and{" "}
+              <a href="#" className="text-blue-600 hover:underline">
+                Affiliated Dental Provider Notice of Privacy Practices
+              </a>
+            </div>
+          </form>
+        </div>
       </main>
     </div>
   );
