@@ -123,13 +123,22 @@ export default function Results() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-2 text-foreground">
-              Available Dentists Near You
-            </h2>
-            <p className="text-muted-foreground">
-              Showing {mockDentists.length} results
-            </p>
+          <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h2 className="text-3xl font-bold mb-2 text-foreground">
+                Available Dentists Near You
+              </h2>
+              <p className="text-muted-foreground">
+                Showing {mockDentists.length} results
+              </p>
+            </div>
+            <Button 
+              variant="outline"
+              onClick={() => window.location.href = 'https://member.dental.com/sign-up'}
+              className="whitespace-nowrap"
+            >
+              I am a dentist - Sign me in
+            </Button>
           </div>
 
           <div className="space-y-6">
