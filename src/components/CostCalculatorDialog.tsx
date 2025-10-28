@@ -10,6 +10,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { MapPin } from "lucide-react";
+import { z } from "zod";
+
+const zipcodeSchema = z.string().regex(/^\d{5}$/, "Please enter a valid 5-digit zipcode");
 
 interface CostCalculatorDialogProps {
   open: boolean;
@@ -92,6 +97,9 @@ export const CostCalculatorDialog = ({
   open,
   onOpenChange,
 }: CostCalculatorDialogProps) => {
+  const [zipcode, setZipcode] = useState("");
+  const [zipcodeError, setZipcodeError] = useState("");
+  const [zipcodeSubmitted, setZipcodeSubmitted] = useState(false);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
 
@@ -109,9 +117,25 @@ export const CostCalculatorDialog = ({
     }
   };
 
+  const handleZipcodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = zipcodeSchema.safeParse(zipcode);
+    
+    if (!result.success) {
+      setZipcodeError(result.error.errors[0].message);
+      return;
+    }
+    
+    setZipcodeError("");
+    setZipcodeSubmitted(true);
+  };
+
   const handleReset = () => {
     setSelectedServices([]);
     setShowResults(false);
+    setZipcodeSubmitted(false);
+    setZipcode("");
+    setZipcodeError("");
   };
 
   return (
@@ -123,7 +147,44 @@ export const CostCalculatorDialog = ({
           </DialogTitle>
         </DialogHeader>
 
-        {!showResults ? (
+        {!zipcodeSubmitted ? (
+          <form onSubmit={handleZipcodeSubmit} className="space-y-6">
+            <div className="text-center space-y-4">
+              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                <MapPin className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Enter Your Location</h3>
+                <p className="text-sm text-muted-foreground">
+                  We'll show you dental costs in your area
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="zipcode">Zipcode</Label>
+              <Input
+                id="zipcode"
+                type="text"
+                placeholder="Enter 5-digit zipcode"
+                value={zipcode}
+                onChange={(e) => {
+                  setZipcode(e.target.value);
+                  setZipcodeError("");
+                }}
+                maxLength={5}
+                className={zipcodeError ? "border-destructive" : ""}
+              />
+              {zipcodeError && (
+                <p className="text-sm text-destructive">{zipcodeError}</p>
+              )}
+            </div>
+
+            <Button type="submit" className="w-full" size="lg">
+              Continue
+            </Button>
+          </form>
+        ) : !showResults ? (
           <div className="space-y-6">
             <p className="text-muted-foreground">
               Request (choose one or more)
