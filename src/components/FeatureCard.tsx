@@ -5,14 +5,15 @@ interface FeatureCardProps {
   icon: LucideIcon;
   title: string;
   description: string;
+  onClick?: () => void;
 }
 
-export const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => {
+export const FeatureCard = ({ icon: Icon, title, description, onClick }: FeatureCardProps) => {
   const iconColor = title === "Ask a Question" ? "text-secondary" : "text-primary";
   const bgColor = title === "Ask a Question" ? "bg-secondary" : "bg-primary";
   
   return (
-    <Card className="p-6 hover:shadow-md transition-all duration-300 border-border/30 bg-card cursor-pointer group flex items-start gap-4">
+    <Card onClick={onClick} className="p-6 hover:shadow-md transition-all duration-300 border-border/30 bg-card cursor-pointer group flex items-start gap-4">
       <div className={`flex-shrink-0 w-12 h-12 ${bgColor} rounded-full flex items-center justify-center`}>
         <Icon className="w-6 h-6 text-white" />
       </div>

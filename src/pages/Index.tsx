@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { FeatureCard } from "@/components/FeatureCard";
 import { LocationSearch } from "@/components/LocationSearch";
+import { CostCalculatorDialog } from "@/components/CostCalculatorDialog";
 import { MessageSquare, Shield, Calculator } from "lucide-react";
 
 const features = [
@@ -22,9 +24,15 @@ const features = [
 ];
 
 export default function Index() {
+  const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <CostCalculatorDialog 
+        open={costCalculatorOpen} 
+        onOpenChange={setCostCalculatorOpen}
+      />
       
       {/* Hero Section */}
       <section className="relative bg-background py-16 md:py-24">
@@ -51,6 +59,7 @@ export default function Index() {
                   icon={feature.icon}
                   title={feature.title}
                   description={feature.description}
+                  onClick={feature.title === "Cost Calculator" ? () => setCostCalculatorOpen(true) : undefined}
                 />
               ))}
             </div>
