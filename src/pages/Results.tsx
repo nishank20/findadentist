@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, X } from "lucide-react";
+import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, X, User } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
 import {
@@ -302,11 +302,12 @@ export default function Results() {
               </p>
             </div>
             <Button 
-              variant="outline"
+              variant="secondary"
               onClick={() => window.location.href = '/dentist-enrollment'}
-              className="whitespace-nowrap"
+              className="whitespace-nowrap gap-2"
             >
-              I am a dentist - Sign me in
+              <User className="w-4 h-4" />
+              Dentist Sign In
             </Button>
           </div>
 
