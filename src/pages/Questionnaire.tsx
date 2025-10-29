@@ -94,11 +94,11 @@ export default function Questionnaire() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       <Header />
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-6 md:py-12">
         <div className="max-w-5xl mx-auto">
           {/* Header Section */}
-          <div className="mb-8 animate-fade-in">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+          <div className="mb-6 md:mb-8 animate-fade-in">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4 md:mb-6">
               {step === "care" 
                 ? "What Type of Care are You Looking For?"
                 : "What Type of Specialist are You Looking For?"}
@@ -107,14 +107,14 @@ export default function Questionnaire() {
 
           {/* Care Type Cards */}
           {step === "care" && (
-            <div className="space-y-3">
+            <div className="space-y-2.5 md:space-y-3">
               {careTypes.map((care, index) => (
                 <div
                   key={care.id}
                   onClick={() => handleCareSelection(care.id)}
                   className={cn(
-                    "group relative p-4 rounded-2xl border-2 cursor-pointer transition-all duration-500",
-                    "hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1",
+                    "group relative p-3 md:p-4 rounded-xl md:rounded-2xl border-2 cursor-pointer transition-all duration-500",
+                    "active:scale-[0.98] md:hover:shadow-2xl md:hover:scale-[1.02] md:hover:-translate-y-1",
                     "bg-gradient-to-br from-card via-card to-primary/5",
                     "border-border hover:border-primary",
                     "animate-fade-in overflow-hidden"
@@ -126,17 +126,17 @@ export default function Questionnaire() {
                   
                   {/* Content */}
                   <div className="relative z-10">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                    <div className="flex items-start justify-between mb-1.5 md:mb-2">
+                      <h3 className="text-base md:text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300 pr-2">
                         {care.title}
                       </h3>
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary/10 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
                       {care.description}
                     </p>
                   </div>
@@ -150,14 +150,14 @@ export default function Questionnaire() {
 
           {/* Specialist Type Cards */}
           {step === "specialist" && (
-            <div className="space-y-3">
+            <div className="space-y-2.5 md:space-y-3">
               {specialistTypes.map((specialist, index) => (
                 <div
                   key={specialist.id}
                   onClick={() => handleSpecialistSelection(specialist.id)}
                   className={cn(
-                    "group relative p-4 rounded-2xl border-2 cursor-pointer transition-all duration-500",
-                    "hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1",
+                    "group relative p-3 md:p-4 rounded-xl md:rounded-2xl border-2 cursor-pointer transition-all duration-500",
+                    "active:scale-[0.98] md:hover:shadow-2xl md:hover:scale-[1.02] md:hover:-translate-y-1",
                     "bg-gradient-to-br from-card via-card to-secondary/5",
                     "border-border hover:border-primary",
                     "animate-fade-in overflow-hidden"
@@ -169,17 +169,17 @@ export default function Questionnaire() {
                   
                   {/* Content */}
                   <div className="relative z-10">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                    <div className="flex items-start justify-between mb-1.5 md:mb-2">
+                      <h3 className="text-base md:text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300 pr-2">
                         {specialist.title}
                       </h3>
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary/10 group-hover:bg-primary group-hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary group-hover:text-primary-foreground transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
                       {specialist.description}
                     </p>
                   </div>
@@ -190,12 +190,12 @@ export default function Questionnaire() {
               ))}
 
               {/* Back Button */}
-              <div className="mt-8">
+              <div className="mt-6 md:mt-8">
                 <Button 
                   variant="outline"
                   size="lg"
                   onClick={handleBack}
-                  className="px-8"
+                  className="px-6 md:px-8 w-full md:w-auto"
                 >
                   ← Back to Care Types
                 </Button>
