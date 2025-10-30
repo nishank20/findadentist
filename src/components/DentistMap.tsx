@@ -103,9 +103,9 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
   return (
     <div className={`${
       isExpanded 
-        ? 'fixed left-0 right-0 z-[100] bg-background animate-slide-in-right h-[400px]' 
+        ? 'fixed top-[180px] left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right' 
         : 'relative h-full'
-    } transition-all duration-300`} style={isExpanded ? { top: `${mapRef.current?.offsetTop || 0}px` } : {}}>
+    } transition-all duration-300`}>
       {/* Dummy Map Background */}
       <div 
         ref={mapRef}
