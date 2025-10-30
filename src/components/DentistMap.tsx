@@ -1,9 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { useState } from 'react';
 import { Button } from './ui/button';
-import { Maximize2, Minimize2 } from 'lucide-react';
-import { Input } from './ui/input';
+import { Maximize2, Minimize2, MapPin } from 'lucide-react';
 
 interface Dentist {
   id: number;
@@ -20,121 +17,96 @@ interface DentistMapProps {
 }
 
 export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProps) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const markers = useRef<mapboxgl.Marker[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [mapboxToken, setMapboxToken] = useState('');
-  const [showTokenInput, setShowTokenInput] = useState(true);
-
-  useEffect(() => {
-    if (!mapContainer.current || !mapboxToken) return;
-
-    try {
-      mapboxgl.accessToken = mapboxToken;
-      
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: dentists.length > 0 ? [dentists[0].longitude, dentists[0].latitude] : [-122.4194, 37.7749],
-        zoom: 12,
-      });
-
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-      // Clear existing markers
-      markers.current.forEach(marker => marker.remove());
-      markers.current = [];
-
-      // Add markers for each dentist
-      dentists.forEach((dentist) => {
-        const el = document.createElement('div');
-        el.className = 'marker';
-        el.style.backgroundColor = 'hsl(var(--primary))';
-        el.style.width = '24px';
-        el.style.height = '24px';
-        el.style.borderRadius = '50%';
-        el.style.cursor = 'pointer';
-        el.style.border = '2px solid white';
-        el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-
-        const marker = new mapboxgl.Marker(el)
-          .setLngLat([dentist.longitude, dentist.latitude])
-          .setPopup(
-            new mapboxgl.Popup({ offset: 25 })
-              .setHTML(`
-                <div style="padding: 8px;">
-                  <h3 style="font-weight: bold; margin-bottom: 4px;">${dentist.name}</h3>
-                  <p style="font-size: 12px; color: #666;">${dentist.address}</p>
-                </div>
-              `)
-          )
-          .addTo(map.current!);
-
-        el.addEventListener('click', () => {
-          if (onDentistClick) {
-            onDentistClick(dentist.id);
-          }
-        });
-
-        markers.current.push(marker);
-      });
-
-      // Fit bounds to show all markers
-      if (dentists.length > 0) {
-        const bounds = new mapboxgl.LngLatBounds();
-        dentists.forEach(dentist => {
-          bounds.extend([dentist.longitude, dentist.latitude]);
-        });
-        map.current.fitBounds(bounds, { padding: 50 });
-      }
-
-      setShowTokenInput(false);
-    } catch (error) {
-      console.error('Error initializing map:', error);
-      setShowTokenInput(true);
-    }
-
-    return () => {
-      markers.current.forEach(marker => marker.remove());
-      map.current?.remove();
-    };
-  }, [dentists, onDentistClick, mapboxToken]);
+  const [selectedDentist, setSelectedDentist] = useState<number | null>(null);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
-  if (showTokenInput) {
-    return (
-      <div className="h-full flex items-center justify-center bg-muted/20 rounded-lg p-8">
-        <div className="max-w-md w-full space-y-4">
-          <h3 className="text-lg font-semibold text-center">Enter Mapbox Token</h3>
-          <p className="text-sm text-muted-foreground text-center">
-            Get your free token at{' '}
-            <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-primary underline">
-              mapbox.com
-            </a>
-          </p>
-          <Input
-            type="text"
-            placeholder="pk.eyJ1..."
-            value={mapboxToken}
-            onChange={(e) => setMapboxToken(e.target.value)}
-            className="w-full"
-          />
-          <Button onClick={() => setMapboxToken(mapboxToken)} className="w-full">
-            Load Map
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const handleMarkerClick = (dentistId: number) => {
+    setSelectedDentist(selectedDentist === dentistId ? null : dentistId);
+    if (onDentistClick) {
+      onDentistClick(dentistId);
+    }
+  };
+
+  // Convert lat/lng to percentage positions for dummy map (normalized around NYC area)
+  const getMarkerPosition = (lat: number, lng: number) => {
+    // Normalize around NYC coordinates (40.7128° N, 74.0060° W)
+    const centerLat = 40.7128;
+    const centerLng = -74.0060;
+    const scale = 1000; // Adjust for visual spacing
+    
+    const x = 50 + ((lng - centerLng) * scale);
+    const y = 50 - ((lat - centerLat) * scale);
+    
+    return { x: `${Math.max(10, Math.min(90, x))}%`, y: `${Math.max(10, Math.min(90, y))}%` };
+  };
 
   return (
     <div className={`relative ${isExpanded ? 'fixed inset-0 z-50 bg-background' : 'h-full'}`}>
-      <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
-      
+      {/* Dummy Map Background */}
+      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-muted/30 to-muted/10 overflow-hidden">
+        {/* Grid pattern */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(to right, hsl(var(--border) / 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, hsl(var(--border) / 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px'
+        }} />
+        
+        {/* Street-like lines */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-1/4 left-0 right-0 h-px bg-border" />
+          <div className="absolute top-1/2 left-0 right-0 h-px bg-border" />
+          <div className="absolute top-3/4 left-0 right-0 h-px bg-border" />
+          <div className="absolute left-1/4 top-0 bottom-0 w-px bg-border" />
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border" />
+          <div className="absolute left-3/4 top-0 bottom-0 w-px bg-border" />
+        </div>
+
+        {/* Markers */}
+        {dentists.map((dentist) => {
+          const position = getMarkerPosition(dentist.latitude, dentist.longitude);
+          const isSelected = selectedDentist === dentist.id;
+          
+          return (
+            <div
+              key={dentist.id}
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
+              style={{ left: position.x, top: position.y }}
+              onClick={() => handleMarkerClick(dentist.id)}
+            >
+              {/* Marker Pin */}
+              <div className={`relative transition-all duration-200 ${isSelected ? 'scale-125' : 'group-hover:scale-110'}`}>
+                <MapPin 
+                  className={`w-8 h-8 transition-colors ${
+                    isSelected 
+                      ? 'fill-primary text-primary-foreground' 
+                      : 'fill-primary/80 text-primary-foreground'
+                  }`}
+                  style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+                />
+              </div>
+
+              {/* Info Popup */}
+              {isSelected && (
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 pointer-events-none">
+                  <div className="bg-background border border-border rounded-lg shadow-lg p-3">
+                    <h4 className="font-semibold text-sm mb-1">{dentist.name}</h4>
+                    <p className="text-xs text-muted-foreground">{dentist.address}</p>
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-background border-r border-b border-border" />
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Controls */}
       <Button
         variant="secondary"
         size="icon"
