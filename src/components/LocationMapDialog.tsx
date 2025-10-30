@@ -98,7 +98,7 @@ export function LocationMapDialog({
     onOpenChange(false);
   };
 
-  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}${location?.trim() ? `&origin=${encodeURIComponent(location)}` : ""}`;
+  const mapsUrl = `https://www.google.com/maps/dir/${encodeURIComponent(location || currentLocation)}/${encodeURIComponent(address)}`;
 
   const handleOpenDirections = async () => {
     const w = window.open(mapsUrl, "_blank", "noopener,noreferrer");
