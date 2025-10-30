@@ -91,11 +91,11 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode, userLocation }: 
   };
 
   return (
-    <div className={`relative ${isExpanded ? 'fixed inset-0 z-50 bg-background' : 'h-full'}`}>
+    <div className={`${isExpanded ? 'fixed inset-0 z-[100] bg-background' : 'relative h-full'}`}>
       {/* Dummy Map Background */}
       <div 
         ref={mapRef}
-        className={`absolute inset-0 rounded-lg bg-gradient-to-br from-muted/30 to-muted/10 overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        className={`absolute inset-0 ${isExpanded ? 'rounded-none' : 'rounded-lg'} bg-gradient-to-br from-muted/30 to-muted/10 overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
