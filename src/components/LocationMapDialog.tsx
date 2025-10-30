@@ -3,8 +3,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
-import { MapPin } from "lucide-react";
+import { MapPin, ExternalLink, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
@@ -33,6 +34,9 @@ export function LocationMapDialog({
   const [filteredSuggestions, setFilteredSuggestions] = useState<typeof locationSuggestions>([]);
   const locationInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const copyInputRef = useRef<HTMLInputElement>(null);
+  const [copied, setCopied] = useState(false);
+  const [showCopyHint, setShowCopyHint] = useState(false);
 
   const locationSuggestions = [
     { city: "New York", state: "NY", zip: "10001" },
@@ -94,6 +98,28 @@ export function LocationMapDialog({
     onOpenChange(false);
   };
 
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}${location?.trim() ? `&origin=${encodeURIComponent(location)}` : ""}`;
+
+  const handleOpenDirections = async () => {
+    const w = window.open(mapsUrl, "_blank", "noopener,noreferrer");
+    if (!w) {
+      try {
+        await navigator.clipboard.writeText(mapsUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      } catch {}
+      setShowCopyHint(true);
+    }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(mapsUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {}
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
@@ -102,6 +128,9 @@ export function LocationMapDialog({
             <MapPin className="w-5 h-5 text-primary" />
             Location - {dentistName}
           </DialogTitle>
+          <DialogDescription>
+            Edit your starting point and view the dentist location. Use the button below to open directions.
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 overflow-y-auto flex-1 pr-2">
@@ -170,16 +199,41 @@ export function LocationMapDialog({
           </div>
         </div>
 
-        {/* Get Directions Button - Fixed at bottom */}
-        <div className="pt-4 border-t border-border mt-4">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank', 'noopener,noreferrer')}
-          >
-            <MapPin className="w-4 h-4 mr-2" />
-            Get Directions in Google Maps
-          </Button>
+        {/* Actions - Fixed at bottom */}
+        <div className="pt-4 border-t border-border mt-4 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleOpenDirections}
+            >
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Open in Google Maps
+            </Button>
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={handleCopyLink}
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              {copied ? "Copied" : "Copy Directions Link"}
+            </Button>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground">Directions URL</label>
+            <div className="flex items-center gap-2">
+              <Input ref={copyInputRef} readOnly value={mapsUrl} className="flex-1" />
+              <Button variant="outline" size="sm" onClick={handleCopyLink}>
+                {copied ? "Copied" : "Copy"}
+              </Button>
+            </div>
+            {showCopyHint && (
+              <p className="text-xs text-muted-foreground">
+                It looks like the preview blocks external sites. Paste the link in a new browser tab.
+              </p>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
