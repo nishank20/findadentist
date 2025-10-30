@@ -221,13 +221,13 @@ export default function Results() {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-background">
+      <div className="h-screen flex flex-col bg-background">
         <Header />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 overflow-hidden">
+        <div className="h-full">
           {/* Search Criteria Summary */}
-          <Card className="mb-6 p-6 border-border/50">
+          <Card className="mb-4 p-4 mx-4 mt-4 border-border/50">
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-foreground">Your Search</h3>
@@ -324,9 +324,9 @@ export default function Results() {
           </Card>
 
           {/* Split Layout: List and Map */}
-          <div className="flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-300px)]">
+          <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-220px)] px-4">
             {/* Left Side - Dentist List */}
-            <div className="lg:w-1/2 space-y-6 overflow-y-auto max-h-[calc(100vh-300px)]">
+            <div className="lg:w-1/2 space-y-4 overflow-y-auto">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">
@@ -399,7 +399,7 @@ export default function Results() {
             </div>
 
             {/* Right Side - Map */}
-            <div className="lg:w-1/2 h-[500px] lg:h-auto lg:sticky lg:top-24">
+            <div className="lg:w-1/2 h-[500px] lg:h-full">
               <DentistMap 
                 dentists={sortedDentists.map(d => ({
                   id: d.id,
