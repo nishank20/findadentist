@@ -71,11 +71,11 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProp
     }
   };
 
-  // Convert lat/lng to percentage positions for dummy map (normalized around NYC area)
+  // Convert lat/lng to percentage positions for dummy map (normalized around Jersey City area)
   const getMarkerPosition = (lat: number, lng: number) => {
-    // Normalize around NYC coordinates (40.7128° N, 74.0060° W)
-    const centerLat = 40.7128;
-    const centerLng = -74.0060;
+    // Normalize around Jersey City coordinates (40.7178° N, 74.0431° W)
+    const centerLat = 40.7178;
+    const centerLng = -74.0431;
     const scale = 1000; // Adjust for visual spacing
     
     const x = 50 + ((lng - centerLng) * scale);
