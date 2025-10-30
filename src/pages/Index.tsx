@@ -4,7 +4,8 @@ import { FeatureCard } from "@/components/FeatureCard";
 import { LocationSearch } from "@/components/LocationSearch";
 import { CostCalculatorDialog } from "@/components/CostCalculatorDialog";
 import { InsuranceCheckDialog } from "@/components/InsuranceCheckDialog";
-import { MessageSquare, Shield, Calculator } from "lucide-react";
+import { MessageSquare, Shield, Calculator, UserCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const features = [
   {
@@ -22,11 +23,17 @@ const features = [
     title: "Ask a Question",
     description: "Submit a dental question and a dentist will respond",
   },
+  {
+    icon: UserCheck,
+    title: "Are you a Dentist?",
+    description: "Ready to join our network? Sign up and connect with patients today",
+  },
 ];
 
 export default function Index() {
   const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
   const [insuranceCheckOpen, setInsuranceCheckOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
@@ -70,6 +77,8 @@ export default function Index() {
                       ? () => setCostCalculatorOpen(true) 
                       : feature.title === "Check Your Insurance"
                       ? () => setInsuranceCheckOpen(true)
+                      : feature.title === "Are you a Dentist?"
+                      ? () => navigate("/dentist-enrollment")
                       : undefined
                   }
                 />

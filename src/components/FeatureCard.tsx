@@ -9,8 +9,17 @@ interface FeatureCardProps {
 }
 
 export const FeatureCard = ({ icon: Icon, title, description, onClick }: FeatureCardProps) => {
-  const iconColor = title === "Ask a Question" ? "text-secondary" : "text-primary";
-  const bgColor = title === "Ask a Question" ? "bg-secondary" : "bg-primary";
+  const iconColor = title === "Ask a Question" 
+    ? "text-secondary" 
+    : title === "Are you a Dentist?"
+    ? "text-accent-foreground"
+    : "text-primary";
+    
+  const bgColor = title === "Ask a Question" 
+    ? "bg-secondary" 
+    : title === "Are you a Dentist?"
+    ? "bg-accent"
+    : "bg-primary";
   
   return (
     <Card onClick={onClick} className="p-6 hover:shadow-md transition-all duration-300 border-border/30 bg-card cursor-pointer group flex items-start gap-4">
