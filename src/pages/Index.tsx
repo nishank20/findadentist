@@ -6,9 +6,6 @@ import { CostCalculatorDialog } from "@/components/CostCalculatorDialog";
 import { InsuranceCheckDialog } from "@/components/InsuranceCheckDialog";
 import { MessageSquare, Shield, Calculator, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const features = [
   {
@@ -32,22 +29,6 @@ const features = [
     description: "Reach More Patients. Join Dentist Match—Free.",
   },
 ];
-
-const chartData = [
-  { month: "Jan", appointments: 186 },
-  { month: "Feb", appointments: 305 },
-  { month: "Mar", appointments: 237 },
-  { month: "Apr", appointments: 273 },
-  { month: "May", appointments: 209 },
-  { month: "Jun", appointments: 314 },
-];
-
-const chartConfig = {
-  appointments: {
-    label: "Appointments",
-    color: "hsl(var(--primary))",
-  },
-};
 
 export default function Index() {
   const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
@@ -101,44 +82,6 @@ export default function Index() {
                 />
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle>Monthly Appointment Trends</CardTitle>
-                <CardDescription>Number of appointments booked each month</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ChartContainer config={chartConfig} className="h-[300px] w-full">
-                  <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis 
-                      dataKey="month" 
-                      className="text-xs"
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis 
-                      className="text-xs"
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar 
-                      dataKey="appointments" 
-                      fill="var(--color-appointments)" 
-                      radius={[8, 8, 0, 0]}
-                    />
-                  </BarChart>
-                </ChartContainer>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
