@@ -36,7 +36,7 @@ export default function Index() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background">
       <Header />
       <CostCalculatorDialog 
         open={costCalculatorOpen} 
@@ -48,7 +48,7 @@ export default function Index() {
       />
       
       {/* Hero Section */}
-      <section className="relative bg-background flex-1 flex items-center py-16">
+      <section className="relative bg-background py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-[1fr,400px] gap-12 items-start max-w-7xl mx-auto">
             {/* Left Column - Main Content */}
