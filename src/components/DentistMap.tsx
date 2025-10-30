@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Button } from './ui/button';
-import { Maximize2, Minimize2, MapPin } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Navigation } from 'lucide-react';
 
 interface Dentist {
   id: number;
@@ -14,9 +14,10 @@ interface DentistMapProps {
   dentists: Dentist[];
   onDentistClick?: (dentistId: number) => void;
   zipCode?: string;
+  userLocation?: { latitude: number; longitude: number };
 }
 
-export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProps) => {
+export const DentistMap = ({ dentists, onDentistClick, zipCode, userLocation }: DentistMapProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<number | null>(null);
   const [mapOffset, setMapOffset] = useState({ x: 0, y: 0 });
@@ -137,7 +138,35 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProp
           <div className="absolute left-3/4 top-0 bottom-0 w-px bg-border" />
         </div>
 
-        {/* Markers */}
+        {/* User Location Marker */}
+        {userLocation && (
+          <div
+            className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20"
+            style={{ 
+              left: getMarkerPosition(userLocation.latitude, userLocation.longitude).x,
+              top: getMarkerPosition(userLocation.latitude, userLocation.longitude).y,
+              transform: `translate(calc(-50% + ${mapOffset.x}px), calc(-50% + ${mapOffset.y}px))`,
+              transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+            }}
+          >
+            <div className="relative">
+              <div className="absolute inset-0 animate-ping">
+                <div className="w-10 h-10 rounded-full bg-blue-500/30" />
+              </div>
+              <Navigation 
+                className="w-8 h-8 fill-blue-500 text-white relative z-10"
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' }}
+              />
+              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded shadow-lg font-medium">
+                  Your Location
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Dentist Markers */}
         {dentists.map((dentist) => {
           const position = getMarkerPosition(dentist.latitude, dentist.longitude);
           const isSelected = selectedDentist === dentist.id;

@@ -419,6 +419,7 @@ export default function Results() {
                   setTimeout(() => setHighlightedDentistId(null), 3000);
                 }}
                 zipCode={location}
+                userLocation={{ latitude: 40.7178, longitude: -74.0431 }}
               />
             </div>
           </div>
