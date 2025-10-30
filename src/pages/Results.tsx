@@ -443,13 +443,20 @@ export default function Results() {
         dentistName={selectedDentist}
       />
 
-      <LocationMapDialog
-        open={mapOpen}
-        onOpenChange={setMapOpen}
-        dentistName={selectedLocation?.name || ""}
-        address={selectedLocation?.address || ""}
-        distance={selectedLocation?.distance || ""}
-      />
+          <LocationMapDialog
+            open={mapOpen}
+            onOpenChange={setMapOpen}
+            dentistName={selectedLocation?.name || ""}
+            address={selectedLocation?.address || ""}
+            distance={selectedLocation?.distance || ""}
+            currentLocation={location}
+            onLocationUpdate={(newLocation) => {
+              setLocation(newLocation);
+              const params = new URLSearchParams(searchParams);
+              params.set("location", newLocation);
+              navigate(`/results?${params.toString()}`);
+            }}
+          />
     </div>
     </TooltipProvider>
   );
