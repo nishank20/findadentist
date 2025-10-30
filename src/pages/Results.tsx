@@ -411,7 +411,7 @@ export default function Results() {
                           onClick={() => handleBookAppointment(dentist.name)}
                         >
                           <User className="w-4 h-4 mr-2" />
-                          Book Appointment
+                          Request Appointment
                         </Button>
                       </div>
 
