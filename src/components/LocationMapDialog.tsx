@@ -96,7 +96,7 @@ export function LocationMapDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh]">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
@@ -104,7 +104,7 @@ export function LocationMapDialog({
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto flex-1 pr-2">
           {/* Edit My Location */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">My Current Location</label>
@@ -122,7 +122,7 @@ export function LocationMapDialog({
               {showSuggestions && filteredSuggestions.length > 0 && (
                 <div
                   ref={dropdownRef}
-                  className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg z-[100] max-h-48 overflow-y-auto"
+                  className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg z-[200] max-h-48 overflow-y-auto"
                 >
                   {filteredSuggestions.map((suggestion, index) => (
                     <button
@@ -168,19 +168,18 @@ export function LocationMapDialog({
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Get Directions Button */}
-          <div className="flex justify-end">
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-primary hover:underline flex items-center gap-1"
-            >
-              <MapPin className="w-4 h-4" />
-              Get Directions
-            </a>
-          </div>
+        {/* Get Directions Button - Fixed at bottom */}
+        <div className="pt-4 border-t border-border mt-4">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank', 'noopener,noreferrer')}
+          >
+            <MapPin className="w-4 h-4 mr-2" />
+            Get Directions in Google Maps
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
