@@ -16,9 +16,9 @@ export const Header = () => {
 
   return (
     <header className="bg-card border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-card/95">
-      <div className="container mx-auto px-4 py-4">
+      <div className="px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center pl-0">
             <img src={dentalLogo} alt="dental.com" className="h-8 w-auto" />
           </Link>
 
