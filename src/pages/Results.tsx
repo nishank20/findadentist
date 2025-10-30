@@ -23,7 +23,7 @@ const mockDentists = [
     rating: 4.8,
     reviews: 120,
     distance: "2.5 miles away",
-    address: "123 Main Street, Suite 200, Downtown Medical Center, Cityville, CA 90210",
+    address: "56 Beacon Way, Jersey City, NJ 07304",
     insurance: ["Delta Dental", "Aetna", "Cigna"],
     image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop",
     networkProvider: true,
