@@ -7,6 +7,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, X, User } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
+import { LocationMapDialog } from "@/components/LocationMapDialog";
 import {
   Tooltip,
   TooltipContent,
@@ -100,6 +101,12 @@ export default function Results() {
   const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<string>("");
+  const [mapOpen, setMapOpen] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<{
+    name: string;
+    address: string;
+    distance: string;
+  } | null>(null);
 
   // Sort dentists to show network providers first
   const sortedDentists = [...mockDentists].sort((a, b) => {
@@ -119,6 +126,15 @@ export default function Results() {
   const handleBookAppointment = (dentistName: string) => {
     setSelectedDentist(dentistName);
     setBookingOpen(true);
+  };
+
+  const handleShowLocation = (dentist: typeof mockDentists[0]) => {
+    setSelectedLocation({
+      name: dentist.name,
+      address: dentist.address,
+      distance: dentist.distance,
+    });
+    setMapOpen(true);
   };
 
   const handleUpdateSearch = () => {
@@ -357,10 +373,15 @@ export default function Results() {
                           ({dentist.reviews} Reviews)
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 text-muted-foreground">
+                      <button
+                        onClick={() => handleShowLocation(dentist)}
+                        className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                      >
                         <MapPin className="w-4 h-4" />
-                        <span>{dentist.distance}</span>
-                      </div>
+                        <span className="underline decoration-dotted underline-offset-2">
+                          {dentist.distance}
+                        </span>
+                      </button>
                     </div>
 
                     <p className="text-sm text-muted-foreground">{dentist.address}</p>
@@ -420,6 +441,14 @@ export default function Results() {
         open={bookingOpen}
         onOpenChange={setBookingOpen}
         dentistName={selectedDentist}
+      />
+
+      <LocationMapDialog
+        open={mapOpen}
+        onOpenChange={setMapOpen}
+        dentistName={selectedLocation?.name || ""}
+        address={selectedLocation?.address || ""}
+        distance={selectedLocation?.distance || ""}
       />
     </div>
     </TooltipProvider>
