@@ -103,7 +103,7 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
   return (
     <div className={`${
       isExpanded 
-        ? 'fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right' 
+        ? 'fixed top-[180px] left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right' 
         : 'relative h-full'
     } transition-all duration-300`}>
       {/* Dummy Map Background */}
