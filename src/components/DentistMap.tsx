@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Button } from './ui/button';
-import { Maximize2, Minimize2, MapPin, Navigation } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Navigation, Star, BadgeCheck } from 'lucide-react';
+import { Card } from './ui/card';
 
 interface Dentist {
   id: number;
@@ -8,16 +9,23 @@ interface Dentist {
   address: string;
   latitude: number;
   longitude: number;
+  specialty?: string;
+  rating?: number;
+  reviews?: number;
+  distance?: string;
+  image?: string;
+  networkProvider?: boolean;
 }
 
 interface DentistMapProps {
   dentists: Dentist[];
   onDentistClick?: (dentistId: number) => void;
+  onBookAppointment?: (dentistId: number) => void;
   zipCode?: string;
   userLocation?: { latitude: number; longitude: number };
 }
 
-export const DentistMap = ({ dentists, onDentistClick, zipCode, userLocation }: DentistMapProps) => {
+export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCode, userLocation }: DentistMapProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<number | null>(null);
   const [mapOffset, setMapOffset] = useState({ x: 0, y: 0 });
@@ -71,10 +79,12 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode, userLocation }: 
     e.stopPropagation();
     if (isDragging) return; // Don't select if dragging
     setSelectedDentist(selectedDentist === dentistId ? null : dentistId);
-    if (onDentistClick) {
+    if (onDentistClick && !isExpanded) {
       onDentistClick(dentistId);
     }
   };
+
+  const selectedDentistData = dentists.find(d => d.id === selectedDentist);
 
 
   // Convert lat/lng to percentage positions for dummy map (normalized around Jersey City area)
@@ -224,6 +234,67 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode, userLocation }: 
         <div className="absolute top-4 right-4 z-10 bg-background/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border">
           <p className="text-sm font-medium">Near: {zipCode}</p>
         </div>
+      )}
+
+      {/* Floating Dentist Card in Expanded Mode */}
+      {isExpanded && selectedDentistData && (
+        <Card className="absolute bottom-6 left-6 w-80 z-20 shadow-2xl overflow-hidden">
+          <div className="p-4 space-y-3">
+            <div className="flex gap-3">
+              {/* Profile Image */}
+              <div className="flex-shrink-0">
+                <img
+                  src={selectedDentistData.image || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop"}
+                  alt={selectedDentistData.name}
+                  className="w-14 h-14 rounded-full object-cover ring-2 ring-border"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-base font-bold text-foreground truncate">
+                    {selectedDentistData.name}
+                  </h3>
+                  {selectedDentistData.networkProvider && (
+                    <BadgeCheck className="w-4 h-4 text-primary fill-primary/20 flex-shrink-0" />
+                  )}
+                </div>
+                {selectedDentistData.specialty && (
+                  <p className="text-sm text-muted-foreground">{selectedDentistData.specialty}</p>
+                )}
+
+                <div className="flex items-center gap-3 text-xs mt-1">
+                  {selectedDentistData.rating && (
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-primary text-primary" />
+                      <span className="font-semibold">{selectedDentistData.rating}</span>
+                      {selectedDentistData.reviews && (
+                        <span className="text-muted-foreground">({selectedDentistData.reviews})</span>
+                      )}
+                    </div>
+                  )}
+                  {selectedDentistData.distance && (
+                    <span className="text-muted-foreground">{selectedDentistData.distance}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-muted-foreground">{selectedDentistData.address}</p>
+
+            <Button 
+              className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+              onClick={() => {
+                if (onBookAppointment) {
+                  onBookAppointment(selectedDentistData.id);
+                }
+              }}
+            >
+              Book Now
+            </Button>
+          </div>
+        </Card>
       )}
     </div>
   );

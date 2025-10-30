@@ -407,6 +407,12 @@ export default function Results() {
                   address: d.address,
                   latitude: d.latitude,
                   longitude: d.longitude,
+                  specialty: d.specialty,
+                  rating: d.rating,
+                  reviews: d.reviews,
+                  distance: d.distance,
+                  image: d.image,
+                  networkProvider: d.networkProvider,
                 }))}
                 onDentistClick={(dentistId) => {
                   setHighlightedDentistId(dentistId);
@@ -417,6 +423,12 @@ export default function Results() {
                   }
                   // Clear highlight after 3 seconds
                   setTimeout(() => setHighlightedDentistId(null), 3000);
+                }}
+                onBookAppointment={(dentistId) => {
+                  const dentist = sortedDentists.find(d => d.id === dentistId);
+                  if (dentist) {
+                    handleBookAppointment(dentist.name);
+                  }
                 }}
                 zipCode={location}
                 userLocation={{ latitude: 40.7178, longitude: -74.0431 }}
