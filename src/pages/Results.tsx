@@ -388,7 +388,7 @@ export default function Results() {
                         className="w-full"
                         onClick={() => handleBookAppointment(dentist.name)}
                       >
-                        Book Now
+                        Request Appointment
                       </Button>
                     </div>
                   </div>
