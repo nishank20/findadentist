@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from './ui/button';
 import { Maximize2, Minimize2, MapPin } from 'lucide-react';
 
@@ -19,9 +19,49 @@ interface DentistMapProps {
 export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<number | null>(null);
+  const [mapOffset, setMapOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const mapRef = useRef<HTMLDivElement>(null);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('.marker-pin')) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - mapOffset.x, y: e.clientY - mapOffset.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    const newX = e.clientX - dragStart.x;
+    const newY = e.clientY - dragStart.y;
+    setMapOffset({ x: newX, y: newY });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('.marker-pin')) return;
+    const touch = e.touches[0];
+    setIsDragging(true);
+    setDragStart({ x: touch.clientX - mapOffset.x, y: touch.clientY - mapOffset.y });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const newX = touch.clientX - dragStart.x;
+    const newY = touch.clientY - dragStart.y;
+    setMapOffset({ x: newX, y: newY });
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
   };
 
   const handleMarkerClick = (dentistId: number) => {
@@ -47,18 +87,43 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProp
   return (
     <div className={`relative ${isExpanded ? 'fixed inset-0 z-50 bg-background' : 'h-full'}`}>
       {/* Dummy Map Background */}
-      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-muted/30 to-muted/10 overflow-hidden">
+      <div 
+        ref={mapRef}
+        className={`absolute inset-0 rounded-lg bg-gradient-to-br from-muted/30 to-muted/10 overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* Grid pattern */}
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            linear-gradient(to right, hsl(var(--border) / 0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, hsl(var(--border) / 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px'
-        }} />
+        <div 
+          className="absolute inset-0 pointer-events-none" 
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, hsl(var(--border) / 0.1) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(var(--border) / 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px',
+            transform: `translate(${mapOffset.x}px, ${mapOffset.y}px)`,
+            transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+          }} 
+        />
         
         {/* Street-like lines */}
-        <div className="absolute inset-0 opacity-20">
+        <div 
+          className="absolute inset-0 opacity-20 pointer-events-none"
+          style={{
+            transform: `translate(${mapOffset.x}px, ${mapOffset.y}px)`,
+            transition: isDragging ? 'none' : 'transform 0.1s ease-out',
+            width: '200%',
+            height: '200%',
+            left: '-50%',
+            top: '-50%'
+          }}
+        >
           <div className="absolute top-1/4 left-0 right-0 h-px bg-border" />
           <div className="absolute top-1/2 left-0 right-0 h-px bg-border" />
           <div className="absolute top-3/4 left-0 right-0 h-px bg-border" />
@@ -75,12 +140,17 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProp
           return (
             <div
               key={dentist.id}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
-              style={{ left: position.x, top: position.y }}
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10 marker-pin"
+              style={{ 
+                left: position.x, 
+                top: position.y,
+                transform: `translate(calc(-50% + ${mapOffset.x}px), calc(-50% + ${mapOffset.y}px))`,
+                transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+              }}
               onClick={() => handleMarkerClick(dentist.id)}
             >
               {/* Marker Pin */}
-              <div className={`relative transition-all duration-200 ${isSelected ? 'scale-125' : 'group-hover:scale-110'}`}>
+              <div className={`relative transition-all duration-200 cursor-pointer group ${isSelected ? 'scale-125' : 'group-hover:scale-110'}`}>
                 <MapPin 
                   className={`w-8 h-8 transition-colors ${
                     isSelected 
