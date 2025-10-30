@@ -101,16 +101,11 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
   };
 
   return (
-    <div className={`${
-      isExpanded 
-        ? 'fixed left-0 right-0 z-[100] h-[400px] animate-slide-in-right' 
-        : 'relative h-full'
-    } transition-all duration-300`}
-    style={isExpanded ? { top: `${mapRef.current?.getBoundingClientRect().top || 0}px` } : undefined}>
+    <div className={`${isExpanded ? 'fixed inset-0 z-[100] bg-background' : 'relative h-full'}`}>
       {/* Dummy Map Background */}
       <div 
         ref={mapRef}
-        className={`absolute inset-0 ${isExpanded ? 'rounded-none' : 'rounded-lg'} bg-gradient-to-br from-muted/30 to-muted/10 overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} transition-all duration-300`}
+        className={`absolute inset-0 ${isExpanded ? 'rounded-none' : 'rounded-lg'} bg-gradient-to-br from-muted/30 to-muted/10 overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
