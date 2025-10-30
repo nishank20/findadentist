@@ -8,6 +8,7 @@ import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, X, User 
 import { useState, useRef, useEffect } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
 import { LocationMapDialog } from "@/components/LocationMapDialog";
+import { DentistMap } from "@/components/DentistMap";
 import {
   Tooltip,
   TooltipContent,
@@ -27,6 +28,8 @@ const mockDentists = [
     insurance: ["Delta Dental", "Aetna", "Cigna"],
     image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop",
     networkProvider: true,
+    latitude: 37.7849,
+    longitude: -122.4194,
   },
   {
     id: 2,
@@ -39,6 +42,8 @@ const mockDentists = [
     insurance: ["UnitedHealthcare", "Delta Dental", "Humana"],
     image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop",
     networkProvider: false,
+    latitude: 37.7749,
+    longitude: -122.4294,
   },
   {
     id: 3,
@@ -51,6 +56,8 @@ const mockDentists = [
     insurance: ["Aetna", "MetLife", "Cigna"],
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop",
     networkProvider: true,
+    latitude: 37.7949,
+    longitude: -122.4094,
   },
   {
     id: 4,
@@ -63,6 +70,8 @@ const mockDentists = [
     insurance: ["Delta Dental", "UnitedHealthcare", "Cigna"],
     image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop",
     networkProvider: false,
+    latitude: 37.7649,
+    longitude: -122.4394,
   },
   {
     id: 5,
@@ -75,6 +84,8 @@ const mockDentists = [
     insurance: ["Aetna", "MetLife", "Humana"],
     image: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?w=400&h=400&fit=crop",
     networkProvider: true,
+    latitude: 37.8049,
+    longitude: -122.3994,
   },
   {
     id: 6,
@@ -87,6 +98,8 @@ const mockDentists = [
     insurance: ["Delta Dental", "UnitedHealthcare", "Aetna"],
     image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop",
     networkProvider: false,
+    latitude: 37.7549,
+    longitude: -122.4494,
   },
 ];
 
@@ -209,8 +222,8 @@ export default function Results() {
       <div className="min-h-screen bg-background">
         <Header />
 
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-5xl mx-auto">
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto">
           {/* Search Criteria Summary */}
           <Card className="mb-6 p-6 border-border/50">
             <div className="flex flex-col gap-4">
@@ -308,131 +321,92 @@ export default function Results() {
             </div>
           </Card>
 
-          <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h2 className="text-3xl font-bold mb-2 text-foreground">
-                Available Dentists Near You
-              </h2>
-              <p className="text-muted-foreground">
-                Showing {mockDentists.length} results
-              </p>
-            </div>
-            <Button 
-              variant="secondary"
-              onClick={() => window.location.href = '/dentist-enrollment'}
-              className="whitespace-nowrap gap-2"
-            >
-              <User className="w-4 h-4" />
-              Dentist Sign In
-            </Button>
-          </div>
+          {/* Split Layout: List and Map */}
+          <div className="flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-300px)]">
+            {/* Left Side - Dentist List */}
+            <div className="lg:w-1/2 space-y-6 overflow-y-auto max-h-[calc(100vh-300px)]">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground">
+                    {sortedDentists.length} In-network providers
+                  </h2>
+                  <p className="text-muted-foreground text-sm">
+                    Near {location || "your location"}
+                  </p>
+                </div>
+              </div>
 
-          <div className="space-y-6">
-            {sortedDentists.map((dentist) => (
-              <Card key={dentist.id} className="p-6 border-border/50 hover:shadow-lg transition-all">
-                <div className="flex flex-col md:flex-row gap-6">
-                  {/* Profile Image */}
-                  <div className="flex-shrink-0">
-                    <img
-                      src={dentist.image}
-                      alt={dentist.name}
-                      className="w-24 h-24 rounded-full object-cover ring-2 ring-border"
-                    />
-                  </div>
+              <div className="space-y-4">
+              {sortedDentists.map((dentist) => (
+                <Card key={dentist.id} className="p-4 border-border/50 hover:shadow-md transition-all">
+                  <div className="flex gap-4">
+                    {/* Profile Image */}
+                    <div className="flex-shrink-0">
+                      <img
+                        src={dentist.image}
+                        alt={dentist.name}
+                        className="w-16 h-16 rounded-full object-cover ring-2 ring-border"
+                      />
+                    </div>
 
-                  {/* Content */}
-                  <div className="flex-1 space-y-3">
-                    <div>
+                    {/* Content */}
+                    <div className="flex-1 space-y-2">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-xl font-bold text-foreground">
+                        <h3 className="text-lg font-bold text-foreground">
                           {dentist.name}
                         </h3>
                         {dentist.networkProvider && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <BadgeCheck className="w-6 h-6 text-primary fill-primary/20" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-xs">
-                              <p className="text-sm">
-                                This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
+                          <BadgeCheck className="w-5 h-5 text-primary fill-primary/20" />
                         )}
                       </div>
-                      <p className="text-muted-foreground">{dentist.specialty}</p>
-                    </div>
+                      <p className="text-sm text-muted-foreground">{dentist.specialty}</p>
 
-                    <div className="flex flex-wrap items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        {[1, 2, 3, 4].map((star) => (
-                          <Star key={star} className="w-4 h-4 fill-primary text-primary" />
-                        ))}
-                        <span className="font-semibold ml-1">{dentist.rating}</span>
-                        <span className="text-muted-foreground">
-                          ({dentist.reviews} Reviews)
-                        </span>
+                      <div className="flex items-center gap-3 text-sm">
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-primary text-primary" />
+                          <span className="font-semibold">{dentist.rating}</span>
+                          <span className="text-muted-foreground">({dentist.reviews})</span>
+                        </div>
+                        <span className="text-muted-foreground">{dentist.distance}</span>
                       </div>
-                      <button
-                        onClick={() => handleShowLocation(dentist)}
-                        className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+
+                      <p className="text-xs text-muted-foreground line-clamp-1">{dentist.address}</p>
+
+                      <Button 
+                        variant="hero" 
+                        size="sm"
+                        className="w-full"
+                        onClick={() => handleBookAppointment(dentist.name)}
                       >
-                        <MapPin className="w-4 h-4" />
-                        <span className="underline decoration-dotted underline-offset-2">
-                          {dentist.distance}
-                        </span>
-                      </button>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground">{dentist.address}</p>
-
-                    <div>
-                      <p className="text-sm font-medium mb-2 text-foreground">
-                        Accepted Insurance:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {dentist.insurance.map((ins) => (
-                          <Badge key={ins} variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
-                            {ins}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-2">
-                      <Button
-                        variant="link"
-                        onClick={() => toggleReviews(dentist.id)}
-                        className="h-auto p-0 text-primary"
-                      >
-                        {expandedReviews.includes(dentist.id)
-                          ? "Hide Reviews"
-                          : `Show Reviews (${dentist.reviews})`}
+                        Book Now
                       </Button>
                     </div>
                   </div>
 
-                  {/* Book Button */}
-                  <div className="flex-shrink-0 md:self-start">
-                    <Button 
-                      variant="hero" 
-                      className="w-full md:w-auto px-8"
-                      onClick={() => handleBookAppointment(dentist.name)}
-                    >
-                      Request Appointment
-                    </Button>
-                  </div>
-                </div>
+                </Card>
+              ))}
+              </div>
+            </div>
 
-                {expandedReviews.includes(dentist.id) && (
-                  <div className="mt-6 pt-6 border-t border-border">
-                    <p className="text-sm text-muted-foreground">
-                      Reviews section would appear here with detailed patient feedback.
-                    </p>
-                  </div>
-                )}
-              </Card>
-            ))}
+            {/* Right Side - Map */}
+            <div className="lg:w-1/2 h-[500px] lg:h-auto lg:sticky lg:top-24">
+              <DentistMap 
+                dentists={sortedDentists.map(d => ({
+                  id: d.id,
+                  name: d.name,
+                  address: d.address,
+                  latitude: d.latitude,
+                  longitude: d.longitude,
+                }))}
+                onDentistClick={(dentistId) => {
+                  const dentist = sortedDentists.find(d => d.id === dentistId);
+                  if (dentist) {
+                    handleBookAppointment(dentist.name);
+                  }
+                }}
+                zipCode={location}
+              />
+            </div>
           </div>
         </div>
       </main>
