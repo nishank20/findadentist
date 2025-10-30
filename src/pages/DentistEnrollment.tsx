@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -156,35 +157,38 @@ export default function DentistEnrollment() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
-        <div className="container max-w-2xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center animate-scale-in">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Check className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Thank You!
-            </h1>
-            <div className="space-y-4 text-gray-600 text-lg">
-              <p>We'll review your submission and notify you once your listing is live.</p>
-              <p className="text-sm">
-                Practices using Dental.com Office may receive priority placement, but use of
-                Dental.com Office is not a requirement for listing.
-              </p>
-              <Button
-                onClick={() => navigate("/")}
-                className="mt-8 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full px-10 py-6 text-lg shadow-lg hover:shadow-xl transition-all hover-scale"
-              >
-                Return to Home
-              </Button>
-              <div className="mt-6">
-                <a href="#" className="text-purple-600 hover:text-purple-700 font-medium underline">
-                  Click here to learn more about Dental.com Office
-                </a>
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50">
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="container max-w-2xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center animate-scale-in">
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Check className="w-10 h-10 text-white" />
+              </div>
+              <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Thank You!
+              </h1>
+              <div className="space-y-4 text-gray-600 text-lg">
+                <p>We'll review your submission and notify you once your listing is live.</p>
+                <p className="text-sm">
+                  Practices using Dental.com Office may receive priority placement, but use of
+                  Dental.com Office is not a requirement for listing.
+                </p>
+                <Button
+                  onClick={() => navigate("/")}
+                  className="mt-8 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full px-10 py-6 text-lg shadow-lg hover:shadow-xl transition-all hover-scale"
+                >
+                  Return to Home
+                </Button>
+                <div className="mt-6">
+                  <a href="#" className="text-purple-600 hover:text-purple-700 font-medium underline">
+                    Click here to learn more about Dental.com Office
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -885,6 +889,7 @@ export default function DentistEnrollment() {
           </form>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

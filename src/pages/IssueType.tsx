@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -56,6 +57,8 @@ export default function IssueType() {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }
