@@ -86,16 +86,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Dentist Enrollment Card - Bottom Left */}
-      <div className="fixed bottom-4 left-4 w-80 z-50">
-        <FeatureCard
-          icon={UserCheck}
-          title="Are you a Dentist? Get Listed Now!"
-          description="Reach More Patients. Join Dentist Match—Free."
-          onClick={() => navigate("/dentist-enrollment")}
-        />
-      </div>
-
       {/* Footer */}
       <footer className="bg-card border-t border-border py-8">
         <div className="container mx-auto px-4 text-center text-muted-foreground text-sm">

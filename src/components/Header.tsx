@@ -46,6 +46,11 @@ export const Header = () => {
               <HelpCircle className="w-4 h-4" />
               Contact us
             </Link>
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/dentist-enrollment">
+                Are you a Dentist? Get Listed!
+              </Link>
+            </Button>
             <Button variant="hero" size="sm" className="gap-2" asChild>
               <a href="https://member.dental.com/sign-up">
                 Talk to a Dentist Now — 24/7
@@ -97,6 +102,15 @@ export const Header = () => {
                   <Link to="/support" onClick={() => setMobileMenuOpen(false)}>
                     <HelpCircle className="w-4 h-4" />
                     Contact us
+                  </Link>
+                </Button>
+                <Button 
+                  variant="secondary"
+                  className="w-full"
+                  asChild
+                >
+                  <Link to="/dentist-enrollment" onClick={() => setMobileMenuOpen(false)}>
+                    Are you a Dentist? Get Listed!
                   </Link>
                 </Button>
                 <Button 
