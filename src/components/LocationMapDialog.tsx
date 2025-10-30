@@ -200,7 +200,7 @@ export function LocationMapDialog({
         </div>
 
         {/* Actions - Fixed at bottom */}
-        <div className="pt-4 border-t border-border mt-4 space-y-3">
+        <div className="pt-4 border-t border-border mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Button
               variant="outline"
@@ -219,21 +219,11 @@ export function LocationMapDialog({
               {copied ? "Copied" : "Copy Directions Link"}
             </Button>
           </div>
-
-          <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">Directions URL</label>
-            <div className="flex items-center gap-2">
-              <Input ref={copyInputRef} readOnly value={mapsUrl} className="flex-1" />
-              <Button variant="outline" size="sm" onClick={handleCopyLink}>
-                {copied ? "Copied" : "Copy"}
-              </Button>
-            </div>
-            {showCopyHint && (
-              <p className="text-xs text-muted-foreground">
-                It looks like the preview blocks external sites. Paste the link in a new browser tab.
-              </p>
-            )}
-          </div>
+          {showCopyHint && (
+            <p className="text-xs text-muted-foreground mt-3">
+              It looks like the preview blocks external sites. Paste the link in a new browser tab.
+            </p>
+          )}
         </div>
       </DialogContent>
     </Dialog>
