@@ -66,7 +66,7 @@ export default function Index() {
 
             {/* Right Column - Feature Cards */}
             <div className="space-y-4">
-              {features.map((feature) => (
+              {features.filter(f => f.title !== "Are you a Dentist? Get Listed Now!").map((feature) => (
                 <FeatureCard
                   key={feature.title}
                   icon={feature.icon}
@@ -77,8 +77,6 @@ export default function Index() {
                       ? () => setCostCalculatorOpen(true) 
                       : feature.title === "Check Your Insurance"
                       ? () => setInsuranceCheckOpen(true)
-                      : feature.title === "Are you a Dentist? Get Listed Now!"
-                      ? () => navigate("/dentist-enrollment")
                       : undefined
                   }
                 />
@@ -87,6 +85,16 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Dentist Enrollment Card - Bottom Left */}
+      <div className="fixed bottom-4 left-4 w-80 z-50">
+        <FeatureCard
+          icon={UserCheck}
+          title="Are you a Dentist? Get Listed Now!"
+          description="Reach More Patients. Join Dentist Match—Free."
+          onClick={() => navigate("/dentist-enrollment")}
+        />
+      </div>
 
       {/* Footer */}
       <footer className="bg-card border-t border-border py-8">
