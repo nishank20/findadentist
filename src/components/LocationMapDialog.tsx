@@ -122,21 +122,21 @@ export function LocationMapDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-3xl max-h-[90vh] w-[95vw] sm:w-full overflow-hidden flex flex-col p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-primary" />
-            Location - {dentistName}
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <span className="truncate">Location - {dentistName}</span>
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">
             Edit your starting point and view the dentist location. Use the button below to open directions.
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-4 overflow-y-auto flex-1 pr-2">
+        <div className="space-y-3 sm:space-y-4 overflow-y-auto flex-1 pr-1 sm:pr-2">
           {/* Edit My Location */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">My Current Location</label>
+            <label className="text-xs sm:text-sm font-medium text-foreground">My Current Location</label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
               <Input
@@ -146,7 +146,7 @@ export function LocationMapDialog({
                 value={location}
                 onChange={(e) => handleLocationChange(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
-                className="pl-10"
+                className="pl-10 text-sm"
               />
               {showSuggestions && filteredSuggestions.length > 0 && (
                 <div
@@ -157,14 +157,14 @@ export function LocationMapDialog({
                     <button
                       key={index}
                       onClick={() => handleSelectSuggestion(suggestion)}
-                      className="w-full px-4 py-2 text-left hover:bg-accent transition-colors flex items-center gap-2 border-b border-border last:border-b-0"
+                      className="w-full px-3 sm:px-4 py-2 text-left hover:bg-accent transition-colors flex items-center gap-2 border-b border-border last:border-b-0"
                     >
                       <MapPin className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                      <div className="flex-1">
-                        <span className="font-medium text-foreground">
+                      <div className="flex-1 min-w-0">
+                        <span className="font-medium text-foreground text-sm">
                           {suggestion.city}, {suggestion.state}
                         </span>
-                        <span className="text-sm text-muted-foreground ml-2">
+                        <span className="text-xs text-muted-foreground ml-2">
                           {suggestion.zip}
                         </span>
                       </div>
@@ -173,26 +173,26 @@ export function LocationMapDialog({
                 </div>
               )}
             </div>
-            <Button onClick={handleUpdateLocation} className="w-full">
+            <Button onClick={handleUpdateLocation} className="w-full text-sm sm:text-base">
               Update Location & Search
             </Button>
           </div>
 
           {/* Dentist Location Info */}
-          <div className="p-4 bg-muted/50 rounded-lg border border-border">
+          <div className="p-3 sm:p-4 bg-muted/50 rounded-lg border border-border">
             <p className="text-xs font-medium text-muted-foreground mb-1">Dentist Location</p>
-            <p className="text-sm font-medium text-foreground mb-1">{address}</p>
-            <p className="text-sm text-muted-foreground">{distance}</p>
+            <p className="text-xs sm:text-sm font-medium text-foreground mb-1 break-words">{address}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{distance}</p>
           </div>
 
           {/* Map Placeholder - This is where the actual map component will go */}
-          <div className="w-full h-[400px] bg-muted rounded-lg border border-border flex items-center justify-center">
-            <div className="text-center space-y-2">
-              <MapPin className="w-12 h-12 text-muted-foreground mx-auto" />
-              <p className="text-sm text-muted-foreground">
+          <div className="w-full h-[250px] sm:h-[400px] bg-muted rounded-lg border border-border flex items-center justify-center">
+            <div className="text-center space-y-2 px-4">
+              <MapPin className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto" />
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Map integration placeholder
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground hidden sm:block">
                 Add your map component here (Google Maps, Mapbox, etc.)
               </p>
             </div>
@@ -200,28 +200,28 @@ export function LocationMapDialog({
         </div>
 
         {/* Actions - Fixed at bottom */}
-        <div className="pt-4 border-t border-border mt-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="pt-3 sm:pt-4 border-t border-border mt-3 sm:mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full text-xs sm:text-sm"
               onClick={handleOpenDirections}
             >
-              <ExternalLink className="w-4 h-4 mr-2" />
+              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
               Open in Google Maps
             </Button>
             <Button
               variant="secondary"
-              className="w-full"
+              className="w-full text-xs sm:text-sm"
               onClick={handleCopyLink}
             >
-              <Copy className="w-4 h-4 mr-2" />
-              {copied ? "Copied" : "Copy Directions Link"}
+              <Copy className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+              {copied ? "Copied!" : "Copy Directions Link"}
             </Button>
           </div>
           {showCopyHint && (
-            <p className="text-xs text-muted-foreground mt-3">
-              It looks like the preview blocks external sites. Paste the link in a new browser tab.
+            <p className="text-xs text-muted-foreground mt-2 sm:mt-3 text-center">
+              Preview blocks external sites. Paste the link in a new browser tab.
             </p>
           )}
         </div>
