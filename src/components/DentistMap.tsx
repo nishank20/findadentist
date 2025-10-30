@@ -2,6 +2,12 @@ import { useState, useRef } from 'react';
 import { Button } from './ui/button';
 import { Maximize2, Minimize2, MapPin, Navigation, Star, BadgeCheck } from 'lucide-react';
 import { Card } from './ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 
 interface Dentist {
   id: number;
@@ -101,11 +107,12 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
   };
 
   return (
-    <div className={`${
-      isExpanded 
-        ? 'fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right' 
-        : 'relative h-full'
-    } transition-all duration-300`}>
+    <TooltipProvider>
+      <div className={`${
+        isExpanded 
+          ? 'fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right' 
+          : 'relative h-full'
+      } transition-all duration-300`}>
       {/* Dummy Map Background */}
       <div 
         ref={mapRef}
@@ -230,7 +237,14 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
                             {dentist.name}
                           </h3>
                           {dentist.networkProvider && (
-                            <BadgeCheck className="w-4 h-4 text-primary fill-primary/20 flex-shrink-0" />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <BadgeCheck className="w-4 h-4 text-primary fill-primary/20 flex-shrink-0 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-sm">This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.</p>
+                              </TooltipContent>
+                            </Tooltip>
                           )}
                         </div>
                         {dentist.specialty && (
@@ -303,6 +317,7 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
           <p className="text-sm font-medium">Near: {zipCode}</p>
         </div>
       )}
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };

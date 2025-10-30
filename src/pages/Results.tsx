@@ -363,9 +363,21 @@ export default function Results() {
                     <div className="flex-1 space-y-3">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-foreground mb-1">
-                            {dentist.name}
-                          </h3>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-xl font-bold text-foreground">
+                              {dentist.name}
+                            </h3>
+                            {dentist.networkProvider && (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <BadgeCheck className="w-5 h-5 text-primary fill-primary/20 flex-shrink-0 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p className="text-sm">This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
+                          </div>
                           <p className="text-base text-muted-foreground mb-3">{dentist.specialty}</p>
 
                           <div className="flex items-center gap-4 text-sm mb-3">
