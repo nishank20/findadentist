@@ -7,7 +7,6 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, X, User } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
-import DentistMap from "@/components/DentistMap";
 import {
   Tooltip,
   TooltipContent,
@@ -312,24 +311,9 @@ export default function Results() {
             </Button>
           </div>
 
-          {/* Map Section */}
-          <div className="mb-8">
-            <DentistMap 
-              dentists={sortedDentists}
-              onMarkerClick={(dentistId) => {
-                const element = document.getElementById(`dentist-${dentistId}`);
-                element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }}
-            />
-          </div>
-
           <div className="space-y-6">
             {sortedDentists.map((dentist) => (
-              <Card 
-                key={dentist.id} 
-                id={`dentist-${dentist.id}`}
-                className="p-6 border-border/50 hover:shadow-lg transition-all scroll-mt-24"
-              >
+              <Card key={dentist.id} className="p-6 border-border/50 hover:shadow-lg transition-all">
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Profile Image */}
                   <div className="flex-shrink-0">
