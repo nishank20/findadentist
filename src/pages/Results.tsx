@@ -114,6 +114,8 @@ export default function Results() {
   const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<string>("");
+  const [highlightedDentistId, setHighlightedDentistId] = useState<number | null>(null);
+  const dentistRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [mapOpen, setMapOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{
     name: string;
@@ -338,7 +340,15 @@ export default function Results() {
 
               <div className="space-y-4">
               {sortedDentists.map((dentist) => (
-                <Card key={dentist.id} className="p-4 border-border/50 hover:shadow-md transition-all">
+                <Card 
+                  key={dentist.id} 
+                  ref={(el) => dentistRefs.current[dentist.id] = el}
+                  className={`p-4 border-border/50 hover:shadow-md transition-all ${
+                    highlightedDentistId === dentist.id 
+                      ? 'ring-2 ring-primary shadow-lg bg-primary/5' 
+                      : ''
+                  }`}
+                >
                   <div className="flex gap-4">
                     {/* Profile Image */}
                     <div className="flex-shrink-0">
@@ -399,10 +409,14 @@ export default function Results() {
                   longitude: d.longitude,
                 }))}
                 onDentistClick={(dentistId) => {
-                  const dentist = sortedDentists.find(d => d.id === dentistId);
-                  if (dentist) {
-                    handleBookAppointment(dentist.name);
+                  setHighlightedDentistId(dentistId);
+                  // Scroll to the dentist card
+                  const cardElement = dentistRefs.current[dentistId];
+                  if (cardElement) {
+                    cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
+                  // Clear highlight after 3 seconds
+                  setTimeout(() => setHighlightedDentistId(null), 3000);
                 }}
                 zipCode={location}
               />
