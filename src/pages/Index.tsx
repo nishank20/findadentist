@@ -25,8 +25,8 @@ const features = [
   },
   {
     icon: UserCheck,
-    title: "Are you a Dentist?",
-    description: "Ready to join our network? Sign up and connect with patients today",
+    title: "Are you a Dentist? Get Listed Now!",
+    description: "Reach More Patients. Join Dentist Match—Free.",
   },
 ];
 
@@ -77,7 +77,7 @@ export default function Index() {
                       ? () => setCostCalculatorOpen(true) 
                       : feature.title === "Check Your Insurance"
                       ? () => setInsuranceCheckOpen(true)
-                      : feature.title === "Are you a Dentist?"
+                      : feature.title === "Are you a Dentist? Get Listed Now!"
                       ? () => navigate("/dentist-enrollment")
                       : undefined
                   }

@@ -11,13 +11,13 @@ interface FeatureCardProps {
 export const FeatureCard = ({ icon: Icon, title, description, onClick }: FeatureCardProps) => {
   const iconColor = title === "Ask a Question" 
     ? "text-secondary" 
-    : title === "Are you a Dentist?"
+    : title === "Are you a Dentist? Get Listed Now!"
     ? "text-accent-foreground"
     : "text-primary";
     
   const bgColor = title === "Ask a Question" 
     ? "bg-secondary" 
-    : title === "Are you a Dentist?"
+    : title === "Are you a Dentist? Get Listed Now!"
     ? "bg-accent"
     : "bg-primary";
   
