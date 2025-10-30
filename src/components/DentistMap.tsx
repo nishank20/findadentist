@@ -32,6 +32,7 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProp
     if ((e.target as HTMLElement).closest('.marker-pin')) return;
     setIsDragging(true);
     setDragStart({ x: e.clientX - mapOffset.x, y: e.clientY - mapOffset.y });
+    setSelectedDentist(null); // Clear selection when starting to drag
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -50,6 +51,7 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProp
     const touch = e.touches[0];
     setIsDragging(true);
     setDragStart({ x: touch.clientX - mapOffset.x, y: touch.clientY - mapOffset.y });
+    setSelectedDentist(null); // Clear selection when starting to drag
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -64,12 +66,15 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProp
     setIsDragging(false);
   };
 
-  const handleMarkerClick = (dentistId: number) => {
+  const handleMarkerClick = (e: React.MouseEvent, dentistId: number) => {
+    e.stopPropagation();
+    if (isDragging) return; // Don't select if dragging
     setSelectedDentist(selectedDentist === dentistId ? null : dentistId);
     if (onDentistClick) {
       onDentistClick(dentistId);
     }
   };
+
 
   // Convert lat/lng to percentage positions for dummy map (normalized around Jersey City area)
   const getMarkerPosition = (lat: number, lng: number) => {
@@ -147,7 +152,7 @@ export const DentistMap = ({ dentists, onDentistClick, zipCode }: DentistMapProp
                 transform: `translate(calc(-50% + ${mapOffset.x}px), calc(-50% + ${mapOffset.y}px))`,
                 transition: isDragging ? 'none' : 'transform 0.1s ease-out'
               }}
-              onClick={() => handleMarkerClick(dentist.id)}
+              onClick={(e) => handleMarkerClick(e, dentist.id)}
             >
               {/* Marker Pin */}
               <div className={`relative transition-all duration-200 cursor-pointer group ${isSelected ? 'scale-125' : 'group-hover:scale-110'}`}>
