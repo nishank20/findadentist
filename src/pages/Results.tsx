@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, X, User } from "lucide-react";
+import { MapPin, Star, Search, SlidersHorizontal, ScanLine, BadgeCheck, X, User, ExternalLink } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { BookingDialog } from "@/components/BookingDialog";
 import { LocationMapDialog } from "@/components/LocationMapDialog";
@@ -397,16 +397,30 @@ export default function Results() {
                             </div>
                           </div>
 
-                          <button 
-                            onClick={() => {
-                              setHighlightedDentistId(dentist.id);
-                              setTimeout(() => setHighlightedDentistId(null), 3000);
-                            }}
-                            className="flex items-start gap-2 text-sm text-muted-foreground mb-4 hover:text-primary transition-colors cursor-pointer group w-full text-left"
-                          >
-                            <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 group-hover:text-primary" />
-                            <span className="group-hover:underline">{dentist.address}</span>
-                          </button>
+                          <div className="flex items-start gap-2 mb-4">
+                            <button 
+                              onClick={() => {
+                                setHighlightedDentistId(dentist.id);
+                                setTimeout(() => setHighlightedDentistId(null), 3000);
+                              }}
+                              className="flex items-start gap-2 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer group flex-1 text-left"
+                            >
+                              <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 group-hover:text-primary" />
+                              <span className="group-hover:underline">{dentist.address}</span>
+                            </button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-auto p-1 hover:bg-primary/10"
+                              onClick={() => {
+                                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dentist.address)}`;
+                                window.open(mapsUrl, '_blank');
+                              }}
+                              title="Open in Google Maps"
+                            >
+                              <ExternalLink className="w-4 h-4 text-primary" />
+                            </Button>
+                          </div>
 
                           <div className="space-y-2">
                             <p className="text-sm font-semibold text-foreground">Accepted Insurance:</p>
