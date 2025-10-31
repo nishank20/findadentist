@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { User, HelpCircle, Menu, X } from "lucide-react";
+import { User, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import dentalLogo from "@/assets/dental-logo.png";
 import { useState } from "react";
@@ -33,19 +33,6 @@ export const Header = () => {
                 Immediate Online Emergency Visit
               </a>
             </Button>
-            <a 
-              href="https://member.dental.com/sign-up" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-            >
-              My Account
-            </a>
-            <Link 
-              to="/support" 
-              className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-2"
-            >
-              <HelpCircle className="w-4 h-4" />
-              Contact us
-            </Link>
             <Button variant="secondary" size="sm" asChild>
               <Link to="/dentist-enrollment">
                 Are you a Dentist? Get Listed!
@@ -84,25 +71,6 @@ export const Header = () => {
                   <a href="https://member.dental.com/sign-up">
                     Immediate Online Emergency Visit
                   </a>
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="w-full"
-                  asChild
-                >
-                  <a href="https://member.dental.com/sign-up">
-                    My Account
-                  </a>
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="w-full justify-start gap-2"
-                  asChild
-                >
-                  <Link to="/support" onClick={() => setMobileMenuOpen(false)}>
-                    <HelpCircle className="w-4 h-4" />
-                    Contact us
-                  </Link>
                 </Button>
                 <Button 
                   variant="secondary"
