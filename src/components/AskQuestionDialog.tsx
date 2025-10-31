@@ -48,7 +48,7 @@ export const AskQuestionDialog = ({ open, onOpenChange }: AskQuestionDialogProps
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">Name <span className="text-destructive">*</span></Label>
             <Input
               id="name"
               placeholder="Enter your name"
@@ -58,7 +58,7 @@ export const AskQuestionDialog = ({ open, onOpenChange }: AskQuestionDialogProps
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email <span className="text-destructive">*</span></Label>
             <Input
               id="email"
               type="email"
@@ -69,7 +69,7 @@ export const AskQuestionDialog = ({ open, onOpenChange }: AskQuestionDialogProps
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message">Message <span className="text-destructive">*</span></Label>
             <Textarea
               id="message"
               placeholder="Type your dental question here..."
