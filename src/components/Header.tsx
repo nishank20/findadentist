@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { User, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import dentalLogo from "@/assets/dental-logo.png";
 import { useState } from "react";
@@ -43,10 +43,14 @@ export const Header = () => {
                 Talk to a Dentist Now — 24/7
               </a>
             </Button>
-            <Button variant="outline" size="sm" className="gap-2 border-secondary text-secondary hover:bg-secondary/10" asChild>
+            <Button variant="outline" size="sm" className="gap-2" asChild>
               <a href="https://member.dental.com/login">
-                <User className="w-4 h-4" />
-                Sign In
+                Login
+              </a>
+            </Button>
+            <Button variant="default" size="sm" className="gap-2" asChild>
+              <a href="https://member.dental.com/sign-up">
+                Sign Up
               </a>
             </Button>
           </nav>
@@ -91,13 +95,21 @@ export const Header = () => {
                   </a>
                 </Button>
                 <Button 
-                  variant="secondary" 
-                  className="w-full gap-2"
+                  variant="outline" 
+                  className="w-full"
                   asChild
                 >
                   <a href="https://member.dental.com/login">
-                    <User className="w-4 h-4" />
-                    Sign In
+                    Login
+                  </a>
+                </Button>
+                <Button 
+                  variant="default" 
+                  className="w-full"
+                  asChild
+                >
+                  <a href="https://member.dental.com/sign-up">
+                    Sign Up
                   </a>
                 </Button>
               </nav>
