@@ -5,6 +5,7 @@ import { FeatureCard } from "@/components/FeatureCard";
 import { LocationSearch } from "@/components/LocationSearch";
 import { CostCalculatorDialog } from "@/components/CostCalculatorDialog";
 import { InsuranceCheckDialog } from "@/components/InsuranceCheckDialog";
+import { AskQuestionDialog } from "@/components/AskQuestionDialog";
 import { MessageSquare, Shield, Calculator, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -34,6 +35,7 @@ const features = [
 export default function Index() {
   const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
   const [insuranceCheckOpen, setInsuranceCheckOpen] = useState(false);
+  const [askQuestionOpen, setAskQuestionOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -46,6 +48,10 @@ export default function Index() {
       <InsuranceCheckDialog 
         open={insuranceCheckOpen} 
         onOpenChange={setInsuranceCheckOpen}
+      />
+      <AskQuestionDialog 
+        open={askQuestionOpen} 
+        onOpenChange={setAskQuestionOpen}
       />
       
       {/* Hero Section */}
@@ -78,6 +84,8 @@ export default function Index() {
                       ? () => setCostCalculatorOpen(true) 
                       : feature.title === "Check Your Insurance"
                       ? () => setInsuranceCheckOpen(true)
+                      : feature.title === "Ask a Question"
+                      ? () => setAskQuestionOpen(true)
                       : undefined
                   }
                 />
