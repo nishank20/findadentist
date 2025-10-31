@@ -23,6 +23,11 @@ export const Header = () => {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/dentist-enrollment">
+                Are you a Dentist? Get Listed!
+              </Link>
+            </Button>
             <Button 
               variant="destructive" 
               size="sm" 
@@ -32,11 +37,6 @@ export const Header = () => {
               <a href="https://member.dental.com/sign-up">
                 Immediate Online Emergency Visit
               </a>
-            </Button>
-            <Button variant="secondary" size="sm" asChild>
-              <Link to="/dentist-enrollment">
-                Are you a Dentist? Get Listed!
-              </Link>
             </Button>
             <Button variant="hero" size="sm" className="gap-2" asChild>
               <a href="https://member.dental.com/sign-up">
@@ -68,15 +68,6 @@ export const Header = () => {
               </SheetHeader>
               <nav className="flex flex-col gap-4 mt-6">
                 <Button 
-                  variant="destructive" 
-                  className="w-full"
-                  asChild
-                >
-                  <a href="https://member.dental.com/sign-up">
-                    Immediate Online Emergency Visit
-                  </a>
-                </Button>
-                <Button 
                   variant="secondary"
                   className="w-full"
                   asChild
@@ -84,6 +75,15 @@ export const Header = () => {
                   <Link to="/dentist-enrollment" onClick={() => setMobileMenuOpen(false)}>
                     Are you a Dentist? Get Listed!
                   </Link>
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  className="w-full"
+                  asChild
+                >
+                  <a href="https://member.dental.com/sign-up">
+                    Immediate Online Emergency Visit
+                  </a>
                 </Button>
                 <Button 
                   variant="hero" 
