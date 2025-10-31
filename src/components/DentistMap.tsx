@@ -29,9 +29,10 @@ interface DentistMapProps {
   onBookAppointment?: (dentistId: number) => void;
   zipCode?: string;
   userLocation?: { latitude: number; longitude: number };
+  highlightedDentistId?: number | null;
 }
 
-export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCode, userLocation }: DentistMapProps) => {
+export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCode, userLocation, highlightedDentistId }: DentistMapProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<number | null>(null);
   const [mapOffset, setMapOffset] = useState({ x: 0, y: 0 });
@@ -191,6 +192,7 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
         {dentists.map((dentist) => {
           const position = getMarkerPosition(dentist.latitude, dentist.longitude);
           const isSelected = selectedDentist === dentist.id;
+          const isHighlighted = highlightedDentistId === dentist.id;
           
           return (
             <div
@@ -204,11 +206,18 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
               }}
               onClick={(e) => handleMarkerClick(e, dentist.id)}
             >
+              {/* Pulsing ring for highlighted marker */}
+              {isHighlighted && (
+                <div className="absolute inset-0 -m-2 animate-ping">
+                  <div className="w-12 h-12 rounded-full bg-primary/30" />
+                </div>
+              )}
+              
               {/* Marker Pin */}
-              <div className={`relative transition-all duration-200 cursor-pointer group ${isSelected ? 'scale-125' : 'group-hover:scale-110'}`}>
+              <div className={`relative transition-all duration-200 cursor-pointer group ${isSelected ? 'scale-125' : isHighlighted ? 'scale-125 animate-bounce' : 'group-hover:scale-110'}`}>
                 <MapPin 
                   className={`w-8 h-8 transition-colors ${
-                    isSelected 
+                    isSelected || isHighlighted
                       ? 'fill-primary text-primary-foreground' 
                       : 'fill-primary/80 text-primary-foreground'
                   }`}

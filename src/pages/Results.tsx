@@ -491,6 +491,7 @@ export default function Results() {
                 }}
                 zipCode={location}
                 userLocation={{ latitude: 40.7178, longitude: -74.0431 }}
+                highlightedDentistId={highlightedDentistId}
               />
             </div>
           </div>
