@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Button } from './ui/button';
-import { Maximize2, Minimize2, MapPin, Navigation, Star, BadgeCheck } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Navigation, Star, BadgeCheck, ExternalLink } from 'lucide-react';
 import { Card } from './ui/card';
 import {
   Tooltip,
@@ -312,14 +312,28 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
       </div>
 
       {/* Controls */}
-      <Button
-        variant="secondary"
-        size="icon"
-        className="absolute top-4 left-4 z-10 shadow-lg"
-        onClick={toggleExpand}
-      >
-        {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-      </Button>
+      <div className="absolute top-4 left-4 z-10 flex gap-2">
+        <Button
+          variant="secondary"
+          size="icon"
+          className="shadow-lg"
+          onClick={toggleExpand}
+        >
+          {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+        </Button>
+        <Button
+          variant="secondary"
+          size="icon"
+          className="shadow-lg"
+          onClick={() => {
+            const mapUrl = `https://www.google.com/maps/search/dentist/@${userLocation?.latitude || 40.7178},${userLocation?.longitude || -74.0431},14z`;
+            window.open(mapUrl, '_blank');
+          }}
+          title="Open in Google Maps"
+        >
+          <ExternalLink className="w-4 h-4" />
+        </Button>
+      </div>
 
       {zipCode && (
         <div className="absolute top-4 right-4 z-10 bg-background/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border">
