@@ -288,7 +288,7 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
                         }
                       }}
                     >
-                      Book Now
+                      Request Appointment
                     </Button>
                   </div>
                   {/* Arrow pointer */}
