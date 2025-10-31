@@ -879,11 +879,9 @@ export default function DentistEnrollment() {
             <div className="text-center text-sm text-gray-600 pt-8 space-y-2">
               <p>Read more about our policies:</p>
               <div className="flex flex-wrap justify-center gap-2">
-                <a href="#" className="text-purple-600 hover:text-purple-700 font-medium underline">Terms and Conditions</a>
+                <a href="https://dental.com/terms-and-conditions-of-use" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:text-purple-700 font-medium underline">Terms and Conditions</a>
                 <span>•</span>
-                <a href="#" className="text-purple-600 hover:text-purple-700 font-medium underline">Privacy Practices</a>
-                <span>•</span>
-                <a href="#" className="text-purple-600 hover:text-purple-700 font-medium underline">Provider Notice</a>
+                <a href="https://dental.com/privacy-practices" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:text-purple-700 font-medium underline">Privacy Practices</a>
               </div>
             </div>
           </form>
