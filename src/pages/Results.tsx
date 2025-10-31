@@ -438,14 +438,28 @@ export default function Results() {
                           </div>
                         </div>
 
-                        <Button 
-                          size="lg"
-                          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 whitespace-nowrap"
-                          onClick={() => handleBookAppointment(dentist.name)}
-                        >
-                          <User className="w-4 h-4 mr-2" />
-                          Request Appointment
-                        </Button>
+                        <div className="flex flex-col gap-2">
+                          <Button 
+                            size="lg"
+                            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 whitespace-nowrap"
+                            onClick={() => handleBookAppointment(dentist.name)}
+                          >
+                            <User className="w-4 h-4 mr-2" />
+                            Request Appointment
+                          </Button>
+                          <Button 
+                            size="sm"
+                            variant="outline"
+                            className="whitespace-nowrap"
+                            onClick={() => {
+                              const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dentist.address)}`;
+                              window.open(mapsUrl, '_blank');
+                            }}
+                          >
+                            <MapPin className="w-4 h-4 mr-2" />
+                            Get Directions
+                          </Button>
+                        </div>
                       </div>
 
                       <div className="pt-3 border-t border-border">
