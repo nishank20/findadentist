@@ -397,10 +397,16 @@ export default function Results() {
                             </div>
                           </div>
 
-                          <div className="flex items-start gap-2 text-sm text-muted-foreground mb-4">
-                            <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                            <span>{dentist.address}</span>
-                          </div>
+                          <button 
+                            onClick={() => {
+                              setHighlightedDentistId(dentist.id);
+                              setTimeout(() => setHighlightedDentistId(null), 3000);
+                            }}
+                            className="flex items-start gap-2 text-sm text-muted-foreground mb-4 hover:text-primary transition-colors cursor-pointer group w-full text-left"
+                          >
+                            <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 group-hover:text-primary" />
+                            <span className="group-hover:underline">{dentist.address}</span>
+                          </button>
 
                           <div className="space-y-2">
                             <p className="text-sm font-semibold text-foreground">Accepted Insurance:</p>
