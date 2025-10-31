@@ -2,7 +2,6 @@ import { useState, useRef } from 'react';
 import { Button } from './ui/button';
 import { Maximize2, Minimize2, MapPin, Navigation, Star, BadgeCheck, ExternalLink } from 'lucide-react';
 import { Card } from './ui/card';
-import { DentistCard } from './DentistCard';
 import {
   Tooltip,
   TooltipContent,
@@ -228,21 +227,73 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
 
               {/* Dentist Card Popup at Marker Location */}
               {isSelected && isExpanded && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-[600px] max-w-[90vw] shadow-2xl pointer-events-auto">
-                  <DentistCard
-                    dentist={dentist}
-                    onBookAppointment={(e) => {
-                      e?.stopPropagation?.();
-                      if (onBookAppointment) {
-                        onBookAppointment(dentist.id);
-                      }
-                    }}
-                    onHighlight={() => {}}
-                    showReviews={false}
-                  />
+                <Card className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-80 shadow-2xl overflow-hidden pointer-events-auto">
+                  <div className="p-4 space-y-3">
+                    <div className="flex gap-3">
+                      {/* Profile Image */}
+                      <div className="flex-shrink-0">
+                        <img
+                          src={dentist.image || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop"}
+                          alt={dentist.name}
+                          className="w-14 h-14 rounded-full object-cover ring-2 ring-border"
+                        />
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-base font-bold text-foreground truncate">
+                            {dentist.name}
+                          </h3>
+                          {dentist.networkProvider && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <BadgeCheck className="w-4 h-4 text-primary fill-primary/20 flex-shrink-0 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-sm">This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                        {dentist.specialty && (
+                          <p className="text-sm text-muted-foreground">{dentist.specialty}</p>
+                        )}
+
+                        <div className="flex items-center gap-3 text-xs mt-1">
+                          {dentist.rating && (
+                            <div className="flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-primary text-primary" />
+                              <span className="font-semibold">{dentist.rating}</span>
+                              {dentist.reviews && (
+                                <span className="text-muted-foreground">({dentist.reviews})</span>
+                              )}
+                            </div>
+                          )}
+                          {dentist.distance && (
+                            <span className="text-muted-foreground">{dentist.distance}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground">{dentist.address}</p>
+
+                    <Button 
+                      className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onBookAppointment) {
+                          onBookAppointment(dentist.id);
+                        }
+                      }}
+                    >
+                      Book Now
+                    </Button>
+                  </div>
                   {/* Arrow pointer */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-3 h-3 bg-background border-r border-b border-border" />
-                </div>
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-background border-r border-b border-border" />
+                </Card>
               )}
 
               {/* Simple Info Popup for non-expanded mode */}
