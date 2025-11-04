@@ -176,17 +176,9 @@ export const InsuranceCheckDialog = ({
                   Good news! Most dental insurance plans now include coverage for dental.com services. Our exclusive arrangements encompass popular providers like:
                 </p>
                 <ul className="space-y-2 ml-6">
-                  <li className="list-disc">Cigna Dental</li>
-                  <li className="list-disc">Humana Dental</li>
-                  <li className="list-disc">United Concordia Dental</li>
-                  <li className="list-disc">MetLife Dental</li>
+                  <li className="list-disc">Aetna</li>
+                  <li className="list-disc">Blue Cross Blue Shield</li>
                 </ul>
-                <p className="text-sm text-muted-foreground">
-                  For many of these company's plan members, these services are fully covered. If you're eligible, we'll handle the billing, and you won't incur any out-of-pocket costs.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Don't worry if you have a different dental insurance plan—dental.com is here to assist. We'll gladly submit an insurance claim on your behalf, and any payment will be sent directly to you. The initial fee for treatment is $59, but if your dental plan covers it, you could be reimbursed for some or all the amount that you paid.
-                </p>
               </div>
             </Card>
 
