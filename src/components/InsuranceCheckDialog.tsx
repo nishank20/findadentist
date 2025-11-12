@@ -26,6 +26,7 @@ const insuranceSchema = z.object({
   relation: z.string().min(1, "Please select your relation to subscriber"),
   subscriberFirstName: z.string().min(1, "First name is required"),
   subscriberLastName: z.string().min(1, "Last name is required"),
+  subscriberEmail: z.string().email("Please enter a valid email address"),
   subscriberGender: z.string().min(1, "Please select gender"),
   subscriberDob: z.string().min(1, "Date of birth is required"),
   subscriberId: z.string().min(1, "Subscriber ID is required"),
@@ -81,6 +82,7 @@ export const InsuranceCheckDialog = ({
     relation: "",
     subscriberFirstName: "",
     subscriberLastName: "",
+    subscriberEmail: "",
     subscriberGender: "",
     subscriberDob: "",
     subscriberId: "",
@@ -136,6 +138,7 @@ export const InsuranceCheckDialog = ({
       relation: "",
       subscriberFirstName: "",
       subscriberLastName: "",
+      subscriberEmail: "",
       subscriberGender: "",
       subscriberDob: "",
       subscriberId: "",
@@ -328,6 +331,23 @@ export const InsuranceCheckDialog = ({
                 />
                 {errors.subscriberLastName && (
                   <p className="text-sm text-destructive">{errors.subscriberLastName}</p>
+                )}
+              </div>
+
+              <div className="md:col-span-2 space-y-2">
+                <Label htmlFor="subscriberEmail">
+                  Subscriber Email <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="subscriberEmail"
+                  type="email"
+                  placeholder="email@example.com"
+                  value={formData.subscriberEmail}
+                  onChange={(e) => handleInputChange("subscriberEmail", e.target.value)}
+                  className={errors.subscriberEmail ? "border-destructive" : ""}
+                />
+                {errors.subscriberEmail && (
+                  <p className="text-sm text-destructive">{errors.subscriberEmail}</p>
                 )}
               </div>
 
