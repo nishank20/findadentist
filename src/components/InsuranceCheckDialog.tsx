@@ -43,13 +43,12 @@ interface InsuranceCheckDialogProps {
 }
 
 const insuranceCarriers = [
+  "Aetna Dental",
+  "Blue Cross Blue Shield",
   "Cigna Dental",
   "Humana Dental",
-  "United Concordia Dental",
   "MetLife Dental",
-  "Delta Dental",
-  "Aetna Dental",
-  "Guardian Dental",
+  "United Concordia Dental",
   "Other",
 ];
 
