@@ -184,6 +184,7 @@ export const InsuranceCheckDialog = ({
                   <li className="list-disc">Cigna</li>
                   <li className="list-disc">MetLife</li>
                   <li className="list-disc">United Concordia</li>
+                  <li className="list-disc">Humana</li>
                 </ul>
               </div>
             </Card>
