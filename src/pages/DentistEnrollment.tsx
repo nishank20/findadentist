@@ -29,7 +29,6 @@ const enrollmentSchema = z.object({
   email: z.string().trim().min(1, "Email is required").email("Invalid email address").max(255),
   website: z.string().trim().max(500).optional(),
   npi: z.string().trim().min(1, "NPI number is required").max(50),
-  acceptingNewPatients: z.enum(["yes", "no"], { required_error: "Please select an option" }),
 });
 
 export default function DentistEnrollment() {
@@ -50,10 +49,6 @@ export default function DentistEnrollment() {
   
   const [practiceTypes, setPracticeTypes] = useState({
     gp: false,
-    fullFamily: false,
-    cosmetic: false,
-    anxiousPatients: false,
-    afterHours: false,
     pediatric: false,
     orthodontist: false,
     periodontist: false,
@@ -62,15 +57,7 @@ export default function DentistEnrollment() {
   });
   const [otherPracticeType, setOtherPracticeType] = useState("");
   
-  const [paymentOptions, setPaymentOptions] = useState({
-    inHouse: false,
-    careCredit: false,
-    membershipPlans: false,
-  });
-  
-  const [acceptingNewPatients, setAcceptingNewPatients] = useState<"yes" | "no">("yes");
-  const [insuranceType, setInsuranceType] = useState<"none" | "contracted">("contracted");
-  const [insurancePlans, setInsurancePlans] = useState("");
+  const [insurancePlans, setInsurancePlans] = useState<string[]>([]);
   const [languages, setLanguages] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [contactName, setContactName] = useState("");
@@ -83,10 +70,6 @@ export default function DentistEnrollment() {
 
   const handlePracticeTypeChange = (key: string, checked: boolean) => {
     setPracticeTypes((prev) => ({ ...prev, [key]: checked }));
-  };
-
-  const handlePaymentOptionChange = (key: string, checked: boolean) => {
-    setPaymentOptions((prev) => ({ ...prev, [key]: checked }));
   };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +99,6 @@ export default function DentistEnrollment() {
         email,
         website,
         npi,
-        acceptingNewPatients,
       });
 
       if (!result.success) {
@@ -504,106 +486,6 @@ export default function DentistEnrollment() {
                       </Label>
                     </div>
 
-                    {practiceTypes.gp && (
-                      <div className="ml-10 space-y-3 animate-fade-in">
-                        <div className="flex items-center space-x-3 p-2 hover:bg-purple-50 rounded-lg transition-colors">
-                          <Checkbox
-                            id="fullFamily"
-                            checked={practiceTypes.fullFamily}
-                            onCheckedChange={(checked) =>
-                              handlePracticeTypeChange("fullFamily", checked as boolean)
-                            }
-                          />
-                          <Label htmlFor="fullFamily" className="cursor-pointer text-gray-700">
-                            Full family care
-                          </Label>
-                        </div>
-
-                        <div className="flex items-center space-x-3 p-2 hover:bg-purple-50 rounded-lg transition-colors">
-                          <Checkbox
-                            id="cosmetic"
-                            checked={practiceTypes.cosmetic}
-                            onCheckedChange={(checked) =>
-                              handlePracticeTypeChange("cosmetic", checked as boolean)
-                            }
-                          />
-                          <Label htmlFor="cosmetic" className="cursor-pointer text-gray-700">
-                            Cosmetic care
-                          </Label>
-                        </div>
-
-                        <div className="flex items-center space-x-3 p-2 hover:bg-purple-50 rounded-lg transition-colors">
-                          <Checkbox
-                            id="anxiousPatients"
-                            checked={practiceTypes.anxiousPatients}
-                            onCheckedChange={(checked) =>
-                              handlePracticeTypeChange("anxiousPatients", checked as boolean)
-                            }
-                          />
-                          <Label htmlFor="anxiousPatients" className="cursor-pointer text-gray-700">
-                            Willing to take anxious patients
-                          </Label>
-                        </div>
-
-                        <div className="flex items-center space-x-3 p-2 hover:bg-purple-50 rounded-lg transition-colors">
-                          <Checkbox
-                            id="afterHours"
-                            checked={practiceTypes.afterHours}
-                            onCheckedChange={(checked) =>
-                              handlePracticeTypeChange("afterHours", checked as boolean)
-                            }
-                          />
-                          <Label htmlFor="afterHours" className="cursor-pointer text-gray-700">
-                            After hours emergencies
-                          </Label>
-                        </div>
-
-                        <div className="border-t pt-3 mt-3">
-                          <p className="text-sm font-medium text-gray-700 mb-3">Payment Options:</p>
-                          <div className="space-y-2">
-                            <div className="flex items-center space-x-3 p-2 hover:bg-purple-50 rounded-lg transition-colors">
-                              <Checkbox
-                                id="inHouse"
-                                checked={paymentOptions.inHouse}
-                                onCheckedChange={(checked) =>
-                                  handlePaymentOptionChange("inHouse", checked as boolean)
-                                }
-                              />
-                              <Label htmlFor="inHouse" className="cursor-pointer text-gray-700">
-                                In-house financing
-                              </Label>
-                            </div>
-
-                            <div className="flex items-center space-x-3 p-2 hover:bg-purple-50 rounded-lg transition-colors">
-                              <Checkbox
-                                id="careCredit"
-                                checked={paymentOptions.careCredit}
-                                onCheckedChange={(checked) =>
-                                  handlePaymentOptionChange("careCredit", checked as boolean)
-                                }
-                              />
-                              <Label htmlFor="careCredit" className="cursor-pointer text-gray-700">
-                                CareCredit
-                              </Label>
-                            </div>
-
-                            <div className="flex items-center space-x-3 p-2 hover:bg-purple-50 rounded-lg transition-colors">
-                              <Checkbox
-                                id="membershipPlans"
-                                checked={paymentOptions.membershipPlans}
-                                onCheckedChange={(checked) =>
-                                  handlePaymentOptionChange("membershipPlans", checked as boolean)
-                                }
-                              />
-                              <Label htmlFor="membershipPlans" className="cursor-pointer text-gray-700">
-                                Membership plans
-                              </Label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
                     <div className="flex items-center space-x-3 p-3 hover:bg-purple-50 rounded-lg transition-colors">
                       <Checkbox
                         id="pediatric"
@@ -686,59 +568,31 @@ export default function DentistEnrollment() {
                   </div>
                 </div>
 
-                {/* Patient Acceptance */}
-                <div className="space-y-4 bg-blue-50 rounded-2xl p-6 border border-blue-200">
-                  <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    Accepting New Patients?<span className="text-red-500">*</span>
-                  </h2>
-                  <RadioGroup value={acceptingNewPatients} onValueChange={(value: "yes" | "no") => {
-                    setAcceptingNewPatients(value);
-                    setErrors((prev) => ({ ...prev, acceptingNewPatients: "" }));
-                  }} className="flex gap-6">
-                    <div className="flex items-center space-x-3 bg-white p-4 rounded-xl flex-1 cursor-pointer hover:shadow-md transition-shadow">
-                      <RadioGroupItem value="yes" id="accepting-yes" className="h-5 w-5" />
-                      <Label htmlFor="accepting-yes" className="cursor-pointer font-medium flex-1">
-                        Yes
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-white p-4 rounded-xl flex-1 cursor-pointer hover:shadow-md transition-shadow">
-                      <RadioGroupItem value="no" id="accepting-no" className="h-5 w-5" />
-                      <Label htmlFor="accepting-no" className="cursor-pointer font-medium flex-1">
-                        No
-                      </Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
                 {/* Insurance */}
                 <div className="space-y-4 bg-green-50 rounded-2xl p-6 border border-green-200">
                   <h2 className="text-lg font-semibold text-gray-800">Insurance Accepted</h2>
-                  <RadioGroup value={insuranceType} onValueChange={(value: "none" | "contracted") => setInsuranceType(value)} className="space-y-3">
-                    <div className="flex items-center space-x-3 bg-white p-4 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
-                      <RadioGroupItem value="none" id="insurance-none" className="h-5 w-5" />
-                      <Label htmlFor="insurance-none" className="cursor-pointer flex-1">
-                        We do not accept insurance, but we will help patients bill for it
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-3 bg-white p-4 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
-                      <RadioGroupItem value="contracted" id="insurance-contracted" className="h-5 w-5" />
-                      <Label htmlFor="insurance-contracted" className="cursor-pointer flex-1">
-                        List contracted insurance plans
-                      </Label>
-                    </div>
-                  </RadioGroup>
+                  <p className="text-sm text-gray-600 mb-4">Select all insurance plans your practice accepts</p>
                   
-                  {insuranceType === "contracted" && (
-                    <div className="animate-fade-in">
-                      <Textarea
-                        placeholder="List all insurance plans accepted (one per line)"
-                        value={insurancePlans}
-                        onChange={(e) => setInsurancePlans(e.target.value)}
-                        rows={5}
-                        className="bg-white"
-                      />
-                    </div>
-                  )}
+                  <div className="space-y-3 bg-white rounded-xl p-4">
+                    {["Aetna Dental", "Blue Cross Blue Shield", "Cigna Dental", "Humana Dental", "MetLife Dental", "United Concordia Dental"].map((insurance) => (
+                      <div key={insurance} className="flex items-center space-x-3 p-2 hover:bg-green-50 rounded-lg transition-colors">
+                        <Checkbox
+                          id={insurance}
+                          checked={insurancePlans.includes(insurance)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setInsurancePlans((prev) => [...prev, insurance]);
+                            } else {
+                              setInsurancePlans((prev) => prev.filter((p) => p !== insurance));
+                            }
+                          }}
+                        />
+                        <Label htmlFor={insurance} className="cursor-pointer flex-1">
+                          {insurance}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Optional Enhancements */}
