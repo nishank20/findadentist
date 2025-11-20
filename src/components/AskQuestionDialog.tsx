@@ -41,7 +41,7 @@ export const AskQuestionDialog = ({ open, onOpenChange }: AskQuestionDialogProps
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Ask a Question</DialogTitle>
+          <DialogTitle>Ask a Dentist</DialogTitle>
           <DialogDescription>
             Submit your dental question and a dentist will respond to you.
           </DialogDescription>
