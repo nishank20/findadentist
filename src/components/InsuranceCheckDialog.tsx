@@ -71,7 +71,7 @@ export const InsuranceCheckDialog = ({
   open,
   onOpenChange,
 }: InsuranceCheckDialogProps) => {
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [eligibility, setEligibility] = useState<"eligible" | "not-eligible" | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
