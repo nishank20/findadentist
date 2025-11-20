@@ -4,17 +4,11 @@ import { Footer } from "@/components/Footer";
 import { FeatureCard } from "@/components/FeatureCard";
 import { LocationSearch } from "@/components/LocationSearch";
 import { CostCalculatorDialog } from "@/components/CostCalculatorDialog";
-import { InsuranceCheckDialog } from "@/components/InsuranceCheckDialog";
 import { AskQuestionDialog } from "@/components/AskQuestionDialog";
-import { MessageSquare, Shield, Calculator, UserCheck } from "lucide-react";
+import { MessageSquare, Calculator, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const features = [
-  {
-    icon: Shield,
-    title: "Check Your Insurance",
-    description: "We'll run an insurance check to verify your eligibility and analyze your benefits",
-  },
   {
     icon: Calculator,
     title: "Cost Calculator",
@@ -34,7 +28,6 @@ const features = [
 
 export default function Index() {
   const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
-  const [insuranceCheckOpen, setInsuranceCheckOpen] = useState(false);
   const [askQuestionOpen, setAskQuestionOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -44,10 +37,6 @@ export default function Index() {
       <CostCalculatorDialog 
         open={costCalculatorOpen} 
         onOpenChange={setCostCalculatorOpen}
-      />
-      <InsuranceCheckDialog 
-        open={insuranceCheckOpen} 
-        onOpenChange={setInsuranceCheckOpen}
       />
       <AskQuestionDialog 
         open={askQuestionOpen} 
@@ -82,8 +71,6 @@ export default function Index() {
                   onClick={
                     feature.title === "Cost Calculator" 
                       ? () => setCostCalculatorOpen(true) 
-                      : feature.title === "Check Your Insurance"
-                      ? () => setInsuranceCheckOpen(true)
                       : feature.title === "Ask a Question"
                       ? () => setAskQuestionOpen(true)
                       : undefined
