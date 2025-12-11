@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "@/components/Footer";
+import dentistIntroImage from "@/assets/dentist-intro.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -196,15 +197,10 @@ export default function DentistEnrollment() {
 
             {/* Right Image */}
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-transparent z-10 pointer-events-none" 
-                   style={{
-                     clipPath: 'polygon(0 0, 30% 0, 15% 50%, 30% 100%, 0 100%)'
-                   }}
-              />
               <img 
-                src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=800&q=80"
+                src={dentistIntroImage}
                 alt="Professional dentist smiling"
-                className="w-full h-auto rounded-lg object-cover"
+                className="w-full h-auto object-cover"
               />
             </div>
           </div>
