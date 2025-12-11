@@ -221,17 +221,25 @@ export const InsuranceCheckDialog = ({
             </div>
 
             {eligibility === "eligible" ? (
-              <Card className="p-6 space-y-4">
-                <h4 className="font-semibold flex items-center gap-2">
-                  <Info className="w-5 h-5 text-primary" />
-                  What This Means
-                </h4>
-                <ul className="space-y-2 text-sm text-muted-foreground ml-6">
-                  <li className="list-disc">No out-of-pocket costs for covered services</li>
-                  <li className="list-disc">We'll handle all billing with your insurance</li>
-                  <li className="list-disc">You can proceed with booking your appointment</li>
-                </ul>
-              </Card>
+              <>
+                <p className="text-sm text-muted-foreground">
+                  As of {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}, our electronic eligibility check indicates that {formData.subscriberFirstName} {formData.subscriberLastName} is eligible for dental benefits under your plan listed below. Please note that this information is based on the most recent data provided by your insurer and does not guarantee coverage for specific services. Final determination of benefits will be made by your insurance carrier at the time of claim processing.
+                </p>
+
+                <Card className="p-4 bg-muted/30">
+                  <div className="space-y-2 text-sm">
+                    <p><span className="font-medium">NAME:</span> {formData.subscriberFirstName} {formData.subscriberLastName}</p>
+                    <p className="flex items-center gap-2">
+                      <span className="font-medium">INSURANCE CARRIER:</span>
+                      <span className="bg-primary text-primary-foreground px-3 py-1 rounded text-xs font-medium">
+                        {formData.carrier.toUpperCase().replace(' DENTAL', '')}
+                      </span>
+                    </p>
+                    <p><span className="font-medium">SUBSCRIBER ID:</span> {formData.subscriberId}</p>
+                    <p><span className="font-medium">GROUP #:</span> {formData.groupNo}</p>
+                  </div>
+                </Card>
+              </>
             ) : (
               <>
                 <p className="text-sm text-muted-foreground">
