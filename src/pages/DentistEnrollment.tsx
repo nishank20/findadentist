@@ -196,12 +196,12 @@ export default function DentistEnrollment() {
             </div>
           </div>
 
-          {/* Right Image - Edge to Edge */}
-          <div className="hidden lg:block w-1/2 relative">
+          {/* Right Image - Centered */}
+          <div className="hidden lg:flex w-1/2 items-center justify-center p-8">
             <img 
               src={dentistIntroRight}
               alt="Professional dentist smiling"
-              className="absolute inset-0 w-full h-full object-cover object-left"
+              className="max-w-md h-auto object-contain"
             />
           </div>
         </div>
