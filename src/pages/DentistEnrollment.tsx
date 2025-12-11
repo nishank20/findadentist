@@ -179,13 +179,13 @@ export default function DentistEnrollment() {
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="container max-w-7xl mx-auto px-4 py-12">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-6">
-              <p className="text-lg md:text-xl leading-relaxed text-gray-700">
-                <span className="font-bold text-gray-900">Every new patient is valuable.</span> Join the Dentist Match network and be one of the practices we recommend when patients in your area are actively searching for care. <span className="font-bold text-gray-900">It's completely free</span>, and your profile is shown to motivated patients—often right after a Smart Scan, a virtual consultation, or a Dental.com search—so you're connecting with ready-to-book opportunities, not chasing cold leads. Claim your spot, tell us the types of patients and services you want, and start welcoming high-quality new patients at no cost.
+      <div className="min-h-screen bg-background flex flex-col">
+        <div className="flex-1 flex">
+          {/* Left Content */}
+          <div className="flex-1 flex items-center justify-center px-8 lg:px-16 py-12">
+            <div className="max-w-xl space-y-8">
+              <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
+                <span className="font-bold text-foreground">Every new patient is valuable.</span> Join the Dentist Match network and be one of the practices we recommend when patients in your area are actively searching for care. <span className="font-bold text-foreground">It's completely free</span>, and your profile is shown to motivated patients—often right after a Smart Scan, a virtual consultation, or a Dental.com search—so you're connecting with ready-to-book opportunities, not chasing cold leads. Claim your spot, tell us the types of patients and services you want, and start welcoming high-quality new patients at no cost.
               </p>
               <Button 
                 onClick={() => setShowIntro(false)}
@@ -194,15 +194,15 @@ export default function DentistEnrollment() {
                 Get Started
               </Button>
             </div>
+          </div>
 
-            {/* Right Image */}
-            <div className="relative flex justify-end">
-              <img 
-                src={dentistIntroRight}
-                alt="Professional dentist smiling"
-                className="w-full lg:w-auto h-auto max-h-[500px] object-contain"
-              />
-            </div>
+          {/* Right Image - Edge to Edge */}
+          <div className="hidden lg:block w-1/2 relative">
+            <img 
+              src={dentistIntroRight}
+              alt="Professional dentist smiling"
+              className="absolute inset-0 w-full h-full object-cover object-left"
+            />
           </div>
         </div>
         <Footer />
