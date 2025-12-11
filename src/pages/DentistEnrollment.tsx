@@ -202,7 +202,7 @@ export default function DentistEnrollment() {
               <img 
                 src={dentistIntroRight}
                 alt="Professional dentist smiling"
-                className="max-w-sm h-auto object-contain"
+                className="max-w-lg h-auto object-contain"
               />
             </div>
           </div>
