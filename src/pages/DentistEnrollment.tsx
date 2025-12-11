@@ -34,6 +34,7 @@ const enrollmentSchema = z.object({
 export default function DentistEnrollment() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showIntro, setShowIntro] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
   
   const [practiceName, setPracticeName] = useState("");
@@ -167,6 +168,44 @@ export default function DentistEnrollment() {
                   </a>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="container max-w-7xl mx-auto px-4 py-12">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-6">
+              <p className="text-lg md:text-xl leading-relaxed text-gray-700">
+                <span className="font-bold text-gray-900">Every new patient is valuable.</span> Join the Dentist Match network and be one of the practices we recommend when patients in your area are actively searching for care. <span className="font-bold text-gray-900">It's completely free</span>, and your profile is shown to motivated patients—often right after a Smart Scan, a virtual consultation, or a Dental.com search—so you're connecting with ready-to-book opportunities, not chasing cold leads. Claim your spot, tell us the types of patients and services you want, and start welcoming high-quality new patients at no cost.
+              </p>
+              <Button 
+                onClick={() => setShowIntro(false)}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full px-10 py-6 text-lg shadow-lg hover:shadow-xl transition-all"
+              >
+                Get Started
+              </Button>
+            </div>
+
+            {/* Right Image */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-transparent z-10 pointer-events-none" 
+                   style={{
+                     clipPath: 'polygon(0 0, 30% 0, 15% 50%, 30% 100%, 0 100%)'
+                   }}
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=800&q=80"
+                alt="Professional dentist smiling"
+                className="w-full h-auto rounded-lg object-cover"
+              />
             </div>
           </div>
         </div>
