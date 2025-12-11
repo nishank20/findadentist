@@ -195,24 +195,24 @@ export const InsuranceCheckDialog = ({
         ) : showResults ? (
           <div className="space-y-6">
             <div className="text-center space-y-4">
-              <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center ${
+              <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${
                 eligibility === "eligible" 
                   ? "bg-green-500/10" 
                   : "bg-destructive/10"
               }`}>
                 {eligibility === "eligible" ? (
-                  <CheckCircle2 className="w-10 h-10 text-green-500" />
+                  <CheckCircle2 className="w-8 h-8 text-green-500" />
                 ) : (
-                  <XCircle className="w-10 h-10 text-destructive" />
+                  <XCircle className="w-8 h-8 text-destructive" />
                 )}
               </div>
               <div>
-                <h3 className="text-2xl font-bold mb-2">
+                <h3 className="text-xl font-bold mb-2">
                   {eligibility === "eligible" 
                     ? "You're Eligible!" 
                     : "Coverage Not Confirmed"}
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {eligibility === "eligible"
                     ? `Great news! Based on your ${formData.carrier} insurance, you're eligible for covered dental services through dental.com.`
                     : `We couldn't confirm full coverage with your ${formData.carrier} plan at this time. However, you can still use our services and submit for reimbursement.`}
@@ -220,26 +220,47 @@ export const InsuranceCheckDialog = ({
               </div>
             </div>
 
-            <Card className="p-6 space-y-4">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Info className="w-5 h-5 text-primary" />
-                What This Means
-              </h4>
-              {eligibility === "eligible" ? (
+            {eligibility === "eligible" ? (
+              <Card className="p-6 space-y-4">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <Info className="w-5 h-5 text-primary" />
+                  What This Means
+                </h4>
                 <ul className="space-y-2 text-sm text-muted-foreground ml-6">
                   <li className="list-disc">No out-of-pocket costs for covered services</li>
                   <li className="list-disc">We'll handle all billing with your insurance</li>
                   <li className="list-disc">You can proceed with booking your appointment</li>
                 </ul>
-              ) : (
-                <ul className="space-y-2 text-sm text-muted-foreground ml-6">
-                  <li className="list-disc">Initial treatment fee: $59</li>
-                  <li className="list-disc">We'll submit a claim to your insurance</li>
-                  <li className="list-disc">Reimbursement will be sent directly to you</li>
-                  <li className="list-disc">You may recover some or all of the cost</li>
-                </ul>
-              )}
-            </Card>
+              </Card>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  As of {new Date().toLocaleDateString()}, our electronic eligibility check did not return a match for your information. The response was 'subscriber not found.' Please note that this does not necessarily mean you are ineligible - it may simply reflect how your information is entered with your insurer.
+                </p>
+
+                <Card className="p-4 bg-muted/30">
+                  <div className="space-y-2 text-sm">
+                    <p><span className="font-medium">NAME:</span> {formData.subscriberFirstName} {formData.subscriberLastName}</p>
+                    <p className="flex items-center gap-2">
+                      <span className="font-medium">INSURANCE CARRIER:</span>
+                      <span className="bg-primary text-primary-foreground px-3 py-1 rounded text-xs font-medium">
+                        {formData.carrier.toUpperCase().replace(' DENTAL', '')}
+                      </span>
+                    </p>
+                    <p><span className="font-medium">SUBSCRIBER ID:</span> {formData.subscriberId}</p>
+                    <p><span className="font-medium">GROUP #:</span> {formData.groupNo}</p>
+                  </div>
+                </Card>
+
+                <div className="space-y-3">
+                  <h4 className="font-semibold">What do I do next:</h4>
+                  <ol className="space-y-2 text-sm text-muted-foreground list-decimal ml-5">
+                    <li>Make sure that the information above is correct. If not, simply submit the form once again.</li>
+                    <li>If the information is correct, we recommend contacting your insurance carrier directly.</li>
+                  </ol>
+                </div>
+              </>
+            )}
 
             <div className="flex gap-3">
               <Button variant="outline" onClick={handleReset} className="flex-1">
