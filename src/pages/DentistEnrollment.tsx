@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "@/components/Footer";
-import dentistIntroImage from "@/assets/dentist-intro.png";
+import dentistIntroRight from "@/assets/dentist-intro-right.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -196,11 +196,11 @@ export default function DentistEnrollment() {
             </div>
 
             {/* Right Image */}
-            <div className="relative">
+            <div className="relative flex justify-end">
               <img 
-                src={dentistIntroImage}
+                src={dentistIntroRight}
                 alt="Professional dentist smiling"
-                className="w-full h-auto object-cover"
+                className="w-full lg:w-auto h-auto max-h-[500px] object-contain"
               />
             </div>
           </div>
