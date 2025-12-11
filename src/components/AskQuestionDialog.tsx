@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { CheckCircle } from "lucide-react";
 
 interface AskQuestionDialogProps {
   open: boolean;
@@ -16,7 +16,7 @@ export const AskQuestionDialog = ({ open, onOpenChange }: AskQuestionDialogProps
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,65 +24,84 @@ export const AskQuestionDialog = ({ open, onOpenChange }: AskQuestionDialogProps
 
     // Simulate form submission
     setTimeout(() => {
-      toast({
-        title: "Question submitted!",
-        description: "A dentist will respond to your question soon.",
-      });
       setIsSubmitting(false);
-      onOpenChange(false);
-      // Reset form
-      setName("");
-      setEmail("");
-      setMessage("");
+      setIsSubmitted(true);
     }, 1000);
   };
 
+  const handleClose = () => {
+    onOpenChange(false);
+    // Reset form after closing
+    setTimeout(() => {
+      setName("");
+      setEmail("");
+      setMessage("");
+      setIsSubmitted(false);
+    }, 300);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Ask a Dentist</DialogTitle>
-          <DialogDescription>
-            Submit your dental question and a dentist will respond to you.
-          </DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name <span className="text-destructive">*</span></Label>
-            <Input
-              id="name"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+        {isSubmitted ? (
+          <div className="py-8 text-center space-y-6">
+            <div className="flex justify-center">
+              <CheckCircle className="w-16 h-16 text-green-500" />
+            </div>
+            <p className="text-lg leading-relaxed text-foreground">
+              Thank you for submitting your question to Ask a Dentist. We've received it and will review it shortly. You'll be notified as soon as possible, once a response is ready.
+            </p>
+            <Button onClick={handleClose} className="mt-4">
+              Close
+            </Button>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email <span className="text-destructive">*</span></Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="message">Message <span className="text-destructive">*</span></Label>
-            <Textarea
-              id="message"
-              placeholder="Type your dental question here..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-              className="min-h-[120px]"
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit Question"}
-          </Button>
-        </form>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>Ask a Dentist</DialogTitle>
+              <DialogDescription>
+                Submit your dental question and a dentist will respond to you.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name <span className="text-destructive">*</span></Label>
+                <Input
+                  id="name"
+                  placeholder="Enter your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email <span className="text-destructive">*</span></Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="message">Message <span className="text-destructive">*</span></Label>
+                <Textarea
+                  id="message"
+                  placeholder="Type your dental question here..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  className="min-h-[120px]"
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit Question"}
+              </Button>
+            </form>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
