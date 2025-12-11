@@ -181,11 +181,23 @@ export default function DentistEnrollment() {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <div className="flex-1 flex items-center justify-center px-8 py-12">
-          <div className="max-w-4xl text-center space-y-8">
-            <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
-              <span className="font-bold text-foreground">Every new patient is valuable.</span> Join the Dentist Match network and be one of the practices we recommend when patients in your area are actively searching for care. <span className="font-bold text-foreground">It's completely free</span>, and your profile is shown to motivated patients—often right after a Smart Scan, a virtual consultation, or a Dental.com search—so you're connecting with ready-to-book opportunities, not chasing cold leads. Claim your spot, tell us the types of patients and services you want, and start welcoming high-quality new patients at no cost.
-            </p>
-            
+          <div className="max-w-6xl w-full grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-8 text-center lg:text-left">
+              <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
+                <span className="font-bold text-foreground">Every new patient is valuable.</span> Join the Dentist Match network and be one of the practices we recommend when patients in your area are actively searching for care. <span className="font-bold text-foreground">It's completely free</span>, and your profile is shown to motivated patients—often right after a Smart Scan, a virtual consultation, or a Dental.com search—so you're connecting with ready-to-book opportunities, not chasing cold leads. Claim your spot, tell us the types of patients and services you want, and start welcoming high-quality new patients at no cost.
+              </p>
+              <div className="flex justify-center lg:justify-start">
+                <Button 
+                  onClick={() => setShowIntro(false)}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full px-10 py-6 text-lg shadow-lg hover:shadow-xl transition-all"
+                >
+                  Get Started
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Image */}
             <div className="flex justify-center">
               <img 
                 src={dentistIntroRight}
@@ -193,13 +205,6 @@ export default function DentistEnrollment() {
                 className="max-w-sm h-auto object-contain"
               />
             </div>
-            
-            <Button 
-              onClick={() => setShowIntro(false)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full px-10 py-6 text-lg shadow-lg hover:shadow-xl transition-all"
-            >
-              Get Started
-            </Button>
           </div>
         </div>
         <Footer />
