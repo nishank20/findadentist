@@ -48,6 +48,7 @@ export default function DentistEnrollment() {
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
   const [npi, setNpi] = useState("");
+  const [practiceManagementSystem, setPracticeManagementSystem] = useState("");
   
   const [practiceTypes, setPracticeTypes] = useState({
     gp: false,
@@ -494,6 +495,29 @@ export default function DentistEnrollment() {
                         <p className="text-sm text-red-500">{errors.npi}</p>
                       )}
                     </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="practiceManagementSystem" className="text-gray-700 font-medium">
+                      Practice Management System
+                    </Label>
+                    <Select value={practiceManagementSystem} onValueChange={setPracticeManagementSystem}>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Select your system" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="practiceworks">Practiceworks</SelectItem>
+                        <SelectItem value="open-dental">Open Dental</SelectItem>
+                        <SelectItem value="eaglesoft">Eaglesoft</SelectItem>
+                        <SelectItem value="dentrix-enterprise">Dentrix Enterprise</SelectItem>
+                        <SelectItem value="dentrix-desktop">Dentrix Desktop</SelectItem>
+                        <SelectItem value="dentrix-ascent">Dentrix Ascent</SelectItem>
+                        <SelectItem value="denticon">Denticon</SelectItem>
+                        <SelectItem value="curve">Curve</SelectItem>
+                        <SelectItem value="carestream">Carestream</SelectItem>
+                        <SelectItem value="carestack">Carestack</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
