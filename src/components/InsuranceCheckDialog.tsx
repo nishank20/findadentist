@@ -212,11 +212,6 @@ export const InsuranceCheckDialog = ({
                     ? "You're Eligible!" 
                     : "Coverage Not Confirmed"}
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  {eligibility === "eligible"
-                    ? `Great news! Based on your ${formData.carrier} insurance, you're eligible for covered dental services through dental.com.`
-                    : `We couldn't confirm full coverage with your ${formData.carrier} plan at this time. However, you can still use our services and submit for reimbursement.`}
-                </p>
               </div>
             </div>
 
