@@ -270,7 +270,7 @@ export const InsuranceCheckDialog = ({
                 Check Another Insurance
               </Button>
               <Button className="flex-1">
-                Continue to Booking
+                Continue
               </Button>
             </div>
           </div>
