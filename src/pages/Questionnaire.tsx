@@ -35,19 +35,29 @@ const careTypes = [
 
 const specialistTypes = [
   {
+    id: "general",
+    title: "General Practitioner",
+    description: "Provides comprehensive dental care including exams, cleanings, fillings, and preventive treatments for patients of all ages.",
+  },
+  {
     id: "pediatric",
     title: "Pediatric Dentist",
     description: "Specialized in caring for infants, children, and teens—offering gentle, age-appropriate treatment and guidance for growing smiles.",
   },
   {
-    id: "orthodontist",
-    title: "Orthodontist",
-    description: "Focused on straightening teeth and aligning bites using braces, clear aligners, and other corrective tools for long-term oral health.",
+    id: "endodontist",
+    title: "Endodontist",
+    description: "Specializes in root canal therapy and treating diseases of the dental pulp—essential for saving damaged or infected teeth.",
   },
   {
     id: "oral-surgeon",
     title: "Oral Surgeon",
     description: "Handles surgical procedures like wisdom tooth removal, dental implants, and jaw corrections—ideal for more complex dental needs.",
+  },
+  {
+    id: "orthodontist",
+    title: "Orthodontist",
+    description: "Focused on straightening teeth and aligning bites using braces, clear aligners, and other corrective tools for long-term oral health.",
   },
   {
     id: "periodontist",
