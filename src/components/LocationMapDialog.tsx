@@ -193,7 +193,7 @@ export function LocationMapDialog({
               height="100%"
               style={{ border: 0 }}
               loading="lazy"
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(address)}&layer=mapnik&marker=${encodeURIComponent(address)}`}
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=-74.02,40.70,-73.95,40.75&layer=mapnik`}
               allowFullScreen
             />
           </div>
