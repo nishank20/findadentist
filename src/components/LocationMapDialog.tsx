@@ -9,6 +9,7 @@ import { MapPin, ExternalLink, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
+import { DentistMapLeaflet } from "./DentistMapLeaflet";
 
 interface LocationMapDialogProps {
   open: boolean;
@@ -185,16 +186,18 @@ export function LocationMapDialog({
             <p className="text-xs sm:text-sm text-muted-foreground">{distance}</p>
           </div>
 
-          {/* OpenStreetMap Embed */}
+          {/* Interactive OpenStreetMap with Leaflet */}
           <div className="w-full h-[250px] sm:h-[400px] rounded-lg border border-border overflow-hidden">
-            <iframe
-              title="Dentist Location Map"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=-74.10,40.68,-74.00,40.76&layer=mapnik&marker=40.7178,-74.0431`}
-              allowFullScreen
+            <DentistMapLeaflet
+              userLocation={{ lat: 40.7178, lng: -74.0431 }}
+              dentists={[
+                { id: "1", name: "Bright Smiles Dental", lat: 40.7282, lng: -74.0476, address: "123 Newark Ave, Jersey City, NJ" },
+                { id: "2", name: "Jersey City Family Dentistry", lat: 40.7215, lng: -74.0380, address: "456 Grove St, Jersey City, NJ" },
+                { id: "3", name: "Downtown Dental Care", lat: 40.7145, lng: -74.0340, address: "789 Montgomery St, Jersey City, NJ" },
+                { id: "4", name: "Hudson Dental Associates", lat: 40.7320, lng: -74.0520, address: "321 Central Ave, Jersey City, NJ" },
+                { id: "5", name: "Garden State Smiles", lat: 40.7080, lng: -74.0450, address: "555 Liberty Ave, Jersey City, NJ" },
+              ]}
+              selectedDentist={undefined}
             />
           </div>
         </div>
