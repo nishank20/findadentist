@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Maximize2, Minimize2, Star, BadgeCheck } from "lucide-react";
+import { Card } from "./ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 import "ol/ol.css";
 
 interface Dentist {
@@ -35,23 +42,16 @@ export const DentistMap = ({
   highlightedDentistId,
 }: DentistMapProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedDentist, setSelectedDentist] = useState<Dentist | null>(null);
+  const [popupPosition, setPopupPosition] = useState<{ x: number; y: number } | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
-  const popupRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
-  const [popupContent, setPopupContent] = useState<{
-    id: number;
-    name: string;
-    address: string;
-    specialty?: string;
-    rating?: number;
-    reviews?: number;
-    distance?: string;
-    image?: string;
-    networkProvider?: boolean;
-  } | null>(null);
+  const overlayRef = useRef<any>(null);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
+    setSelectedDentist(null);
+    setPopupPosition(null);
   };
 
   useEffect(() => {
@@ -75,7 +75,6 @@ export const DentistMap = ({
         { default: Point },
         { fromLonLat },
         { Style, Fill, Stroke, Circle: CircleStyle },
-        { default: Overlay },
       ] = await Promise.all([
         import("ol/Map"),
         import("ol/View"),
@@ -87,7 +86,6 @@ export const DentistMap = ({
         import("ol/geom/Point"),
         import("ol/proj"),
         import("ol/style"),
-        import("ol/Overlay"),
       ]);
 
       if (!mapRef.current) return;
@@ -113,15 +111,7 @@ export const DentistMap = ({
       const dentistFeatures = dentists.map((dentist) => {
         const feature = new Feature({
           geometry: new Point(fromLonLat([dentist.longitude, dentist.latitude])),
-          dentistId: dentist.id,
-          name: dentist.name,
-          address: dentist.address,
-          specialty: dentist.specialty,
-          rating: dentist.rating,
-          reviews: dentist.reviews,
-          distance: dentist.distance,
-          image: dentist.image,
-          networkProvider: dentist.networkProvider,
+          dentistData: dentist,
           type: "dentist",
         });
 
@@ -163,42 +153,24 @@ export const DentistMap = ({
         }),
       });
 
-      // Create popup overlay
-      if (popupRef.current) {
-        const popup = new Overlay({
-          element: popupRef.current,
-          positioning: "bottom-center" as any,
-          stopEvent: true,
-          offset: [0, -15],
-        });
-        map.addOverlay(popup);
+      // Handle click on markers
+      map.on("click", (evt: any) => {
+        const feature = map.forEachFeatureAtPixel(evt.pixel, (f: any) => f);
+        if (feature && feature.get("type") === "dentist") {
+          const dentistData = feature.get("dentistData") as Dentist;
+          const pixel = evt.pixel;
+          
+          setSelectedDentist(dentistData);
+          setPopupPosition({ x: pixel[0], y: pixel[1] });
 
-        map.on("click", (evt: any) => {
-          const feature = map.forEachFeatureAtPixel(evt.pixel, (f: any) => f);
-          if (feature && feature.get("type") === "dentist") {
-            const coords = (feature.getGeometry() as any).getCoordinates();
-            setPopupContent({
-              id: feature.get("dentistId"),
-              name: feature.get("name"),
-              address: feature.get("address"),
-              specialty: feature.get("specialty"),
-              rating: feature.get("rating"),
-              reviews: feature.get("reviews"),
-              distance: feature.get("distance"),
-              image: feature.get("image"),
-              networkProvider: feature.get("networkProvider"),
-            });
-            popup.setPosition(coords);
-
-            if (onDentistClick) {
-              onDentistClick(feature.get("dentistId"));
-            }
-          } else {
-            popup.setPosition(undefined);
-            setPopupContent(null);
+          if (onDentistClick) {
+            onDentistClick(dentistData.id);
           }
-        });
-      }
+        } else {
+          setSelectedDentist(null);
+          setPopupPosition(null);
+        }
+      });
 
       // Fit view to show all markers
       const extent = vectorSource.getExtent();
@@ -228,79 +200,117 @@ export const DentistMap = ({
   }, [dentists, userLocation, highlightedDentistId, onDentistClick]);
 
   const handleBookClick = () => {
-    if (popupContent && onBookAppointment) {
-      onBookAppointment(popupContent.id);
+    if (selectedDentist && onBookAppointment) {
+      onBookAppointment(selectedDentist.id);
     }
   };
 
-  return (
-    <div
-      className={`${
-        isExpanded
-          ? "fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right"
-          : "relative h-full"
-      } transition-all duration-300`}
-    >
-      <div
-        ref={mapRef}
-        className={`absolute inset-0 ${isExpanded ? "rounded-none" : "rounded-lg"}`}
-        style={{ minHeight: "400px" }}
-      />
+  const handleClosePopup = () => {
+    setSelectedDentist(null);
+    setPopupPosition(null);
+  };
 
-      {/* Popup content */}
-      <div ref={popupRef} className="absolute z-50">
-        {popupContent && (
-          <div className="bg-background border border-border rounded-lg shadow-xl p-4 max-w-[280px] -translate-x-1/2 mb-2">
-            <div className="flex gap-3 mb-3">
-              {popupContent.image && (
-                <img
-                  src={popupContent.image}
-                  alt={popupContent.name}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-border"
-                />
-              )}
-              <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-sm text-foreground truncate">
-                  {popupContent.name}
-                </h4>
-                {popupContent.specialty && (
-                  <p className="text-xs text-muted-foreground">{popupContent.specialty}</p>
-                )}
-                <div className="flex items-center gap-2 text-xs mt-1">
-                  {popupContent.rating && (
-                    <span className="font-medium">★ {popupContent.rating}</span>
+  return (
+    <TooltipProvider>
+      <div
+        className={`${
+          isExpanded
+            ? "fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right"
+            : "relative h-full"
+        } transition-all duration-300`}
+      >
+        <div
+          ref={mapRef}
+          className={`absolute inset-0 ${isExpanded ? "rounded-none" : "rounded-lg"}`}
+          style={{ minHeight: "400px" }}
+        />
+
+        {/* Dentist Card Popup */}
+        {selectedDentist && popupPosition && (
+          <Card
+            className="absolute z-50 w-80 shadow-2xl overflow-hidden pointer-events-auto"
+            style={{
+              left: `${popupPosition.x}px`,
+              top: `${popupPosition.y - 20}px`,
+              transform: "translate(-50%, -100%)",
+            }}
+          >
+            <div className="p-4 space-y-3">
+              <div className="flex gap-3">
+                {/* Profile Image */}
+                <div className="flex-shrink-0">
+                  <img
+                    src={selectedDentist.image || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop"}
+                    alt={selectedDentist.name}
+                    className="w-14 h-14 rounded-full object-cover ring-2 ring-border"
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-base font-bold text-foreground truncate">
+                      {selectedDentist.name}
+                    </h3>
+                    {selectedDentist.networkProvider && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <BadgeCheck className="w-4 h-4 text-primary fill-primary/20 flex-shrink-0 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p className="text-sm">This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+                  {selectedDentist.specialty && (
+                    <p className="text-sm text-muted-foreground">{selectedDentist.specialty}</p>
                   )}
-                  {popupContent.distance && (
-                    <span className="text-muted-foreground">{popupContent.distance}</span>
-                  )}
+
+                  <div className="flex items-center gap-3 text-xs mt-1">
+                    {selectedDentist.rating && (
+                      <div className="flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-primary text-primary" />
+                        <span className="font-semibold">{selectedDentist.rating}</span>
+                        {selectedDentist.reviews && (
+                          <span className="text-muted-foreground">({selectedDentist.reviews})</span>
+                        )}
+                      </div>
+                    )}
+                    {selectedDentist.distance && (
+                      <span className="text-muted-foreground">{selectedDentist.distance}</span>
+                    )}
+                  </div>
                 </div>
               </div>
+
+              <p className="text-xs text-muted-foreground">{selectedDentist.address}</p>
+
+              <Button
+                className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+                onClick={handleBookClick}
+              >
+                Request Appointment
+              </Button>
             </div>
-            <p className="text-xs text-muted-foreground mb-3">{popupContent.address}</p>
-            <Button
-              size="sm"
-              className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
-              onClick={handleBookClick}
-            >
-              Request Appointment
-            </Button>
+            {/* Arrow pointer */}
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-background border-r border-b border-border" />
+          </Card>
+        )}
+
+        {/* Controls */}
+        <div className="absolute top-4 left-4 z-10 flex gap-2">
+          <Button variant="secondary" size="icon" className="shadow-lg" onClick={toggleExpand}>
+            {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+          </Button>
+        </div>
+
+        {zipCode && (
+          <div className="absolute top-4 right-4 z-10 bg-background/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border">
+            <p className="text-sm font-medium">Near: {zipCode}</p>
           </div>
         )}
       </div>
-
-      {/* Controls */}
-      <div className="absolute top-4 left-4 z-10 flex gap-2">
-        <Button variant="secondary" size="icon" className="shadow-lg" onClick={toggleExpand}>
-          {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-        </Button>
-      </div>
-
-      {zipCode && (
-        <div className="absolute top-4 right-4 z-10 bg-background/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-border">
-          <p className="text-sm font-medium">Near: {zipCode}</p>
-        </div>
-      )}
-    </div>
+    </TooltipProvider>
   );
 };
