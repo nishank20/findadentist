@@ -9,7 +9,7 @@ import { MapPin, ExternalLink, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
-import { DentistMapLeaflet } from "./DentistMapLeaflet";
+import { DentistMapOpenLayers } from "./DentistMapOpenLayers";
 
 interface LocationMapDialogProps {
   open: boolean;
@@ -188,7 +188,7 @@ export function LocationMapDialog({
 
           {/* Interactive OpenStreetMap with Leaflet */}
           <div className="w-full h-[250px] sm:h-[400px] rounded-lg border border-border overflow-hidden">
-            <DentistMapLeaflet
+            <DentistMapOpenLayers
               userLocation={{ lat: 40.7178, lng: -74.0431 }}
               dentists={[
                 { id: "1", name: "Bright Smiles Dental", lat: 40.7282, lng: -74.0476, address: "123 Newark Ave, Jersey City, NJ" },
