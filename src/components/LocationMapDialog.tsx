@@ -40,8 +40,8 @@ export function LocationMapDialog({
   distance,
   currentLocation,
   onLocationUpdate,
-  dentists,
-  userLocation,
+  dentists = [],
+  userLocation = { lat: 40.7178, lng: -74.0431 },
   selectedDentistId,
 }: LocationMapDialogProps) {
   const [location, setLocation] = useState(currentLocation);
