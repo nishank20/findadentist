@@ -148,13 +148,6 @@ export const DentistMap = ({
           duration: `${durationMins} min`,
         });
         setShowRoute(true);
-
-        // Fit map to show the route
-        const extent = routeSource.getExtent();
-        mapInstanceRef.current.getView().fit(extent, {
-          padding: [80, 80, 80, 80],
-          maxZoom: 16,
-        });
       } else {
         // Fallback: draw straight line if routing fails
         drawStraightLine(destLat, destLng);
@@ -387,7 +380,6 @@ export const DentistMap = ({
   const handleShowDirections = () => {
     if (selectedDentist) {
       fetchAndDrawRoute(selectedDentist.latitude, selectedDentist.longitude);
-      setPopupPosition(null);
     }
   };
 
@@ -406,47 +398,52 @@ export const DentistMap = ({
           style={{ minHeight: "400px" }}
         />
 
-        {/* Route Info Panel */}
-        {showRoute && routeInfo && selectedDentist && (
-          <div className="absolute bottom-4 left-4 right-4 z-20 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-border p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Navigation className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">Route to {selectedDentist.name}</p>
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    <span>{routeInfo.distance}</span>
-                    <span>•</span>
-                    <span>{routeInfo.duration} drive</span>
-                  </div>
+        {/* Route Info Panel - positioned at bottom left */}
+        {showRoute && routeInfo && (
+          <div className="absolute bottom-4 left-4 z-20 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-border p-3 max-w-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Navigation className="w-4 h-4 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm text-foreground truncate">
+                  {selectedDentist?.name || "Route"}
+                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>{routeInfo.distance}</span>
+                  <span>•</span>
+                  <span>{routeInfo.duration}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Button
                   size="sm"
+                  variant="outline"
+                  className="h-7 px-2 text-xs"
                   onClick={() => {
-                    const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${selectedDentist.latitude},${selectedDentist.longitude}`;
-                    window.open(mapsUrl, "_blank");
+                    if (selectedDentist) {
+                      const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${selectedDentist.latitude},${selectedDentist.longitude}`;
+                      window.open(mapsUrl, "_blank");
+                    }
                   }}
                 >
-                  Open in Maps
+                  Maps
                 </Button>
                 <Button
                   size="icon"
                   variant="ghost"
+                  className="h-7 w-7"
                   onClick={clearRoute}
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3 h-3" />
                 </Button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Dentist Card Popup */}
-        {selectedDentist && popupPosition && !showRoute && (
+        {/* Dentist Card Popup - Always show when a dentist is selected */}
+        {selectedDentist && popupPosition && (
           <Card
             className="absolute z-50 w-80 shadow-2xl overflow-hidden pointer-events-auto"
             style={{
