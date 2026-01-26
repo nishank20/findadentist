@@ -185,17 +185,17 @@ export function LocationMapDialog({
             <p className="text-xs sm:text-sm text-muted-foreground">{distance}</p>
           </div>
 
-          {/* Map Placeholder - This is where the actual map component will go */}
-          <div className="w-full h-[250px] sm:h-[400px] bg-muted rounded-lg border border-border flex items-center justify-center">
-            <div className="text-center space-y-2 px-4">
-              <MapPin className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto" />
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Map integration placeholder
-              </p>
-              <p className="text-xs text-muted-foreground hidden sm:block">
-                Add your map component here (Google Maps, Mapbox, etc.)
-              </p>
-            </div>
+          {/* OpenStreetMap Embed */}
+          <div className="w-full h-[250px] sm:h-[400px] rounded-lg border border-border overflow-hidden">
+            <iframe
+              title="Dentist Location Map"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(address)}&layer=mapnik&marker=${encodeURIComponent(address)}`}
+              allowFullScreen
+            />
           </div>
         </div>
 
