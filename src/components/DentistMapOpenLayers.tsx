@@ -1,15 +1,4 @@
-import { useEffect, useRef } from "react";
-import Map from "ol/Map";
-import View from "ol/View";
-import TileLayer from "ol/layer/Tile";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import OSM from "ol/source/OSM";
-import Feature from "ol/Feature";
-import Point from "ol/geom/Point";
-import { fromLonLat } from "ol/proj";
-import { Style, Icon, Fill, Stroke, Circle as CircleStyle } from "ol/style";
-import Overlay from "ol/Overlay";
+import { useEffect, useRef, useState } from "react";
 import "ol/ol.css";
 
 interface DentistLocation {
@@ -33,128 +22,165 @@ export function DentistMapOpenLayers({
 }: DentistMapOpenLayersProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<Map | null>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const [popupContent, setPopupContent] = useState<{ name: string; address?: string } | null>(null);
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
-    // Create user location feature
-    const userFeature = new Feature({
-      geometry: new Point(fromLonLat([userLocation.lng, userLocation.lat])),
-      name: "Your Location",
-      type: "user",
-    });
+    // Dynamically import OpenLayers modules
+    const initMap = async () => {
+      const [
+        { default: Map },
+        { default: View },
+        { default: TileLayer },
+        { default: VectorLayer },
+        { default: VectorSource },
+        { default: OSM },
+        { default: Feature },
+        { default: Point },
+        { fromLonLat },
+        { Style, Fill, Stroke, Circle: CircleStyle },
+        { default: Overlay },
+      ] = await Promise.all([
+        import("ol/Map"),
+        import("ol/View"),
+        import("ol/layer/Tile"),
+        import("ol/layer/Vector"),
+        import("ol/source/Vector"),
+        import("ol/source/OSM"),
+        import("ol/Feature"),
+        import("ol/geom/Point"),
+        import("ol/proj"),
+        import("ol/style"),
+        import("ol/Overlay"),
+      ]);
 
-    userFeature.setStyle(
-      new Style({
-        image: new CircleStyle({
-          radius: 10,
-          fill: new Fill({ color: "#6366f1" }),
-          stroke: new Stroke({ color: "#ffffff", width: 3 }),
-        }),
-      })
-    );
+      if (!mapRef.current) return;
 
-    // Create dentist features
-    const dentistFeatures = dentists.map((dentist) => {
-      const feature = new Feature({
-        geometry: new Point(fromLonLat([dentist.lng, dentist.lat])),
-        name: dentist.name,
-        address: dentist.address,
-        type: "dentist",
-        id: dentist.id,
+      // Create user location feature
+      const userFeature = new Feature({
+        geometry: new Point(fromLonLat([userLocation.lng, userLocation.lat])),
+        name: "Your Location",
+        type: "user",
       });
 
-      const isSelected = selectedDentist === dentist.id;
-      const color = isSelected ? "#22c55e" : "#8b5cf6";
-
-      feature.setStyle(
+      userFeature.setStyle(
         new Style({
           image: new CircleStyle({
-            radius: 12,
-            fill: new Fill({ color }),
-            stroke: new Stroke({ color: "#ffffff", width: 2 }),
+            radius: 10,
+            fill: new Fill({ color: "#6366f1" }),
+            stroke: new Stroke({ color: "#ffffff", width: 3 }),
           }),
         })
       );
 
-      return feature;
-    });
+      // Create dentist features
+      const dentistFeatures = dentists.map((dentist) => {
+        const feature = new Feature({
+          geometry: new Point(fromLonLat([dentist.lng, dentist.lat])),
+          name: dentist.name,
+          address: dentist.address,
+          type: "dentist",
+          id: dentist.id,
+        });
 
-    // Vector layer for markers
-    const vectorSource = new VectorSource({
-      features: [userFeature, ...dentistFeatures],
-    });
+        const isSelected = selectedDentist === dentist.id;
+        const color = isSelected ? "#22c55e" : "#8b5cf6";
 
-    const vectorLayer = new VectorLayer({
-      source: vectorSource,
-    });
+        feature.setStyle(
+          new Style({
+            image: new CircleStyle({
+              radius: 12,
+              fill: new Fill({ color }),
+              stroke: new Stroke({ color: "#ffffff", width: 2 }),
+            }),
+          })
+        );
 
-    // Create the map
-    const map = new Map({
-      target: mapRef.current,
-      layers: [
-        new TileLayer({
-          source: new OSM(),
+        return feature;
+      });
+
+      // Vector layer for markers
+      const vectorSource = new VectorSource({
+        features: [userFeature, ...dentistFeatures],
+      });
+
+      const vectorLayer = new VectorLayer({
+        source: vectorSource,
+      });
+
+      // Create the map
+      const map = new Map({
+        target: mapRef.current,
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+          vectorLayer,
+        ],
+        view: new View({
+          center: fromLonLat([userLocation.lng, userLocation.lat]),
+          zoom: 13,
         }),
-        vectorLayer,
-      ],
-      view: new View({
-        center: fromLonLat([userLocation.lng, userLocation.lat]),
-        zoom: 13,
-      }),
-    });
+      });
 
-    // Create popup overlay
-    const popup = new Overlay({
-      element: popupRef.current!,
-      positioning: "bottom-center",
-      stopEvent: false,
-      offset: [0, -15],
-    });
-    map.addOverlay(popup);
+      // Create popup overlay
+      if (popupRef.current) {
+        const popup = new Overlay({
+          element: popupRef.current,
+          positioning: "bottom-center" as any,
+          stopEvent: false,
+          offset: [0, -15],
+        });
+        map.addOverlay(popup);
 
-    // Fit view to show all markers
-    const extent = vectorSource.getExtent();
-    map.getView().fit(extent, {
-      padding: [50, 50, 50, 50],
-      maxZoom: 15,
-    });
+        // Handle click on markers
+        map.on("click", (evt: any) => {
+          const feature = map.forEachFeatureAtPixel(evt.pixel, (f: any) => f);
+          if (feature) {
+            const coords = (feature.getGeometry() as any).getCoordinates();
+            const name = feature.get("name");
+            const address = feature.get("address");
+            const type = feature.get("type");
 
-    // Handle click on markers
-    map.on("click", (evt) => {
-      const feature = map.forEachFeatureAtPixel(evt.pixel, (f) => f);
-      if (feature) {
-        const coords = (feature.getGeometry() as Point).getCoordinates();
-        const name = feature.get("name");
-        const address = feature.get("address");
-        const type = feature.get("type");
-
-        if (popupRef.current) {
-          popupRef.current.innerHTML = `
-            <div class="bg-background border border-border rounded-lg shadow-lg p-3 max-w-[200px]">
-              <p class="font-semibold text-sm text-foreground">${name}</p>
-              ${type === "dentist" ? `<p class="text-xs text-muted-foreground mt-1">${address}</p>` : ""}
-            </div>
-          `;
-          popup.setPosition(coords);
-        }
-      } else {
-        popup.setPosition(undefined);
+            setPopupContent({
+              name,
+              address: type === "dentist" ? address : undefined,
+            });
+            popup.setPosition(coords);
+          } else {
+            popup.setPosition(undefined);
+            setPopupContent(null);
+          }
+        });
       }
-    });
 
-    // Change cursor on hover
-    map.on("pointermove", (evt) => {
-      const hit = map.hasFeatureAtPixel(evt.pixel);
-      map.getTargetElement().style.cursor = hit ? "pointer" : "";
-    });
+      // Fit view to show all markers
+      const extent = vectorSource.getExtent();
+      if (extent[0] !== Infinity) {
+        map.getView().fit(extent, {
+          padding: [50, 50, 50, 50],
+          maxZoom: 15,
+        });
+      }
 
-    mapInstanceRef.current = map;
+      // Change cursor on hover
+      map.on("pointermove", (evt: any) => {
+        const hit = map.hasFeatureAtPixel(evt.pixel);
+        map.getTargetElement().style.cursor = hit ? "pointer" : "";
+      });
+
+      mapInstanceRef.current = map;
+    };
+
+    initMap();
 
     return () => {
-      map.setTarget(undefined);
-      mapInstanceRef.current = null;
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.setTarget(undefined);
+        mapInstanceRef.current = null;
+      }
     };
   }, [userLocation, dentists, selectedDentist]);
 
@@ -165,7 +191,16 @@ export function DentistMapOpenLayers({
         className="w-full h-full rounded-lg"
         style={{ minHeight: "250px" }}
       />
-      <div ref={popupRef} className="absolute" />
+      <div ref={popupRef} className="absolute">
+        {popupContent && (
+          <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 max-w-[200px] -translate-x-1/2">
+            <p className="font-semibold text-sm text-gray-900">{popupContent.name}</p>
+            {popupContent.address && (
+              <p className="text-xs text-gray-600 mt-1">{popupContent.address}</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
