@@ -49,6 +49,10 @@ export const DentistMap = ({
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const routeLayerRef = useRef<any>(null);
+  const onDentistClickRef = useRef(onDentistClick);
+  
+  // Keep the ref updated
+  onDentistClickRef.current = onDentistClick;
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -332,11 +336,23 @@ export const DentistMap = ({
           const dentistData = feature.get("dentistData") as Dentist;
           const pixel = evt.pixel;
           
-          setSelectedDentist(dentistData);
+          // Check if this is a different dentist - only then clear route
+          setSelectedDentist((prev) => {
+            if (prev && prev.id !== dentistData.id) {
+              // Different dentist selected - clear route
+              if (routeLayerRef.current && mapInstanceRef.current) {
+                mapInstanceRef.current.removeLayer(routeLayerRef.current);
+                routeLayerRef.current = null;
+              }
+              setShowRoute(false);
+              setRouteInfo(null);
+            }
+            return dentistData;
+          });
           setPopupPosition({ x: pixel[0], y: pixel[1] });
 
-          if (onDentistClick) {
-            onDentistClick(dentistData.id);
+          if (onDentistClickRef.current) {
+            onDentistClickRef.current(dentistData.id);
           }
         } else {
           setSelectedDentist(null);
@@ -369,7 +385,7 @@ export const DentistMap = ({
         mapInstanceRef.current = null;
       }
     };
-  }, [dentists, userLocation, highlightedDentistId, onDentistClick]);
+  }, [dentists, userLocation, highlightedDentistId]);
 
   const handleBookClick = () => {
     if (selectedDentist && onBookAppointment) {
