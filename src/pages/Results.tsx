@@ -533,6 +533,15 @@ export default function Results() {
               params.set("location", newLocation);
               navigate(`/results?${params.toString()}`);
             }}
+            dentists={sortedDentists.map(d => ({
+              id: d.id,
+              name: d.name,
+              latitude: d.latitude,
+              longitude: d.longitude,
+              address: d.address,
+            }))}
+            userLocation={{ lat: 40.7178, lng: -74.0431 }}
+            selectedDentistId={sortedDentists.find(d => d.name === selectedLocation?.name)?.id}
           />
       
       <Footer />

@@ -11,6 +11,14 @@ import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import { DentistMapOpenLayers } from "./DentistMapOpenLayers";
 
+interface DentistData {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  address: string;
+}
+
 interface LocationMapDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -19,6 +27,9 @@ interface LocationMapDialogProps {
   distance: string;
   currentLocation: string;
   onLocationUpdate: (location: string) => void;
+  dentists: DentistData[];
+  userLocation: { lat: number; lng: number };
+  selectedDentistId?: number;
 }
 
 export function LocationMapDialog({
@@ -29,6 +40,9 @@ export function LocationMapDialog({
   distance,
   currentLocation,
   onLocationUpdate,
+  dentists,
+  userLocation,
+  selectedDentistId,
 }: LocationMapDialogProps) {
   const [location, setLocation] = useState(currentLocation);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -186,18 +200,18 @@ export function LocationMapDialog({
             <p className="text-xs sm:text-sm text-muted-foreground">{distance}</p>
           </div>
 
-          {/* Interactive OpenStreetMap with Leaflet */}
+          {/* Interactive OpenStreetMap with OpenLayers */}
           <div className="w-full h-[250px] sm:h-[400px] rounded-lg border border-border overflow-hidden">
             <DentistMapOpenLayers
-              userLocation={{ lat: 40.7178, lng: -74.0431 }}
-              dentists={[
-                { id: "1", name: "Bright Smiles Dental", lat: 40.7282, lng: -74.0476, address: "123 Newark Ave, Jersey City, NJ" },
-                { id: "2", name: "Jersey City Family Dentistry", lat: 40.7215, lng: -74.0380, address: "456 Grove St, Jersey City, NJ" },
-                { id: "3", name: "Downtown Dental Care", lat: 40.7145, lng: -74.0340, address: "789 Montgomery St, Jersey City, NJ" },
-                { id: "4", name: "Hudson Dental Associates", lat: 40.7320, lng: -74.0520, address: "321 Central Ave, Jersey City, NJ" },
-                { id: "5", name: "Garden State Smiles", lat: 40.7080, lng: -74.0450, address: "555 Liberty Ave, Jersey City, NJ" },
-              ]}
-              selectedDentist={undefined}
+              userLocation={userLocation}
+              dentists={dentists.map(d => ({
+                id: String(d.id),
+                name: d.name,
+                lat: d.latitude,
+                lng: d.longitude,
+                address: d.address,
+              }))}
+              selectedDentist={selectedDentistId ? String(selectedDentistId) : undefined}
             />
           </div>
         </div>
