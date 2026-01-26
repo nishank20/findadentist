@@ -1,13 +1,7 @@
-import { useState, useRef } from 'react';
-import { Button } from './ui/button';
-import { Maximize2, Minimize2, MapPin, Navigation, Star, BadgeCheck } from 'lucide-react';
-import { Card } from './ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from './ui/tooltip';
+import { useEffect, useRef, useState } from "react";
+import { Button } from "./ui/button";
+import { Maximize2, Minimize2 } from "lucide-react";
+import "ol/ol.css";
 
 interface Dentist {
   id: number;
@@ -32,293 +26,272 @@ interface DentistMapProps {
   highlightedDentistId?: number | null;
 }
 
-export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCode, userLocation, highlightedDentistId }: DentistMapProps) => {
+export const DentistMap = ({
+  dentists,
+  onDentistClick,
+  onBookAppointment,
+  zipCode,
+  userLocation = { latitude: 40.7178, longitude: -74.0431 },
+  highlightedDentistId,
+}: DentistMapProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedDentist, setSelectedDentist] = useState<number | null>(null);
-  const [mapOffset, setMapOffset] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const mapRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const [popupContent, setPopupContent] = useState<{
+    id: number;
+    name: string;
+    address: string;
+    specialty?: string;
+    rating?: number;
+    reviews?: number;
+    distance?: string;
+    image?: string;
+    networkProvider?: boolean;
+  } | null>(null);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.marker-pin')) return;
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - mapOffset.x, y: e.clientY - mapOffset.y });
-    setSelectedDentist(null); // Clear selection when starting to drag
-  };
+  useEffect(() => {
+    if (!mapRef.current) return;
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    const newX = e.clientX - dragStart.x;
-    const newY = e.clientY - dragStart.y;
-    setMapOffset({ x: newX, y: newY });
-  };
+    // Clean up previous map instance
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.setTarget(undefined);
+      mapInstanceRef.current = null;
+    }
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+    const initMap = async () => {
+      const [
+        { default: Map },
+        { default: View },
+        { default: TileLayer },
+        { default: VectorLayer },
+        { default: VectorSource },
+        { default: OSM },
+        { default: Feature },
+        { default: Point },
+        { fromLonLat },
+        { Style, Fill, Stroke, Circle: CircleStyle },
+        { default: Overlay },
+      ] = await Promise.all([
+        import("ol/Map"),
+        import("ol/View"),
+        import("ol/layer/Tile"),
+        import("ol/layer/Vector"),
+        import("ol/source/Vector"),
+        import("ol/source/OSM"),
+        import("ol/Feature"),
+        import("ol/geom/Point"),
+        import("ol/proj"),
+        import("ol/style"),
+        import("ol/Overlay"),
+      ]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if ((e.target as HTMLElement).closest('.marker-pin')) return;
-    const touch = e.touches[0];
-    setIsDragging(true);
-    setDragStart({ x: touch.clientX - mapOffset.x, y: touch.clientY - mapOffset.y });
-    setSelectedDentist(null); // Clear selection when starting to drag
-  };
+      if (!mapRef.current) return;
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    const touch = e.touches[0];
-    const newX = touch.clientX - dragStart.x;
-    const newY = touch.clientY - dragStart.y;
-    setMapOffset({ x: newX, y: newY });
-  };
+      // Create user location feature
+      const userFeature = new Feature({
+        geometry: new Point(fromLonLat([userLocation.longitude, userLocation.latitude])),
+        name: "Your Location",
+        type: "user",
+      });
 
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-  };
+      userFeature.setStyle(
+        new Style({
+          image: new CircleStyle({
+            radius: 10,
+            fill: new Fill({ color: "#3b82f6" }),
+            stroke: new Stroke({ color: "#ffffff", width: 3 }),
+          }),
+        })
+      );
 
-  const handleMarkerClick = (e: React.MouseEvent, dentistId: number) => {
-    e.stopPropagation();
-    if (isDragging) return; // Don't select if dragging
-    setSelectedDentist(selectedDentist === dentistId ? null : dentistId);
-    if (onDentistClick && !isExpanded) {
-      onDentistClick(dentistId);
+      // Create dentist features
+      const dentistFeatures = dentists.map((dentist) => {
+        const feature = new Feature({
+          geometry: new Point(fromLonLat([dentist.longitude, dentist.latitude])),
+          dentistId: dentist.id,
+          name: dentist.name,
+          address: dentist.address,
+          specialty: dentist.specialty,
+          rating: dentist.rating,
+          reviews: dentist.reviews,
+          distance: dentist.distance,
+          image: dentist.image,
+          networkProvider: dentist.networkProvider,
+          type: "dentist",
+        });
+
+        const isHighlighted = highlightedDentistId === dentist.id;
+        const color = isHighlighted ? "#22c55e" : "#8b5cf6";
+
+        feature.setStyle(
+          new Style({
+            image: new CircleStyle({
+              radius: isHighlighted ? 14 : 12,
+              fill: new Fill({ color }),
+              stroke: new Stroke({ color: "#ffffff", width: 2 }),
+            }),
+          })
+        );
+
+        return feature;
+      });
+
+      const vectorSource = new VectorSource({
+        features: [userFeature, ...dentistFeatures],
+      });
+
+      const vectorLayer = new VectorLayer({
+        source: vectorSource,
+      });
+
+      const map = new Map({
+        target: mapRef.current,
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+          vectorLayer,
+        ],
+        view: new View({
+          center: fromLonLat([userLocation.longitude, userLocation.latitude]),
+          zoom: 13,
+        }),
+      });
+
+      // Create popup overlay
+      if (popupRef.current) {
+        const popup = new Overlay({
+          element: popupRef.current,
+          positioning: "bottom-center" as any,
+          stopEvent: true,
+          offset: [0, -15],
+        });
+        map.addOverlay(popup);
+
+        map.on("click", (evt: any) => {
+          const feature = map.forEachFeatureAtPixel(evt.pixel, (f: any) => f);
+          if (feature && feature.get("type") === "dentist") {
+            const coords = (feature.getGeometry() as any).getCoordinates();
+            setPopupContent({
+              id: feature.get("dentistId"),
+              name: feature.get("name"),
+              address: feature.get("address"),
+              specialty: feature.get("specialty"),
+              rating: feature.get("rating"),
+              reviews: feature.get("reviews"),
+              distance: feature.get("distance"),
+              image: feature.get("image"),
+              networkProvider: feature.get("networkProvider"),
+            });
+            popup.setPosition(coords);
+
+            if (onDentistClick) {
+              onDentistClick(feature.get("dentistId"));
+            }
+          } else {
+            popup.setPosition(undefined);
+            setPopupContent(null);
+          }
+        });
+      }
+
+      // Fit view to show all markers
+      const extent = vectorSource.getExtent();
+      if (extent[0] !== Infinity) {
+        map.getView().fit(extent, {
+          padding: [50, 50, 50, 50],
+          maxZoom: 15,
+        });
+      }
+
+      map.on("pointermove", (evt: any) => {
+        const hit = map.hasFeatureAtPixel(evt.pixel);
+        map.getTargetElement().style.cursor = hit ? "pointer" : "";
+      });
+
+      mapInstanceRef.current = map;
+    };
+
+    initMap();
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.setTarget(undefined);
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [dentists, userLocation, highlightedDentistId, onDentistClick]);
+
+  const handleBookClick = () => {
+    if (popupContent && onBookAppointment) {
+      onBookAppointment(popupContent.id);
     }
   };
 
-  const selectedDentistData = dentists.find(d => d.id === selectedDentist);
-
-
-  // Convert lat/lng to percentage positions for dummy map (normalized around Jersey City area)
-  const getMarkerPosition = (lat: number, lng: number) => {
-    // Normalize around Jersey City coordinates (40.7178° N, 74.0431° W)
-    const centerLat = 40.7178;
-    const centerLng = -74.0431;
-    const scale = 1000; // Adjust for visual spacing
-    
-    const x = 50 + ((lng - centerLng) * scale);
-    const y = 50 - ((lat - centerLat) * scale);
-    
-    return { x: `${Math.max(10, Math.min(90, x))}%`, y: `${Math.max(10, Math.min(90, y))}%` };
-  };
-
   return (
-    <TooltipProvider>
-      <div className={`${
-        isExpanded 
-          ? 'fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right' 
-          : 'relative h-full'
-      } transition-all duration-300`}>
-      {/* Dummy Map Background */}
-      <div 
+    <div
+      className={`${
+        isExpanded
+          ? "fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background animate-slide-in-right"
+          : "relative h-full"
+      } transition-all duration-300`}
+    >
+      <div
         ref={mapRef}
-        className={`absolute inset-0 ${isExpanded ? 'rounded-none' : 'rounded-lg'} bg-gradient-to-br from-muted/30 to-muted/10 overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} transition-all duration-300`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* Grid pattern */}
-        <div 
-          className="absolute inset-0 pointer-events-none" 
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, hsl(var(--border) / 0.1) 1px, transparent 1px),
-              linear-gradient(to bottom, hsl(var(--border) / 0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px',
-            transform: `translate(${mapOffset.x}px, ${mapOffset.y}px)`,
-            transition: isDragging ? 'none' : 'transform 0.1s ease-out'
-          }} 
-        />
-        
-        {/* Street-like lines */}
-        <div 
-          className="absolute inset-0 opacity-20 pointer-events-none"
-          style={{
-            transform: `translate(${mapOffset.x}px, ${mapOffset.y}px)`,
-            transition: isDragging ? 'none' : 'transform 0.1s ease-out',
-            width: '200%',
-            height: '200%',
-            left: '-50%',
-            top: '-50%'
-          }}
-        >
-          <div className="absolute top-1/4 left-0 right-0 h-px bg-border" />
-          <div className="absolute top-1/2 left-0 right-0 h-px bg-border" />
-          <div className="absolute top-3/4 left-0 right-0 h-px bg-border" />
-          <div className="absolute left-1/4 top-0 bottom-0 w-px bg-border" />
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border" />
-          <div className="absolute left-3/4 top-0 bottom-0 w-px bg-border" />
-        </div>
+        className={`absolute inset-0 ${isExpanded ? "rounded-none" : "rounded-lg"}`}
+        style={{ minHeight: "400px" }}
+      />
 
-        {/* User Location Marker */}
-        {userLocation && (
-          <div
-            className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20"
-            style={{ 
-              left: getMarkerPosition(userLocation.latitude, userLocation.longitude).x,
-              top: getMarkerPosition(userLocation.latitude, userLocation.longitude).y,
-              transform: `translate(calc(-50% + ${mapOffset.x}px), calc(-50% + ${mapOffset.y}px))`,
-              transition: isDragging ? 'none' : 'transform 0.1s ease-out'
-            }}
-          >
-            <div className="relative">
-              <div className="absolute inset-0 animate-ping">
-                <div className="w-10 h-10 rounded-full bg-blue-500/30" />
-              </div>
-              <Navigation 
-                className="w-8 h-8 fill-blue-500 text-white relative z-10"
-                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' }}
-              />
-              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                <div className="bg-blue-500 text-white text-xs px-2 py-1 rounded shadow-lg font-medium">
-                  Your Location
+      {/* Popup content */}
+      <div ref={popupRef} className="absolute z-50">
+        {popupContent && (
+          <div className="bg-background border border-border rounded-lg shadow-xl p-4 max-w-[280px] -translate-x-1/2 mb-2">
+            <div className="flex gap-3 mb-3">
+              {popupContent.image && (
+                <img
+                  src={popupContent.image}
+                  alt={popupContent.name}
+                  className="w-12 h-12 rounded-full object-cover ring-2 ring-border"
+                />
+              )}
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-sm text-foreground truncate">
+                  {popupContent.name}
+                </h4>
+                {popupContent.specialty && (
+                  <p className="text-xs text-muted-foreground">{popupContent.specialty}</p>
+                )}
+                <div className="flex items-center gap-2 text-xs mt-1">
+                  {popupContent.rating && (
+                    <span className="font-medium">★ {popupContent.rating}</span>
+                  )}
+                  {popupContent.distance && (
+                    <span className="text-muted-foreground">{popupContent.distance}</span>
+                  )}
                 </div>
               </div>
             </div>
+            <p className="text-xs text-muted-foreground mb-3">{popupContent.address}</p>
+            <Button
+              size="sm"
+              className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+              onClick={handleBookClick}
+            >
+              Request Appointment
+            </Button>
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-background border-r border-b border-border" />
           </div>
         )}
-
-        {/* Dentist Markers */}
-        {dentists.map((dentist) => {
-          const position = getMarkerPosition(dentist.latitude, dentist.longitude);
-          const isSelected = selectedDentist === dentist.id;
-          const isHighlighted = highlightedDentistId === dentist.id;
-          
-          return (
-            <div
-              key={dentist.id}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10 marker-pin"
-              style={{ 
-                left: position.x, 
-                top: position.y,
-                transform: `translate(calc(-50% + ${mapOffset.x}px), calc(-50% + ${mapOffset.y}px))`,
-                transition: isDragging ? 'none' : 'transform 0.1s ease-out'
-              }}
-              onClick={(e) => handleMarkerClick(e, dentist.id)}
-            >
-              {/* Pulsing ring for highlighted marker */}
-              {isHighlighted && (
-                <div className="absolute inset-0 -m-2 animate-ping">
-                  <div className="w-12 h-12 rounded-full bg-primary/30" />
-                </div>
-              )}
-              
-              {/* Marker Pin */}
-              <div className={`relative transition-all duration-200 cursor-pointer group ${isSelected ? 'scale-125' : isHighlighted ? 'scale-125 animate-bounce' : 'group-hover:scale-110'}`}>
-                <MapPin 
-                  className={`w-8 h-8 transition-colors ${
-                    isSelected || isHighlighted
-                      ? 'fill-primary text-primary-foreground' 
-                      : 'fill-primary/80 text-primary-foreground'
-                  }`}
-                  style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
-                />
-              </div>
-
-              {/* Dentist Card Popup at Marker Location */}
-              {isSelected && isExpanded && (
-                <Card className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-80 shadow-2xl overflow-hidden pointer-events-auto">
-                  <div className="p-4 space-y-3">
-                    <div className="flex gap-3">
-                      {/* Profile Image */}
-                      <div className="flex-shrink-0">
-                        <img
-                          src={dentist.image || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop"}
-                          alt={dentist.name}
-                          className="w-14 h-14 rounded-full object-cover ring-2 ring-border"
-                        />
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-base font-bold text-foreground truncate">
-                            {dentist.name}
-                          </h3>
-                          {dentist.networkProvider && (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <BadgeCheck className="w-4 h-4 text-primary fill-primary/20 flex-shrink-0 cursor-help" />
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-xs">
-                                <p className="text-sm">This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          )}
-                        </div>
-                        {dentist.specialty && (
-                          <p className="text-sm text-muted-foreground">{dentist.specialty}</p>
-                        )}
-
-                        <div className="flex items-center gap-3 text-xs mt-1">
-                          {dentist.rating && (
-                            <div className="flex items-center gap-1">
-                              <Star className="w-3 h-3 fill-primary text-primary" />
-                              <span className="font-semibold">{dentist.rating}</span>
-                              {dentist.reviews && (
-                                <span className="text-muted-foreground">({dentist.reviews})</span>
-                              )}
-                            </div>
-                          )}
-                          {dentist.distance && (
-                            <span className="text-muted-foreground">{dentist.distance}</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-muted-foreground">{dentist.address}</p>
-
-                    <Button 
-                      className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (onBookAppointment) {
-                          onBookAppointment(dentist.id);
-                        }
-                      }}
-                    >
-                      Request Appointment
-                    </Button>
-                  </div>
-                  {/* Arrow pointer */}
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-background border-r border-b border-border" />
-                </Card>
-              )}
-
-              {/* Simple Info Popup for non-expanded mode */}
-              {isSelected && !isExpanded && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 pointer-events-none">
-                  <div className="bg-background border border-border rounded-lg shadow-lg p-3">
-                    <h4 className="font-semibold text-sm mb-1">{dentist.name}</h4>
-                    <p className="text-xs text-muted-foreground">{dentist.address}</p>
-                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-background border-r border-b border-border" />
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
       </div>
 
       {/* Controls */}
       <div className="absolute top-4 left-4 z-10 flex gap-2">
-        <Button
-          variant="secondary"
-          size="icon"
-          className="shadow-lg"
-          onClick={toggleExpand}
-        >
+        <Button variant="secondary" size="icon" className="shadow-lg" onClick={toggleExpand}>
           {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
         </Button>
       </div>
@@ -328,7 +301,6 @@ export const DentistMap = ({ dentists, onDentistClick, onBookAppointment, zipCod
           <p className="text-sm font-medium">Near: {zipCode}</p>
         </div>
       )}
-      </div>
-    </TooltipProvider>
+    </div>
   );
 };
