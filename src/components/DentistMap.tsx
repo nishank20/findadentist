@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { Maximize2, Minimize2, Star, BadgeCheck } from "lucide-react";
+import { Maximize2, Minimize2, Star, BadgeCheck, Navigation, X } from "lucide-react";
 import { Card } from "./ui/card";
 import {
   Tooltip,
@@ -44,14 +44,192 @@ export const DentistMap = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<Dentist | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ x: number; y: number } | null>(null);
+  const [showRoute, setShowRoute] = useState(false);
+  const [routeInfo, setRouteInfo] = useState<{ distance: string; duration: string } | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
-  const overlayRef = useRef<any>(null);
+  const routeLayerRef = useRef<any>(null);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
     setSelectedDentist(null);
     setPopupPosition(null);
+    clearRoute();
+  };
+
+  const clearRoute = () => {
+    setShowRoute(false);
+    setRouteInfo(null);
+    if (routeLayerRef.current && mapInstanceRef.current) {
+      mapInstanceRef.current.removeLayer(routeLayerRef.current);
+      routeLayerRef.current = null;
+    }
+  };
+
+  const fetchAndDrawRoute = async (destLat: number, destLng: number) => {
+    if (!mapInstanceRef.current) return;
+
+    // Clear existing route
+    if (routeLayerRef.current) {
+      mapInstanceRef.current.removeLayer(routeLayerRef.current);
+      routeLayerRef.current = null;
+    }
+
+    try {
+      // Import OpenLayers modules for route
+      const [
+        { default: VectorLayer },
+        { default: VectorSource },
+        { default: Feature },
+        { default: LineString },
+        { fromLonLat },
+        { Style, Stroke },
+      ] = await Promise.all([
+        import("ol/layer/Vector"),
+        import("ol/source/Vector"),
+        import("ol/Feature"),
+        import("ol/geom/LineString"),
+        import("ol/proj"),
+        import("ol/style"),
+      ]);
+
+      // Use OSRM demo server for routing (free, no API key needed)
+      const url = `https://router.project-osrm.org/route/v1/driving/${userLocation.longitude},${userLocation.latitude};${destLng},${destLat}?overview=full&geometries=geojson`;
+      
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.code === "Ok" && data.routes && data.routes.length > 0) {
+        const route = data.routes[0];
+        const coordinates = route.geometry.coordinates;
+        
+        // Convert coordinates to OpenLayers format
+        const routeCoords = coordinates.map((coord: [number, number]) => 
+          fromLonLat([coord[0], coord[1]])
+        );
+
+        // Create route feature
+        const routeFeature = new Feature({
+          geometry: new LineString(routeCoords),
+          type: "route",
+        });
+
+        routeFeature.setStyle(
+          new Style({
+            stroke: new Stroke({
+              color: "#3b82f6",
+              width: 5,
+              lineCap: "round",
+              lineJoin: "round",
+            }),
+          })
+        );
+
+        // Create route layer
+        const routeSource = new VectorSource({
+          features: [routeFeature],
+        });
+
+        const routeLayer = new VectorLayer({
+          source: routeSource,
+          zIndex: 1,
+        });
+
+        mapInstanceRef.current.addLayer(routeLayer);
+        routeLayerRef.current = routeLayer;
+
+        // Calculate route info
+        const distanceKm = (route.distance / 1000).toFixed(1);
+        const distanceMiles = (route.distance / 1609.34).toFixed(1);
+        const durationMins = Math.round(route.duration / 60);
+
+        setRouteInfo({
+          distance: `${distanceMiles} mi (${distanceKm} km)`,
+          duration: `${durationMins} min`,
+        });
+        setShowRoute(true);
+
+        // Fit map to show the route
+        const extent = routeSource.getExtent();
+        mapInstanceRef.current.getView().fit(extent, {
+          padding: [80, 80, 80, 80],
+          maxZoom: 16,
+        });
+      } else {
+        // Fallback: draw straight line if routing fails
+        drawStraightLine(destLat, destLng);
+      }
+    } catch (error) {
+      console.error("Route fetch error:", error);
+      // Fallback: draw straight line
+      drawStraightLine(destLat, destLng);
+    }
+  };
+
+  const drawStraightLine = async (destLat: number, destLng: number) => {
+    const [
+      { default: VectorLayer },
+      { default: VectorSource },
+      { default: Feature },
+      { default: LineString },
+      { fromLonLat },
+      { Style, Stroke },
+    ] = await Promise.all([
+      import("ol/layer/Vector"),
+      import("ol/source/Vector"),
+      import("ol/Feature"),
+      import("ol/geom/LineString"),
+      import("ol/proj"),
+      import("ol/style"),
+    ]);
+
+    const routeCoords = [
+      fromLonLat([userLocation.longitude, userLocation.latitude]),
+      fromLonLat([destLng, destLat]),
+    ];
+
+    const routeFeature = new Feature({
+      geometry: new LineString(routeCoords),
+      type: "route",
+    });
+
+    routeFeature.setStyle(
+      new Style({
+        stroke: new Stroke({
+          color: "#3b82f6",
+          width: 4,
+          lineDash: [10, 10],
+        }),
+      })
+    );
+
+    const routeSource = new VectorSource({
+      features: [routeFeature],
+    });
+
+    const routeLayer = new VectorLayer({
+      source: routeSource,
+      zIndex: 1,
+    });
+
+    mapInstanceRef.current.addLayer(routeLayer);
+    routeLayerRef.current = routeLayer;
+
+    // Calculate straight-line distance
+    const R = 3958.8; // Earth radius in miles
+    const dLat = (destLat - userLocation.latitude) * Math.PI / 180;
+    const dLon = (destLng - userLocation.longitude) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(userLocation.latitude * Math.PI / 180) * Math.cos(destLat * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+
+    setRouteInfo({
+      distance: `~${distance.toFixed(1)} mi (straight line)`,
+      duration: "N/A",
+    });
+    setShowRoute(true);
   };
 
   useEffect(() => {
@@ -137,6 +315,7 @@ export const DentistMap = ({
 
       const vectorLayer = new VectorLayer({
         source: vectorSource,
+        zIndex: 2,
       });
 
       const map = new Map({
@@ -205,9 +384,11 @@ export const DentistMap = ({
     }
   };
 
-  const handleClosePopup = () => {
-    setSelectedDentist(null);
-    setPopupPosition(null);
+  const handleShowDirections = () => {
+    if (selectedDentist) {
+      fetchAndDrawRoute(selectedDentist.latitude, selectedDentist.longitude);
+      setPopupPosition(null);
+    }
   };
 
   return (
@@ -225,8 +406,47 @@ export const DentistMap = ({
           style={{ minHeight: "400px" }}
         />
 
+        {/* Route Info Panel */}
+        {showRoute && routeInfo && selectedDentist && (
+          <div className="absolute bottom-4 left-4 right-4 z-20 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-border p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Navigation className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground">Route to {selectedDentist.name}</p>
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <span>{routeInfo.distance}</span>
+                    <span>•</span>
+                    <span>{routeInfo.duration} drive</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${selectedDentist.latitude},${selectedDentist.longitude}`;
+                    window.open(mapsUrl, "_blank");
+                  }}
+                >
+                  Open in Maps
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={clearRoute}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Dentist Card Popup */}
-        {selectedDentist && popupPosition && (
+        {selectedDentist && popupPosition && !showRoute && (
           <Card
             className="absolute z-50 w-80 shadow-2xl overflow-hidden pointer-events-auto"
             style={{
@@ -286,12 +506,24 @@ export const DentistMap = ({
 
               <p className="text-xs text-muted-foreground">{selectedDentist.address}</p>
 
-              <Button
-                className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
-                onClick={handleBookClick}
-              >
-                Request Appointment
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                  onClick={handleShowDirections}
+                >
+                  <Navigation className="w-4 h-4 mr-1" />
+                  Directions
+                </Button>
+                <Button
+                  size="sm"
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+                  onClick={handleBookClick}
+                >
+                  Book
+                </Button>
+              </div>
             </div>
             {/* Arrow pointer */}
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-background border-r border-b border-border" />
