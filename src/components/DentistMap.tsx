@@ -458,18 +458,18 @@ export const DentistMap = ({
           </div>
         )}
 
-        {/* Dentist Card Popup - Fixed position when route is shown, otherwise at marker */}
+        {/* Dentist Card Popup - Fixed position when route is shown, otherwise smart positioned */}
         {selectedDentist && popupPosition && (
           <Card
-            className={`absolute z-50 w-80 shadow-2xl overflow-hidden pointer-events-auto transition-all duration-300 ${
+            className={`absolute z-50 w-80 shadow-2xl overflow-visible pointer-events-auto transition-all duration-300 ${
               showRoute ? "top-4 right-4" : ""
             }`}
             style={
               showRoute
                 ? {} // Fixed position via className
                 : {
-                    left: `${popupPosition.x}px`,
-                    top: `${popupPosition.y - 20}px`,
+                    left: `${Math.min(Math.max(popupPosition.x, 160), (mapRef.current?.offsetWidth || 400) - 160)}px`,
+                    top: `${Math.max(popupPosition.y - 20, 220)}px`,
                     transform: "translate(-50%, -100%)",
                   }
             }
