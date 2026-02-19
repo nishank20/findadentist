@@ -16,6 +16,7 @@ interface Dentist {
   address: string;
   latitude: number;
   longitude: number;
+  officeName?: string;
   specialty?: string;
   rating?: number;
   reviews?: number;
@@ -502,10 +503,13 @@ export const DentistMap = ({
                       </Tooltip>
                     )}
                   </div>
+                    {selectedDentist.officeName && (
+                      <p className="text-xs font-medium text-primary/80">{selectedDentist.officeName}</p>
+                    )}
                     <p className="text-xs text-muted-foreground truncate">{selectedDentist.address}</p>
                     {selectedDentist.specialty && (
-                    <p className="text-xs text-muted-foreground">{selectedDentist.specialty}</p>
-                  )}
+                      <p className="text-xs text-muted-foreground">{selectedDentist.specialty}</p>
+                    )}
 
                   <div className="flex items-center gap-3 text-xs mt-1">
                     {selectedDentist.rating && (

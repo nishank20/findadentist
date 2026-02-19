@@ -21,6 +21,7 @@ const mockDentists = [
   {
     id: 1,
     name: "Dr. Emily Carter, DDS",
+    officeName: "Bright Smile Dental",
     specialty: "General Dentist",
     rating: 4.8,
     reviews: 120,
@@ -35,6 +36,7 @@ const mockDentists = [
   {
     id: 2,
     name: "Dr. Michael Rodriguez, DDS",
+    officeName: "Hudson Family Dental",
     specialty: "Orthodontist",
     rating: 4.6,
     reviews: 89,
@@ -49,6 +51,7 @@ const mockDentists = [
   {
     id: 3,
     name: "Dr. Sarah Kim, DDS",
+    officeName: "Grand Street Dental Care",
     specialty: "Cosmetic Dentist",
     rating: 4.9,
     reviews: 156,
@@ -63,6 +66,7 @@ const mockDentists = [
   {
     id: 4,
     name: "Dr. James Wilson, DDS",
+    officeName: "Central Pediatric Dentistry",
     specialty: "Pediatric Dentist",
     rating: 4.7,
     reviews: 98,
@@ -77,6 +81,7 @@ const mockDentists = [
   {
     id: 5,
     name: "Dr. Lisa Chen, DMD",
+    officeName: "Bergen Periodontal Associates",
     specialty: "Periodontist",
     rating: 4.9,
     reviews: 142,
@@ -91,6 +96,7 @@ const mockDentists = [
   {
     id: 6,
     name: "Dr. Robert Martinez, DDS",
+    officeName: "Kennedy Oral Surgery Center",
     specialty: "Oral Surgeon",
     rating: 4.8,
     reviews: 134,
@@ -379,6 +385,7 @@ export default function Results() {
                               </Tooltip>
                             )}
                           </div>
+                          <p className="text-sm font-medium text-primary/80">{dentist.officeName}</p>
                           <p className="text-base text-muted-foreground mb-3">{dentist.specialty}</p>
 
                           <div className="flex items-center gap-4 text-sm mb-3">
