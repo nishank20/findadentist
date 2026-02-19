@@ -118,7 +118,9 @@ export default function Results() {
   const careType = searchParams.get("careType") || "";
   const specialist = searchParams.get("specialist") || "";
   const issueType = searchParams.get("issueType") || "";
+  const userInsurance = searchParams.get("insurance") || "";
   const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
+  const [expandedInsurance, setExpandedInsurance] = useState<number[]>([]);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedDentist, setSelectedDentist] = useState<string>("");
   const [highlightedDentistId, setHighlightedDentistId] = useState<number | null>(null);
@@ -419,16 +421,40 @@ export default function Results() {
 
                           <div className="space-y-2">
                             <p className="text-sm font-semibold text-foreground">Accepted Insurance:</p>
-                            <div className="flex flex-wrap gap-2">
-                              {dentist.insurance.map((ins, idx) => (
-                                <Badge 
-                                  key={idx} 
-                                  variant="secondary"
-                                  className="text-xs px-3 py-1"
-                                >
-                                  {ins}
+                            <div className="flex flex-wrap gap-2 items-center">
+                              {userInsurance && dentist.insurance.includes(userInsurance) ? (
+                                <Badge variant="secondary" className="text-xs px-3 py-1 border border-primary/30 bg-primary/10">
+                                  {userInsurance}
                                 </Badge>
-                              ))}
+                              ) : (
+                                <>
+                                  {dentist.insurance.slice(0, expandedInsurance.includes(dentist.id) ? undefined : 3).map((ins, idx) => (
+                                    <Badge 
+                                      key={idx} 
+                                      variant="secondary"
+                                      className="text-xs px-3 py-1"
+                                    >
+                                      {ins}
+                                    </Badge>
+                                  ))}
+                                  {dentist.insurance.length > 3 && !expandedInsurance.includes(dentist.id) && (
+                                    <button
+                                      onClick={() => setExpandedInsurance(prev => [...prev, dentist.id])}
+                                      className="text-xs text-primary hover:underline font-medium"
+                                    >
+                                      +{dentist.insurance.length - 3} more
+                                    </button>
+                                  )}
+                                  {expandedInsurance.includes(dentist.id) && dentist.insurance.length > 3 && (
+                                    <button
+                                      onClick={() => setExpandedInsurance(prev => prev.filter(id => id !== dentist.id))}
+                                      className="text-xs text-primary hover:underline font-medium"
+                                    >
+                                      Show less
+                                    </button>
+                                  )}
+                                </>
+                              )}
                             </div>
                           </div>
                         </div>
