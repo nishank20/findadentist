@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, LocateFixed, Loader2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import {
   Select,
@@ -50,7 +51,9 @@ export const LocationSearch = () => {
   const [insurance, setInsurance] = useState<string>("- no insurance -");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState(locationSuggestions);
+  const [locating, setLocating] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -104,6 +107,37 @@ export const LocationSearch = () => {
     setShowSuggestions(false);
   };
 
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      toast({ title: "Geolocation not supported", description: "Your browser doesn't support location services.", variant: "destructive" });
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+          const data = await res.json();
+          const city = data.address?.city || data.address?.town || data.address?.village || "";
+          const state = data.address?.state || "";
+          const zip = data.address?.postcode || "";
+          setLocation(`${city}, ${state} ${zip}`.trim());
+          setShowSuggestions(false);
+        } catch {
+          toast({ title: "Location error", description: "Could not determine your address.", variant: "destructive" });
+        } finally {
+          setLocating(false);
+        }
+      },
+      () => {
+        setLocating(false);
+        toast({ title: "Location denied", description: "Please allow location access or search manually.", variant: "destructive" });
+      },
+      { timeout: 10000 }
+    );
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
@@ -113,13 +147,22 @@ export const LocationSearch = () => {
             <Input
               ref={inputRef}
               type="text"
-              placeholder="Search by city, ZIP code, or use my location"
+              placeholder="Search by city, ZIP code"
               value={location}
               onChange={(e) => handleLocationChange(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               onFocus={() => setShowSuggestions(true)}
-              className="pl-12 h-14 text-base rounded-full border-border bg-card shadow-sm"
+              className="pl-12 pr-12 h-14 text-base rounded-full border-border bg-card shadow-sm"
             />
+            <button
+              type="button"
+              onClick={handleUseMyLocation}
+              disabled={locating}
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-primary disabled:opacity-50"
+              title="Use my current location"
+            >
+              {locating ? <Loader2 className="w-5 h-5 animate-spin" /> : <LocateFixed className="w-5 h-5" />}
+            </button>
             {showSuggestions && filteredSuggestions.length > 0 && (
               <div
                 ref={dropdownRef}
