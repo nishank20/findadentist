@@ -502,8 +502,9 @@ export const DentistMap = ({
                       </Tooltip>
                     )}
                   </div>
-                  {selectedDentist.specialty && (
-                    <p className="text-sm text-muted-foreground">{selectedDentist.specialty}</p>
+                    <p className="text-xs text-muted-foreground truncate">{selectedDentist.address}</p>
+                    {selectedDentist.specialty && (
+                    <p className="text-xs text-muted-foreground">{selectedDentist.specialty}</p>
                   )}
 
                   <div className="flex items-center gap-3 text-xs mt-1">
@@ -523,7 +524,7 @@ export const DentistMap = ({
                 </div>
               </div>
 
-              <p className="text-xs text-muted-foreground">{selectedDentist.address}</p>
+              
 
               <div className="flex gap-2">
                 <Button
