@@ -36,8 +36,8 @@ export default function Index() {
   const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
   const [insuranceCheckOpen, setInsuranceCheckOpen] = useState(false);
   const [askQuestionOpen, setAskQuestionOpen] = useState(false);
-  const [todayCount, setTodayCount] = useState(() => Math.floor(Math.random() * (8500 - 4200) + 4200));
-  const [totalCount, setTotalCount] = useState(() => Math.floor(Math.random() * (850000 - 420000) + 420000));
+  const [todayCount, setTodayCount] = useState(() => Math.floor(Math.random() * (1200 - 340) + 340));
+  const [totalCount, setTotalCount] = useState(() => Math.floor(Math.random() * (127500 - 98000) + 98000));
   const navigate = useNavigate();
 
   useEffect(() => {
