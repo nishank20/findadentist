@@ -77,8 +77,8 @@ export default function Index() {
                 </p>
               </div>
               <LocationSearch />
-              <p className="text-sm text-muted-foreground text-center lg:text-left animate-pulse">
-                🔍 <span className="font-semibold text-foreground">{searchCount.toLocaleString()}</span> dentist searches performed today
+              <p className="text-sm text-muted-foreground text-center lg:text-left">
+                🔍 <span className="font-semibold text-foreground">{searchCount.toLocaleString()}</span> dentist searches performed today and counting…
               </p>
             </div>
 
