@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FeatureCard } from "@/components/FeatureCard";
@@ -36,7 +36,15 @@ export default function Index() {
   const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
   const [insuranceCheckOpen, setInsuranceCheckOpen] = useState(false);
   const [askQuestionOpen, setAskQuestionOpen] = useState(false);
+  const [searchCount, setSearchCount] = useState(() => Math.floor(Math.random() * (85432 - 42000) + 42000));
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSearchCount((prev) => prev + Math.floor(Math.random() * 3) + 1);
+    }, Math.random() * 4000 + 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -69,6 +77,9 @@ export default function Index() {
                 </p>
               </div>
               <LocationSearch />
+              <p className="text-sm text-muted-foreground text-center lg:text-left animate-pulse">
+                🔍 <span className="font-semibold text-foreground">{searchCount.toLocaleString()}</span> dentist searches performed today
+              </p>
             </div>
 
             {/* Right Column - Feature Cards */}
