@@ -36,12 +36,14 @@ export default function Index() {
   const [costCalculatorOpen, setCostCalculatorOpen] = useState(false);
   const [insuranceCheckOpen, setInsuranceCheckOpen] = useState(false);
   const [askQuestionOpen, setAskQuestionOpen] = useState(false);
-  const [searchCount, setSearchCount] = useState(() => Math.floor(Math.random() * (85432 - 42000) + 42000));
+  const [todayCount, setTodayCount] = useState(() => Math.floor(Math.random() * (8500 - 4200) + 4200));
+  const [totalCount, setTotalCount] = useState(() => Math.floor(Math.random() * (850000 - 420000) + 420000));
   const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setSearchCount((prev) => prev + Math.floor(Math.random() * 3) + 1);
+      setTodayCount((prev) => prev + Math.floor(Math.random() * 3) + 1);
+      setTotalCount((prev) => prev + Math.floor(Math.random() * 5) + 2);
     }, Math.random() * 4000 + 3000);
     return () => clearInterval(interval);
   }, []);
@@ -77,9 +79,14 @@ export default function Index() {
                 </p>
               </div>
               <LocationSearch />
-              <p className="text-sm text-muted-foreground text-center lg:text-left">
-                🔍 <span className="font-semibold text-foreground">{searchCount.toLocaleString()}</span> dentist searches performed today and counting…
-              </p>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-sm text-muted-foreground text-center lg:text-left">
+                <p>
+                  🔍 <span className="font-semibold text-foreground">{todayCount.toLocaleString()}</span> searches today
+                </p>
+                <p>
+                  📊 <span className="font-semibold text-foreground">{totalCount.toLocaleString()}</span> searches till now
+                </p>
+              </div>
             </div>
 
             {/* Right Column - Feature Cards */}
