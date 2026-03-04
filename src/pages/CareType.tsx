@@ -55,7 +55,10 @@ export default function CareType() {
               <Card
                 key={type.id}
                 onClick={() => handleSelect(type.id)}
-                className="p-6 cursor-pointer hover:shadow-md transition-all duration-200 border-border bg-card"
+                tabIndex={0}
+                role="button"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelect(type.id); } }}
+                className="p-6 cursor-pointer hover:shadow-md transition-all duration-200 border-border bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <div className="space-y-2">
                   <h3 className="font-semibold text-lg text-foreground">

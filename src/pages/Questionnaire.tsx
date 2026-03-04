@@ -123,12 +123,16 @@ export default function Questionnaire() {
                 <div
                   key={care.id}
                   onClick={() => handleCareSelection(care.id)}
+                  tabIndex={0}
+                  role="button"
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCareSelection(care.id); } }}
                   className={cn(
                     "group relative p-3 md:p-4 rounded-xl md:rounded-2xl border-2 cursor-pointer transition-all duration-500",
                     "active:scale-[0.98] md:hover:shadow-2xl md:hover:scale-[1.02] md:hover:-translate-y-1",
                     "bg-gradient-to-br from-card via-card to-primary/5",
                     "border-border hover:border-primary",
-                    "animate-fade-in overflow-hidden"
+                    "animate-fade-in overflow-hidden",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   )}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
@@ -166,12 +170,16 @@ export default function Questionnaire() {
                 <div
                   key={specialist.id}
                   onClick={() => handleSpecialistSelection(specialist.id)}
+                  tabIndex={0}
+                  role="button"
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSpecialistSelection(specialist.id); } }}
                   className={cn(
                     "group relative p-3 md:p-4 rounded-xl md:rounded-2xl border-2 cursor-pointer transition-all duration-500",
                     "active:scale-[0.98] md:hover:shadow-2xl md:hover:scale-[1.02] md:hover:-translate-y-1",
                     "bg-gradient-to-br from-card via-card to-secondary/5",
                     "border-border hover:border-primary",
-                    "animate-fade-in overflow-hidden"
+                    "animate-fade-in overflow-hidden",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   )}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
