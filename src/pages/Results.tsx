@@ -333,9 +333,9 @@ export default function Results() {
           </Card>
 
           {/* Split Layout: List and Map */}
-          <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-220px)] px-4">
+          <div className="flex flex-col lg:flex-row gap-4 h-auto lg:h-[calc(100vh-220px)] px-4 pb-4">
             {/* Left Side - Dentist List */}
-            <div className="lg:w-1/2 space-y-4 overflow-y-auto">
+            <div className="lg:w-1/2 space-y-4 overflow-y-auto max-h-[60vh] lg:max-h-none">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">
@@ -352,28 +352,28 @@ export default function Results() {
                 <Card 
                   key={dentist.id} 
                   ref={(el) => dentistRefs.current[dentist.id] = el}
-                  className={`p-6 border-border/50 hover:shadow-md transition-all ${
+                  className={`p-4 md:p-6 border-border/50 hover:shadow-md transition-all ${
                     highlightedDentistId === dentist.id 
                       ? 'ring-2 ring-primary shadow-lg bg-primary/5' 
                       : ''
                   }`}
                 >
-                  <div className="flex gap-6">
+                  <div className="flex flex-col sm:flex-row gap-4">
                     {/* Profile Image */}
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 flex sm:block items-center gap-3">
                       <img
                         src={dentist.image}
                         alt={dentist.name}
-                        className="w-24 h-24 rounded-lg object-cover"
+                        className="w-16 h-16 sm:w-24 sm:h-24 rounded-lg object-cover"
                       />
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 space-y-3">
-                      <div className="flex items-start justify-between gap-4">
+                      <div className="flex flex-col gap-2">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-xl font-bold text-foreground">
+                            <h3 className="text-base sm:text-xl font-bold text-foreground">
                               {dentist.name}
                             </h3>
                             {dentist.networkProvider && (
@@ -390,7 +390,7 @@ export default function Results() {
                           <p className="text-sm font-medium text-primary/80">{dentist.officeName}</p>
                           <p className="text-base text-muted-foreground mb-3">{dentist.specialty}</p>
 
-                          <div className="flex items-center gap-4 text-sm mb-3">
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm mb-3">
                             <div className="flex items-center gap-1">
                               <Star className="w-4 h-4 fill-blue-500 text-blue-500" />
                               <Star className="w-4 h-4 fill-blue-500 text-blue-500" />
@@ -398,7 +398,7 @@ export default function Results() {
                               <Star className="w-4 h-4 fill-blue-500 text-blue-500" />
                               <Star className="w-4 h-4 fill-gray-300 text-gray-300" />
                               <span className="font-semibold text-foreground ml-1">{dentist.rating}</span>
-                              <span className="text-muted-foreground">({dentist.reviews} Reviews)</span>
+                              <span className="text-muted-foreground">({dentist.reviews})</span>
                             </div>
                             <div className="flex items-center gap-1 text-muted-foreground">
                               <MapPin className="w-4 h-4" />
@@ -459,19 +459,19 @@ export default function Results() {
                           </div>
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2 mt-3">
                           <Button 
-                            size="lg"
-                            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 whitespace-nowrap"
+                            size="default"
+                            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white w-full sm:w-auto"
                             onClick={() => handleBookAppointment(dentist.name)}
                           >
                             <User className="w-4 h-4 mr-2" />
                             Request Appointment
                           </Button>
                           <Button 
-                            size="sm"
+                            size="default"
                             variant="outline"
-                            className="whitespace-nowrap"
+                            className="w-full sm:w-auto"
                             onClick={() => {
                               const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dentist.address)}`;
                               window.open(mapsUrl, '_blank');
@@ -507,7 +507,7 @@ export default function Results() {
             </div>
 
             {/* Right Side - Map */}
-            <div className="lg:w-1/2 h-[500px] lg:h-full">
+            <div className="lg:w-1/2 h-[300px] lg:h-full">
               <DentistMap 
                 dentists={sortedDentists.map(d => ({
                   id: d.id,
