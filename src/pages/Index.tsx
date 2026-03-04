@@ -22,8 +22,8 @@ const features = [
   },
   {
     icon: MessageSquare,
-    title: "Ask a Dentist",
-    description: "Submit a dental question and a dentist will respond",
+    title: "Ask an Expert",
+    description: "Submit a dental question and an expert will respond",
   },
   {
     icon: UserCheck,
@@ -102,7 +102,7 @@ export default function Index() {
                       ? () => setCostCalculatorOpen(true) 
                       : feature.title === "Check Your Insurance"
                       ? () => setInsuranceCheckOpen(true)
-                      : feature.title === "Ask a Dentist"
+                      : feature.title === "Ask an Expert"
                       ? () => setAskQuestionOpen(true)
                       : undefined
                   }
