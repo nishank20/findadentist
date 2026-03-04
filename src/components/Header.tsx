@@ -63,7 +63,7 @@ export const Header = () => {
             <img src={dentalLogo} alt="dental.com" className="h-8 w-auto" />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-8">
             <Button variant="secondary" size="sm" asChild>
               <Link to="/dentist-enrollment">
                 Are you a Dentist? Get Listed!
@@ -88,7 +88,7 @@ export const Header = () => {
           </nav>
 
           {/* Mobile Menu */}
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <LanguageSelector />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
