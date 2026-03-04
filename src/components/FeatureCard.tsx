@@ -22,7 +22,7 @@ export const FeatureCard = ({ icon: Icon, title, description, onClick }: Feature
     : "bg-primary";
   
   return (
-    <Card onClick={onClick} className="p-6 hover:shadow-md transition-all duration-300 border-border/30 bg-card cursor-pointer group flex items-start gap-4">
+    <Card onClick={onClick} tabIndex={0} role="button" onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) { e.preventDefault(); onClick(); } }} className="p-6 hover:shadow-md transition-all duration-300 border-border/30 bg-card cursor-pointer group flex items-start gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
       <div className={`flex-shrink-0 w-12 h-12 ${bgColor} rounded-full flex items-center justify-center`}>
         <Icon className="w-6 h-6 text-white" />
       </div>

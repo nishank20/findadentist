@@ -47,7 +47,10 @@ export default function IssueType() {
               <Card
                 key={issue.id}
                 onClick={() => handleSelect(issue.id)}
-                className="p-6 cursor-pointer hover:shadow-md transition-all duration-200 border-border bg-card"
+                tabIndex={0}
+                role="button"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelect(issue.id); } }}
+                className="p-6 cursor-pointer hover:shadow-md transition-all duration-200 border-border bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <h3 className="font-semibold text-lg text-foreground">
                   {issue.title}
