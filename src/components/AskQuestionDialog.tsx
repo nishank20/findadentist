@@ -49,7 +49,7 @@ export const AskQuestionDialog = ({ open, onOpenChange }: AskQuestionDialogProps
               <CheckCircle className="w-16 h-16 text-green-500" />
             </div>
             <p className="text-lg leading-relaxed text-foreground">
-              Thank you for submitting your question to Ask a Dentist. We've received it and will review it shortly. You'll be notified as soon as possible, once a response is ready.
+              Thank you for submitting your question to Ask an Expert. We've received it and will review it shortly. You'll be notified as soon as possible, once a response is ready.
             </p>
             <Button onClick={handleClose} className="mt-4">
               Close
@@ -58,9 +58,9 @@ export const AskQuestionDialog = ({ open, onOpenChange }: AskQuestionDialogProps
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>Ask a Dentist</DialogTitle>
+              <DialogTitle>Ask an Expert</DialogTitle>
               <DialogDescription>
-                Submit your dental question and a dentist will respond to you.
+                Submit your dental question and an expert will respond to you.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-4">
