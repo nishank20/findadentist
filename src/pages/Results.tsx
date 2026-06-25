@@ -339,13 +339,14 @@ export default function Results() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">
-                    {sortedDentists.length} In-network providers
+                    {sortedDentists.length} Dental.com Verified Providers
                   </h2>
                   <p className="text-muted-foreground text-sm">
-                    Near {location || "your location"}
+                    Hand-picked, trusted partners near {location || "your location"}
                   </p>
                 </div>
               </div>
+
 
               <div className="space-y-4">
               {sortedDentists.map((dentist) => (
@@ -358,6 +359,13 @@ export default function Results() {
                       : ''
                   }`}
                 >
+                  <div className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+                    <BadgeCheck className="w-3.5 h-3.5 text-primary" />
+                    <span className="text-xs font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                      Dental.com Verified Provider
+                    </span>
+                  </div>
+
                   <div className="flex flex-col sm:flex-row gap-4">
                     {/* Profile Image */}
                     <div className="flex-shrink-0 flex sm:block items-center gap-3">
@@ -376,16 +384,15 @@ export default function Results() {
                             <h3 className="text-base sm:text-xl font-bold text-foreground">
                               {dentist.name}
                             </h3>
-                            {dentist.networkProvider && (
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <BadgeCheck className="w-5 h-5 text-primary fill-primary/20 flex-shrink-0 cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-xs">
-                                  <p className="text-sm">This provider participates in the Dental.com Network for enhanced scheduling, communication, and care coordination.</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            )}
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <BadgeCheck className="w-5 h-5 text-primary fill-primary/20 flex-shrink-0 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs">
+                                <p className="text-sm">Verified by Dental.com — vetted credentials, enhanced scheduling, and care coordination through our network.</p>
+                              </TooltipContent>
+                            </Tooltip>
+
                           </div>
                           <p className="text-sm font-medium text-primary/80">{dentist.officeName}</p>
                           <p className="text-base text-muted-foreground mb-3">{dentist.specialty}</p>
