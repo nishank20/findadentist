@@ -359,11 +359,13 @@ export default function Results() {
                       : ''
                   }`}
                 >
-                  <div className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
-                    <BadgeCheck className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-xs font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                      Dental.com Verified Provider
-                    </span>
+                  <div className="flex justify-end mb-2">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+                      <BadgeCheck className="w-3.5 h-3.5 text-primary" />
+                      <span className="text-xs font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                        Dental.com Verified Provider
+                      </span>
+                    </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4">
