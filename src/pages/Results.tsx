@@ -428,12 +428,12 @@ export default function Results() {
                   <h2 className="text-2xl font-bold text-foreground">
                     {isBrandSearch
                       ? `${sortedDentists.length} ${brandName} Locations`
-                      : `${sortedDentists.length} Dental.com Verified Providers`}
+                      : `${sortedDentists.length} Dentists Near You`}
                   </h2>
                   <p className="text-muted-foreground text-sm">
                     {isBrandSearch
                       ? `Preferred Provider — request an appointment at any ${brandName} location`
-                      : `Hand-picked, trusted partners near ${location || "your location"}`}
+                      : `Trusted partners near ${location || "your location"}`}
                   </p>
                 </div>
               </div>
@@ -463,20 +463,14 @@ export default function Results() {
                       : ''
                   }`}
                 >
-                  <div className="flex flex-wrap justify-end gap-2 mb-2">
-                    {(dentist as any).preferredProvider && (
+                  {(dentist as any).preferredProvider && (
+                    <div className="flex justify-end mb-2">
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
                         <Star className="w-3.5 h-3.5 fill-current" />
                         <span className="text-xs font-semibold">Preferred Provider</span>
                       </div>
-                    )}
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
-                      <BadgeCheck className="w-3.5 h-3.5 text-primary" />
-                      <span className="text-xs font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                        Dental.com Verified Provider
-                      </span>
                     </div>
-                  </div>
+                  )}
 
 
                   <div className="flex flex-col sm:flex-row gap-4">
