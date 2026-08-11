@@ -426,14 +426,31 @@ export default function Results() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">
-                    {sortedDentists.length} Dental.com Verified Providers
+                    {isBrandSearch
+                      ? `${sortedDentists.length} ${brandName} Locations`
+                      : `${sortedDentists.length} Dental.com Verified Providers`}
                   </h2>
                   <p className="text-muted-foreground text-sm">
-                    Hand-picked, trusted partners near {location || "your location"}
+                    {isBrandSearch
+                      ? `Preferred Provider — request an appointment at any ${brandName} location`
+                      : `Hand-picked, trusted partners near ${location || "your location"}`}
                   </p>
                 </div>
               </div>
 
+              {isBrandSearch && (
+                <Card className="p-4 border-primary/30 bg-gradient-to-r from-primary/10 to-secondary/10">
+                  <div className="flex items-start gap-3">
+                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-foreground">{brandName} is a Dental.com Preferred Provider</p>
+                      <p className="text-sm text-muted-foreground">
+                        Priority scheduling, verified credentials, and coordinated care across all {sortedDentists.length} locations.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              )}
 
               <div className="space-y-4">
               {sortedDentists.map((dentist) => (
@@ -446,7 +463,13 @@ export default function Results() {
                       : ''
                   }`}
                 >
-                  <div className="flex justify-end mb-2">
+                  <div className="flex flex-wrap justify-end gap-2 mb-2">
+                    {(dentist as any).preferredProvider && (
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
+                        <Star className="w-3.5 h-3.5 fill-current" />
+                        <span className="text-xs font-semibold">Preferred Provider</span>
+                      </div>
+                    )}
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
                       <BadgeCheck className="w-3.5 h-3.5 text-primary" />
                       <span className="text-xs font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -454,6 +477,7 @@ export default function Results() {
                       </span>
                     </div>
                   </div>
+
 
                   <div className="flex flex-col sm:flex-row gap-4">
                     {/* Profile Image */}
