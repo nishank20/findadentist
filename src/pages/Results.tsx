@@ -108,7 +108,77 @@ const mockDentists = [
     latitude: 40.7020,
     longitude: -74.0750,
   },
+  // ===== Affinity Dental — Dental.com Preferred Provider group =====
+  {
+    id: 101,
+    name: "Dr. Priya Nair, DMD",
+    officeName: "Affinity Dental — Journal Square",
+    specialty: "General Dentist",
+    rating: 4.9,
+    reviews: 212,
+    distance: "0.4 miles away",
+    address: "26 Journal Square Plaza, Jersey City, NJ 07306",
+    insurance: ["Aetna", "Cigna", "MetLife", "Delta Dental", "United Concordia"],
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop",
+    networkProvider: true,
+    preferredProvider: true,
+    brand: "Affinity Dental",
+    latitude: 40.7329,
+    longitude: -74.0637,
+  },
+  {
+    id: 102,
+    name: "Dr. Alan Whitfield, DDS",
+    officeName: "Affinity Dental — Newport",
+    specialty: "Cosmetic Dentist",
+    rating: 4.8,
+    reviews: 178,
+    distance: "0.9 miles away",
+    address: "111 Town Square Pl, Jersey City, NJ 07310",
+    insurance: ["Aetna", "Cigna", "MetLife", "Delta Dental", "United Concordia"],
+    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop",
+    networkProvider: true,
+    preferredProvider: true,
+    brand: "Affinity Dental",
+    latitude: 40.7268,
+    longitude: -74.0356,
+  },
+  {
+    id: 103,
+    name: "Dr. Maria Santos, DDS",
+    officeName: "Affinity Dental — Bergen-Lafayette",
+    specialty: "Pediatric Dentist",
+    rating: 4.7,
+    reviews: 143,
+    distance: "1.6 miles away",
+    address: "620 Communipaw Ave, Jersey City, NJ 07304",
+    insurance: ["Aetna", "Cigna", "MetLife", "Delta Dental", "United Concordia"],
+    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop",
+    networkProvider: true,
+    preferredProvider: true,
+    brand: "Affinity Dental",
+    latitude: 40.7115,
+    longitude: -74.0733,
+  },
+  {
+    id: 104,
+    name: "Dr. Kevin Osei, DMD",
+    officeName: "Affinity Dental — The Heights",
+    specialty: "Periodontist",
+    rating: 4.9,
+    reviews: 96,
+    distance: "2.3 miles away",
+    address: "380 Central Ave, Jersey City, NJ 07307",
+    insurance: ["Aetna", "Cigna", "MetLife", "Delta Dental", "United Concordia"],
+    image: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?w=400&h=400&fit=crop",
+    networkProvider: true,
+    preferredProvider: true,
+    brand: "Affinity Dental",
+    latitude: 40.7492,
+    longitude: -74.0470,
+  },
 ];
+
 
 export default function Results() {
   const [searchParams] = useSearchParams();
@@ -132,12 +202,29 @@ export default function Results() {
     distance: string;
   } | null>(null);
 
-  // Sort dentists to show network providers first
-  const sortedDentists = [...mockDentists].sort((a, b) => {
+  // Brand / preferred-provider search (e.g. searching "Affinity")
+  const searchTerm = (searchParams.get("q") || location || "").trim().toLowerCase();
+  const brandMatches = searchTerm.length >= 3
+    ? mockDentists.filter(
+        (d) =>
+          (d as any).brand?.toLowerCase().includes(searchTerm) ||
+          d.officeName.toLowerCase().includes(searchTerm)
+      )
+    : [];
+  const isBrandSearch = brandMatches.length > 0;
+  const brandName = isBrandSearch ? (brandMatches[0] as any).brand || brandMatches[0].officeName : "";
+
+  // Show only the matching brand's locations when searching a brand,
+  // otherwise show everything with preferred/network providers first
+  const sortedDentists = (isBrandSearch ? [...brandMatches] : [...mockDentists]).sort((a, b) => {
+    const pa = (a as any).preferredProvider ? 1 : 0;
+    const pb = (b as any).preferredProvider ? 1 : 0;
+    if (pa !== pb) return pb - pa;
     if (a.networkProvider && !b.networkProvider) return -1;
     if (!a.networkProvider && b.networkProvider) return 1;
     return 0;
   });
+
 
   const toggleReviews = (dentistId: number) => {
     setExpandedReviews((prev) =>
@@ -285,7 +372,7 @@ export default function Results() {
                       <Input
                         ref={locationInputRef}
                         type="text"
-                        placeholder="Enter city, state, or ZIP code"
+                        placeholder="Enter city, ZIP, or practice name (e.g. Affinity)"
                         value={location}
                         onChange={(e) => handleLocationInputChange(e.target.value)}
                         onFocus={() => setShowLocationSuggestions(true)}
@@ -339,14 +426,31 @@ export default function Results() {
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground">
-                    {sortedDentists.length} Dental.com Verified Providers
+                    {isBrandSearch
+                      ? `${sortedDentists.length} ${brandName} Locations`
+                      : `${sortedDentists.length} Dental.com Verified Providers`}
                   </h2>
                   <p className="text-muted-foreground text-sm">
-                    Hand-picked, trusted partners near {location || "your location"}
+                    {isBrandSearch
+                      ? `Preferred Provider — request an appointment at any ${brandName} location`
+                      : `Hand-picked, trusted partners near ${location || "your location"}`}
                   </p>
                 </div>
               </div>
 
+              {isBrandSearch && (
+                <Card className="p-4 border-primary/30 bg-gradient-to-r from-primary/10 to-secondary/10">
+                  <div className="flex items-start gap-3">
+                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-foreground">{brandName} is a Dental.com Preferred Provider</p>
+                      <p className="text-sm text-muted-foreground">
+                        Priority scheduling, verified credentials, and coordinated care across all {sortedDentists.length} locations.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              )}
 
               <div className="space-y-4">
               {sortedDentists.map((dentist) => (
@@ -359,7 +463,13 @@ export default function Results() {
                       : ''
                   }`}
                 >
-                  <div className="flex justify-end mb-2">
+                  <div className="flex flex-wrap justify-end gap-2 mb-2">
+                    {(dentist as any).preferredProvider && (
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
+                        <Star className="w-3.5 h-3.5 fill-current" />
+                        <span className="text-xs font-semibold">Preferred Provider</span>
+                      </div>
+                    )}
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
                       <BadgeCheck className="w-3.5 h-3.5 text-primary" />
                       <span className="text-xs font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -367,6 +477,7 @@ export default function Results() {
                       </span>
                     </div>
                   </div>
+
 
                   <div className="flex flex-col sm:flex-row gap-4">
                     {/* Profile Image */}
