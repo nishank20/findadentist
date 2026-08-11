@@ -321,7 +321,7 @@ export function BookingDialog({ open, onOpenChange, dentistName }: BookingDialog
               onClick={handleBooking}
               className="px-8"
             >
-              Request Appointment
+              Book Appointment
             </Button>
           )}
         </div>
