@@ -580,7 +580,7 @@ export default function Results() {
                             onClick={() => handleBookAppointment(dentist.name)}
                           >
                             <User className="w-4 h-4 mr-2" />
-                            Request Appointment
+                            Book Appointment
                           </Button>
                           <Button 
                             size="default"
