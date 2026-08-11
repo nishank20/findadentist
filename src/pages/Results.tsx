@@ -372,7 +372,7 @@ export default function Results() {
                       <Input
                         ref={locationInputRef}
                         type="text"
-                        placeholder="Enter city, state, or ZIP code"
+                        placeholder="Enter city, ZIP, or practice name (e.g. Affinity)"
                         value={location}
                         onChange={(e) => handleLocationInputChange(e.target.value)}
                         onFocus={() => setShowLocationSuggestions(true)}
