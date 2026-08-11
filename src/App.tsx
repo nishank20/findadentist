@@ -9,6 +9,8 @@ import IssueType from "./pages/IssueType";
 import Results from "./pages/Results";
 import Questionnaire from "./pages/Questionnaire";
 import DentistEnrollment from "./pages/DentistEnrollment";
+import Login from "./pages/Login";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
