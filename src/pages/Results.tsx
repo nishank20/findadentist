@@ -202,12 +202,29 @@ export default function Results() {
     distance: string;
   } | null>(null);
 
-  // Sort dentists to show network providers first
-  const sortedDentists = [...mockDentists].sort((a, b) => {
+  // Brand / preferred-provider search (e.g. searching "Affinity")
+  const searchTerm = (searchParams.get("q") || location || "").trim().toLowerCase();
+  const brandMatches = searchTerm.length >= 3
+    ? mockDentists.filter(
+        (d) =>
+          (d as any).brand?.toLowerCase().includes(searchTerm) ||
+          d.officeName.toLowerCase().includes(searchTerm)
+      )
+    : [];
+  const isBrandSearch = brandMatches.length > 0;
+  const brandName = isBrandSearch ? (brandMatches[0] as any).brand || brandMatches[0].officeName : "";
+
+  // Show only the matching brand's locations when searching a brand,
+  // otherwise show everything with preferred/network providers first
+  const sortedDentists = (isBrandSearch ? [...brandMatches] : [...mockDentists]).sort((a, b) => {
+    const pa = (a as any).preferredProvider ? 1 : 0;
+    const pb = (b as any).preferredProvider ? 1 : 0;
+    if (pa !== pb) return pb - pa;
     if (a.networkProvider && !b.networkProvider) return -1;
     if (!a.networkProvider && b.networkProvider) return 1;
     return 0;
   });
+
 
   const toggleReviews = (dentistId: number) => {
     setExpandedReviews((prev) =>
