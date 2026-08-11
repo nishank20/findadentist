@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.2",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://otuenikomkqbxdwoipet.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "findadentist",
+      "version": "0.1.0",
+      "title": "findadentist"
+    },
+    "tools": [
+      {
+        "name": "search_dentists",
+        "title": "Search dentists",
+        "description": "Search the findadentist directory of dentists by specialty, accepted insurance carrier, city or address text, and minimum rating.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Free text matched against dentist name, office name, or address."
+            },
+            "specialty": {
+              "type": "string",
+              "description": "Specialty such as Orthodontist, Periodontist, Pediatric Dentist."
+            },
+            "insurance": {
+              "type": "string",
+              "description": "Insurance carrier the dentist must accept, e.g. Aetna."
+            },
+            "minRating": {
+              "type": "number",
+              "description": "Minimum star rating from 0 to 5."
+            },
+            "networkOnly": {
+              "type": "boolean",
+              "description": "Only return Dental.com Network providers."
+            },
+            "limit": {
+              "type": "number",
+              "description": "Maximum number of results to return (default 10)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_dentist",
+        "title": "Get dentist details",
+        "description": "Get the full profile of one dentist in the findadentist directory by id.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number",
+              "description": "Dentist id returned by search_dentists."
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_insurance_carriers",
+        "title": "List insurance carriers",
+        "description": "List the dental insurance carriers findadentist supports, optionally with how many directory dentists accept each one.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "withCounts": {
+              "type": "boolean",
+              "description": "Include the number of dentists accepting each carrier."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_specialties",
+        "title": "List dental specialties",
+        "description": "List the dental specialties findadentist covers and how many directory dentists offer each.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Optional text filter applied to specialty names."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

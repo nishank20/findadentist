@@ -9,6 +9,8 @@ import IssueType from "./pages/IssueType";
 import Results from "./pages/Results";
 import Questionnaire from "./pages/Questionnaire";
 import DentistEnrollment from "./pages/DentistEnrollment";
+import Login from "./pages/Login";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,9 @@ const App = () => (
           <Route path="/questionnaire" element={<Questionnaire />} />
           <Route path="/results" element={<Results />} />
           <Route path="/dentist-enrollment" element={<DentistEnrollment />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
